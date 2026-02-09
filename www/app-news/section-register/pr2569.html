@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ยินดีต้อนรับนักเรียน นักศึกษาใหม่ - วิทยาลัยเทคนิคเลย</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Full width gallery grid */
+    .gallery-grid {
+      display: grid;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .gallery-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 0.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      will-change: transform;
+      cursor: pointer;
+      aspect-ratio: 1 / 1;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.05);
+      z-index: 10;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.6) 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-item:hover .card-overlay {
+      opacity: 1;
+    }
+
+    .chip {
+      display: inline-flex;
+      gap: 0.4rem;
+      align-items: center;
+      padding: 0.35rem 0.75rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 999px;
+      font-weight: 600;
+      color: #111827;
+      font-size: 0.75rem;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 1rem;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox-inner {
+      max-width: 100%;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .lightbox-img {
+      max-width: 90%;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 0.5rem;
+    }
+
+    .lightbox-meta {
+      color: #f3f4f6;
+      flex-shrink: 0;
+      width: auto;
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+    }
+
+    .filter-btn {
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(90deg, #06b6d4 0%, #06b6b4 100%);
+      color: white;
+      box-shadow: 0 6px 18px rgba(6, 182, 212, 0.18);
+    }
+
+    .container-full {
+      width: 100%;
+      height: auto;
+    }
+
+    /* Hashtag styling */
+    .hashtag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #e0f2fe;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-right: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .hashtag:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900">
+
+  <header class="w-full bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-16 md:py-24">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-8">
+        <div class="flex-1 text-center lg:text-center">
+          <div class="mb-6">
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-tight animate-pulse">
+              🎓 ยินดีต้อนรับ
+            </h1>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-200 mt-3">
+              นักเรียน นักศึกษาใหม่
+            </h2>
+            <p class="text-2xl sm:text-3xl font-semibold text-cyan-300 mt-4">
+              เข้าสู่วิทยาลัยเทคนิคเลย
+            </p>
+          </div>
+
+          <p class="mt-6 text-lg sm:text-xl text-blue-100 max-w-3xl leading-relaxed font-medium mx-auto">
+            ปีการศึกษา 2569 สถาบันสร้างสมปัญญา เกียรติศักดิ์ ความซื่อสัตย์แห่งตน และวิชาชีพ เชิญชวนน้องๆ
+            เข้าเรียนและพัฒนาตนเอง
+          </p>
+
+          <div class="mt-6 flex flex-wrap justify-center">
+            <span class="hashtag">#DEK69</span>
+            <span class="hashtag">#เทคนิคเลย</span>
+            <span class="hashtag">#loeitech</span>
+          </div>
+
+          <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="https://loeitech.ac.th/app-news/annonce_detail.php?id=81"
+              class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-700 font-bold text-lg rounded-xl shadow-2xl hover:shadow-3xl hover:scale-110 transition transform duration-300">
+              <i class="fas fa-graduation-cap text-2xl"></i> สมัครเรียนวันนี้
+            </a>
+          </div>
+        </div>
+
+        <div class="flex-1 lg:flex-none max-w-sm mx-auto lg:mx-0">
+          <div
+            class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/30 shadow-2xl hover:shadow-3xl transition transform hover:scale-105">
+            <div class="text-center space-y-6">
+              <div class="text-6xl animate-bounce">
+                👋
+              </div>
+
+              <div class="space-y-2">
+                <span class="block text-sm text-blue-100 font-semibold uppercase tracking-wider">📚 ปีการศึกษา</span>
+                <span
+                  class="block text-6xl font-extrabold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">2569</span>
+              </div>
+
+              <div class="h-1 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"></div>
+
+              <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                <span class="block text-xs text-blue-200 font-semibold mb-2">🎉 เปิดรับสมัครนักศึกษาใหม่</span>
+                <span class="block text-xl font-bold text-white">รับสมัครตั้งแต่บัดนี้</span>
+                <div class="mt-3 text-sm text-yellow-300 font-semibold">
+                  ถึง 8 พฤษภาคม 2569
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 pt-4 border-t border-white/20">
+                <div class="text-center">
+                  <div class="text-xs text-blue-200 mt-1">หลักสูตร</div>
+                  <div class="text-3xl font-bold text-green-400">ปวช. ปวส.</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-xs text-blue-200 mt-1">หลักสูตร</div>
+                  <div class="text-3xl font-bold text-cyan-400">เทคโนโลยีบัณฑิต</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <script>
+    (function () {
+      const items = Array.from(document.querySelectorAll('.gallery-item'));
+      const lightbox = document.getElementById('lightbox');
+      const imgEl = document.getElementById('lightbox-img');
+      const titleEl = document.getElementById('lightbox-title');
+      const btnPrev = document.getElementById('lightbox-prev');
+      const btnNext = document.getElementById('lightbox-next');
+      const btnClose = document.getElementById('lightbox-close');
+
+      let currentIndex = -1;
+
+      function openLightbox(index) {
+        currentIndex = index;
+        const el = items[index];
+        const fullSrc = el.querySelector('img').getAttribute('src');
+        const title = el.dataset.title || '';
+        imgEl.src = fullSrc;
+        imgEl.alt = title;
+        titleEl.textContent = title;
+        lightbox.classList.add('active');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('active');
+        lightbox.setAttribute('aria-hidden', 'true');
+        imgEl.src = '';
+        currentIndex = -1;
+        document.body.style.overflow = 'auto';
+      }
+
+      function showNext(delta) {
+        if (currentIndex < 0) return;
+        let nextIndex = (currentIndex + delta + items.length) % items.length;
+        openLightbox(nextIndex);
+      }
+
+      items.forEach((it, i) => {
+        it.addEventListener('click', (e) => {
+          openLightbox(i);
+        });
+      });
+
+      if (btnPrev) btnPrev.addEventListener('click', () => showNext(-1));
+      if (btnNext) btnNext.addEventListener('click', () => showNext(1));
+      if (btnClose) btnClose.addEventListener('click', closeLightbox);
+
+      document.addEventListener('keydown', (ev) => {
+        if (lightbox && lightbox.classList.contains('active')) {
+          if (ev.key === 'Escape') closeLightbox();
+          if (ev.key === 'ArrowLeft') showNext(-1);
+          if (ev.key === 'ArrowRight') showNext(1);
+        }
+      });
+
+      if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) closeLightbox();
+        });
+      }
+
+      const filterButtons = Array.from(document.querySelectorAll('.filter-btn'));
+      const searchInput = document.getElementById('search-gallery');
+
+      function applyFilter() {
+        if (!filterButtons.length) return;
+        const active = filterButtons.find(b => b.classList.contains('active')) || filterButtons[0];
+        const filter = active.dataset.filter;
+        const q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
+
+        items.forEach(el => {
+          const title = (el.dataset.title || '').toLowerCase();
+          const cat = el.dataset.category || '';
+          const matchFilter = (filter === 'all') || (cat === filter);
+          const matchSearch = !q || title.indexOf(q) !== -1;
+          el.style.display = (matchFilter && matchSearch) ? 'inline-block' : 'none';
+        });
+      }
+
+      filterButtons.forEach(b => {
+        b.addEventListener('click', () => {
+          filterButtons.forEach(x => x.classList.remove('active'));
+          b.classList.add('active');
+          applyFilter();
+        });
+      });
+
+      if (filterButtons.length) filterButtons[0].click();
+
+      if (searchInput) searchInput.addEventListener('input', applyFilter);
+    })();
+  </script>
+
+</body>
+
+</html>

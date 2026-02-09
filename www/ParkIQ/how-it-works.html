@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หลักการทำงาน ParkIQ - จากเซ็นเซอร์ถึงแดชบอร์ดแบบเรียลไทม์</title>
+    <meta name="description" content="สำรวจสถาปัตยกรรม ParkIQ ตั้งแต่ฮาร์ดแวร์ ESP32, AI Vision, ระบบ WebSocket จนถึงแดชบอร์ดบริหารที่แสดงข้อมูลแบบเรียลไทม์">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ParkIQ Team">
+    <meta name="keywords" content="หลักการทำงาน ParkIQ, ESP32 Parking, AI Vision Parking, WebSocket Dashboard, Smart Parking Pipeline">
+    <link rel="canonical" href="how-it-works.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="th_TH">
+    <meta property="og:site_name" content="ParkIQ">
+    <meta property="og:title" content="หลักการทำงาน ParkIQ - จากเซ็นเซอร์ถึงแดชบอร์ดแบบเรียลไทม์">
+    <meta property="og:description" content="เจาะลึกฮาร์ดแวร์ ซอฟต์แวร์ และข้อมูลที่ขับเคลื่อน ParkIQ เพื่อส่งข้อมูลแบบเรียลไทม์">
+    <meta property="og:url" content="how-it-works.html">
+    <meta property="og:image" content="images/logo.png">
+    <meta property="og:image:alt" content="ParkIQ Architecture">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="หลักการทำงาน ParkIQ - จากเซ็นเซอร์ถึงแดชบอร์ดแบบเรียลไทม์">
+    <meta name="twitter:description" content="สำรวจ Pipeline ที่ทำให้ ParkIQ อัปเดตสถานะช่องจอดแบบ Real-time">
+    <meta name="twitter:image" content="images/logo.png">
+    <meta name="twitter:image:alt" content="ParkIQ Architecture">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pink-primary': '#ec4899',
+                        'pink-dark': '#db2777',
+                        'purple-primary': '#a855f7',
+                        'purple-dark': '#9333ea',
+                        'sky-neon': '#22d3ee'
+                    },
+                    fontFamily: {
+                        sans: ['"Sarabun"', 'Inter', 'ui-sans-serif', 'system-ui'],
+                        display: ['"Sarabun"', 'Inter', 'ui-sans-serif', 'system-ui']
+                    },
+                    boxShadow: {
+                        glow: '0 0 45px rgba(236, 72, 153, 0.35)'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="how-it-works" class="bg-black text-white font-sans antialiased">
+    <div id="scroll-progress"></div>
+
+    <nav class="fixed top-0 left-0 w-full bg-black/70 backdrop-blur-xl border-b border-white/5 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between gap-6 py-4">
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="relative">
+                        <span class="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-primary/40 via-purple-primary/30 to-sky-neon/30 blur-lg opacity-60 group-hover:opacity-80 transition"></span>
+                        <img src="images/logo.png" alt="ParkIQ Logo" class="relative h-12 w-auto drop-shadow-lg" data-priority="true" fetchpriority="high" decoding="async" width="96" height="48">
+                    </div>
+                    <span class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-pink-primary via-purple-primary to-sky-neon bg-clip-text text-transparent">ParkIQ</span>
+                </a>
+                <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                    <a data-nav="home" href="index.html" class="transition hover:text-pink-primary">หน้าแรก</a>
+                    <a data-nav="about" href="about.html" class="transition hover:text-pink-primary">เกี่ยวกับเรา</a>
+                    <a data-nav="how-it-works" href="how-it-works.html" class="transition hover:text-pink-primary">หลักการทำงาน</a>
+                    <a data-nav="benefits" href="benefits.html" class="transition hover:text-pink-primary">ประโยชน์</a>
+                    <a data-nav="contact" href="contact.html" class="transition hover:text-pink-primary">ติดต่อเรา</a>
+                </div>
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="#architecture" class="btn-secondary px-5 py-2.5 rounded-xl text-sm">ดูสถาปัตยกรรม</a>
+                    <a href="contact.html" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold shadow-glow">เริ่มต้นใช้งาน</a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-pink-primary hover:text-purple-primary transition" aria-label="เปิดเมนู" aria-expanded="false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden pb-6 border-t border-white/10">
+                <div class="flex flex-col gap-3 pt-4 text-sm">
+                    <a data-nav="home" href="index.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">หน้าแรก</a>
+                    <a data-nav="about" href="about.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">เกี่ยวกับเรา</a>
+                    <a data-nav="how-it-works" href="how-it-works.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">หลักการทำงาน</a>
+                    <a data-nav="benefits" href="benefits.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">ประโยชน์</a>
+                    <a data-nav="contact" href="contact.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">ติดต่อเรา</a>
+                    <a href="contact.html" class="btn-primary px-4 py-3 rounded-lg text-center font-semibold mt-2">พูดคุยกับทีมงาน</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 md:pt-32">
+        <section class="relative overflow-hidden pt-28 pb-20 px-4">
+            <div class="absolute -top-32 left-0 w-80 h-80 floating-shape opacity-40 blur-gradient"></div>
+            <div class="absolute top-6 right-6 w-64 h-64 floating-shape opacity-30 blur-gradient"></div>
+            <div class="absolute bottom-0 left-1/2 w-72 h-72 floating-shape opacity-30 blur-gradient"></div>
+
+            <div class="container mx-auto relative">
+                <div class="max-w-4xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">System Overview</span>
+                    <h1 class="mt-6 text-4xl md:text-6xl font-extrabold leading-tight">
+                        ทำงานอย่างไร? รู้จัก ParkIQ ตั้งแต่เซ็นเซอร์ถึงแดชบอร์ด
+                    </h1>
+                    <p class="mt-6 text-lg text-gray-300">
+                        ParkIQ ใช้สถาปัตยกรรมที่ผสานฮาร์ดแวร์ IoT, AI Vision และแพลตฟอร์มเว็บแบบเรียลไทม์
+                        เพื่อให้ข้อมูลที่จอดรถไหลลื่นจากพื้นที่จริงสู่ทีมบริหารในทันที
+                    </p>
+                </div>
+                <div class="mt-14 grid md:grid-cols-3 gap-6" data-animate>
+                    <div class="glass-card rounded-3xl p-6">
+                        <h3 class="text-lg font-semibold text-white">Hardware Layer</h3>
+                        <p class="mt-3 text-sm text-gray-400">ESP32 + Infrared + LED + ESP32-CAM</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 animate-delay-1">
+                        <h3 class="text-lg font-semibold text-white">Data Layer</h3>
+                        <p class="mt-3 text-sm text-gray-400">MQTT → API Gateway → Real-time Engine</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 animate-delay-2">
+                        <h3 class="text-lg font-semibold text-white">Experience Layer</h3>
+                        <p class="mt-3 text-sm text-gray-400">Dashboard + Booking + Automation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="grid lg:grid-cols-2 gap-14 items-start">
+                    <div data-animate>
+                        <span class="badge-soft">Hardware Flow</span>
+                        <h2 class="mt-6 text-3xl md:text-4xl font-extrabold text-white">
+                            ฮาร์ดแวร์ตรวจจับ 2 ชั้นเพื่อความแม่นยำสูงสุด
+                        </h2>
+                        <p class="mt-6 text-lg text-gray-300 leading-relaxed">
+                            เซ็นเซอร์อินฟราเรดตรวจสอบสถานะเบื้องต้น ก่อนส่งต่อให้ ESP32-CAM ยืนยันด้วยการประมวลผลภาพ
+                            ทุกขั้นตอนใช้โปรโตคอลที่ออกแบบมาเพื่อความรวดเร็วและเสถียร
+                        </p>
+                        <div class="mt-10 space-y-6">
+                            <div class="glass-card rounded-2xl p-6 flex items-start gap-4">
+                                <span class="h-10 w-10 rounded-full bg-pink-primary/25 text-pink-primary flex items-center justify-center font-semibold">1</span>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">Infrared Detection</h3>
+                                    <p class="mt-2 text-sm text-gray-400">ตรวจจับวัตถุที่ความละเอียดสูง พร้อมตั้งค่า Sensitivity แยกแต่ละช่องจอด</p>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-2xl p-6 flex items-start gap-4">
+                                <span class="h-10 w-10 rounded-full bg-purple-primary/25 text-purple-primary flex items-center justify-center font-semibold">2</span>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">AI Vision Validation</h3>
+                                    <p class="mt-2 text-sm text-gray-400">ESP32-CAM ส่งภาพไปยังโมเดล AI เพื่อตรวจสอบสถานะรถพร้อม Confidence Score</p>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-2xl p-6 flex items-start gap-4">
+                                <span class="h-10 w-10 rounded-full bg-sky-neon/25 text-sky-neon flex items-center justify-center font-semibold">3</span>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">Feedback Loop</h3>
+                                    <p class="mt-2 text-sm text-gray-400">ผลลัพธ์ถูกส่งกลับไปควบคุม LED แสดงสถานะและบันทึกลงฐานข้อมูลพร้อม Timestamp</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-animate>
+                        <div class="glass-card rounded-[2rem] p-8 space-y-8">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.35em] text-gray-400">Key Hardware Specs</p>
+                                <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                                    <li>• ESP32 Dual Board รองรับ 16 ช่องจอดต่อชุด</li>
+                                    <li>• ESP32-CAM พร้อมเลนส์กว้างและไฟเติมแสง</li>
+                                    <li>• อินฟราเรดเซ็นเซอร์พร้อมฝาครอบป้องกันแสง</li>
+                                    <li>• LED แสดงสถานะความสว่างสูง เห็นชัดทั้งกลางวันและกลางคืน</li>
+                                </ul>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <div class="aspect-[16/9] rounded-xl border border-dashed border-white/10 overflow-hidden">
+                                    <img src="images/img21.png" alt="แผงวงจรและการเชื่อมต่อ" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <p class="text-xs uppercase tracking-[0.35em] text-gray-400">Communication</p>
+                                <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                                    <li>• ใช้ MQTT สำหรับการส่งข้อมูลสถานะเบื้องต้น</li>
+                                    <li>• HTTP/HTTPS สำหรับการอัปเดตข้อมูลสำคัญและคำสั่งควบคุม</li>
+                                    <li>• WebSocket สำหรับการแจ้งเตือนเหตุการณ์แบบทันที</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4 bg-gradient-to-b from-white/5 via-transparent to-white/0">
+            <div class="container mx-auto">
+                <div class="max-w-3xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Software Pipeline</span>
+                    <h2 class="mt-6 text-4xl font-extrabold text-white">ข้อมูลเดินทางอย่างไรภายใน ParkIQ</h2>
+                    <p class="mt-6 text-lg text-gray-300">
+                        เมื่อข้อมูลออกจากฮาร์ดแวร์ ทุกแพ็กเก็ตจะผ่านการประมวลผลอย่างเป็นระบบ
+                        เพื่อให้ผู้ใช้งานได้รับข้อมูลที่ถูกต้องและรวดเร็วเสมอ
+                    </p>
+                </div>
+                <div class="mt-16 grid lg:grid-cols-2 gap-12">
+                    <div data-animate>
+                        <div class="glass-card rounded-[2rem] p-8 space-y-6" style="padding-bottom: 5.3rem;">
+                            <div class="flex items-start gap-4">
+                                <span class="h-9 w-9 rounded-full bg-pink-primary/25 text-pink-primary flex items-center justify-center font-semibold">1</span>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-white">Edge Processing</h3>
+                                    <p class="mt-2 text-sm text-gray-400">บอร์ด ESP32 ทำการกรองข้อมูล Noise และแนบ Timestamp ก่อนส่ง</p>
+                                    <ul class="mt-3 space-y-1.5 text-xs text-gray-500">
+                                        <li>• ใช้ Debounce Algorithm เพื่อลดการส่งข้อมูลซ้ำซ้อน</li>
+                                        <li>• ตรวจสอบความถูกต้องของข้อมูลจากเซ็นเซอร์ก่อนส่ง</li>
+                                        <li>• ประมวลผลเบื้องต้นเพื่อลดภาระของเซิร์ฟเวอร์</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <span class="h-9 w-9 rounded-full bg-purple-primary/25 text-purple-primary flex items-center justify-center font-semibold">2</span>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-white">API Gateway</h3>
+                                    <p class="mt-2 text-sm text-gray-400">ข้อมูลเข้าสู่ API Gateway ที่ตรวจสอบ Token และกำหนด Rate Limit</p>
+                                    <ul class="mt-3 space-y-1.5 text-xs text-gray-500">
+                                        <li>• ตรวจสอบ Authentication และ Authorization</li>
+                                        <li>• จำกัดจำนวน Request ต่อวินาทีเพื่อป้องกัน Overload</li>
+                                        <li>• Logging และ Monitoring ทุก Request</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <span class="h-9 w-9 rounded-full bg-sky-neon/25 text-sky-neon flex items-center justify-center font-semibold">3</span>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-white">Real-time Engine</h3>
+                                    <p class="mt-2 text-sm text-gray-400">อัปเดตห้อง WebSocket เพื่อกระจายข้อมูลไปยัง UI และระบบแจ้งเตือน</p>
+                                    <ul class="mt-3 space-y-1.5 text-xs text-gray-500">
+                                        <li>• ใช้ WebSocket สำหรับการส่งข้อมูลแบบ Real-time</li>
+                                        <li>• รองรับการเชื่อมต่อพร้อมกันหลาย Client</li>
+                                        <li>• Auto-reconnect เมื่อการเชื่อมต่อขาด</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <span class="h-9 w-9 rounded-full bg-emerald-500/25 text-emerald-300 flex items-center justify-center font-semibold">4</span>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-white">Data Lake & Analytics</h3>
+                                    <p class="mt-2 text-sm text-gray-400">บันทึกลงฐานข้อมูลสำหรับการสร้างรายงานและการวิเคราะห์ย้อนหลัง</p>
+                                    <ul class="mt-3 space-y-1.5 text-xs text-gray-500">
+                                        <li>• เก็บข้อมูลแบบ Time-series สำหรับการวิเคราะห์</li>
+                                        <li>• รองรับการ Query ข้อมูลย้อนหลังได้อย่างรวดเร็ว</li>
+                                        <li>• สร้างรายงานอัตโนมัติตามช่วงเวลาที่กำหนด</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="mt-6 pt-6 border-t border-white/10">
+                                <p class="text-xs uppercase tracking-[0.35em] text-gray-400 mb-3">Performance Metrics</p>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-xs text-gray-500">Latency</p>
+                                        <p class="mt-1 text-sm font-semibold text-white">500ms</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Throughput</p>
+                                        <p class="mt-1 text-sm font-semibold text-white">1000+ req/s</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-animate>
+                        <div class="glass-card rounded-[2rem] p-8">
+                            <p class="text-xs uppercase tracking-[0.35em] text-gray-400">Realtime Dashboard</p>
+                            <div class="mt-6 aspect-[4/3] rounded-2xl border border-white/10 bg-black/40 overflow-hidden max-w-md mx-auto">
+                                <img src="images/data-working.png" alt="Realtime Dashboard" class="w-full h-full object-cover">
+                            </div>
+                            <div class="mt-8 grid gap-4">
+                                <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                    <p class="text-sm uppercase tracking-[0.35em] text-gray-400">UI Update Strategy</p>
+                                    <ul class="mt-3 space-y-2 text-sm text-gray-300">
+                                        <li>• ใช้ Zustand/Signal จัดการสถานะในฝั่ง Frontend</li>
+                                        <li>• Partial Updates เพื่อลดการ Render ทั้งหน้า</li>
+                                        <li>• แสดง Skeleton Loading ระหว่างรอข้อมูลสำรอง</li>
+                                    </ul>
+                                </div>
+                                <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                    <p class="text-sm uppercase tracking-[0.35em] text-gray-400">Alert Engine</p>
+                                    <ul class="mt-3 space-y-2 text-sm text-gray-300">
+                                        <li>• ตั้ง Threshold สำหรับอัตราการใช้พื้นที่</li>
+                                        <li>• แจ้งเตือนรถจอดเกินเวลาที่กำหนด</li>
+                                        <li>• รองรับการส่ง Webhook ไปยังระบบอื่น</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="max-w-3xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Automation Features</span>
+                    <h2 class="mt-6 text-4xl font-extrabold text-white">ระบบอัตโนมัติที่ทำงานให้คุณตลอดเวลา</h2>
+                    <p class="mt-6 text-lg text-gray-300">
+                        ParkIQ ไม่ได้หยุดแค่แสดงผล แต่ดำเนินการแทนคุณในหลายสถานการณ์
+                        เพื่อช่วยลดงานซ้ำและเพิ่มความพึงพอใจของผู้ใช้งาน
+                    </p>
+                </div>
+                <div class="mt-16 grid lg:grid-cols-3 gap-8">
+                    <div class="glass-card rounded-3xl p-8" data-animate>
+                        <h3 class="text-xl font-semibold text-white">Smart Booking</h3>
+                        <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                            <li>• ตรวจสอบช่องว่างก่อนยืนยันจอง</li>
+                            <li>• กันพื้นที่อัตโนมัติเมื่อจองสำเร็จ</li>
+                            <li>• ส่ง QR Payment พร้อมเวลาหมดอายุ</li>
+                        </ul>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 animate-delay-1" data-animate>
+                        <h3 class="text-xl font-semibold text-white">Operational Alerts</h3>
+                        <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                            <li>• แจ้งเตือนช่องว่างเหลือน้อย</li>
+                            <li>• สร้างทริกเกอร์เปิดปิดแถบกั้น</li>
+                            <li>• ส่งรายงานรายวันผ่านอีเมล</li>
+                        </ul>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 animate-delay-2" data-animate>
+                        <h3 class="text-xl font-semibold text-white">Insight & Forecast</h3>
+                        <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                            <li>• วิเคราะห์ช่วงเวลาพีคอัตโนมัติ</li>
+                            <li>• คาดการณ์ความจุในอนาคตอันใกล้</li>
+                            <li>• แนะนำการจัดสรรโซนพิเศษชั่วคราว</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+            <div class="container mx-auto">
+                <div class="grid lg:grid-cols-2 gap-14 items-start">
+                    <div data-animate>
+                        <span class="badge-soft">Security & Reliability</span>
+                        <h2 class="mt-6 text-3xl md:text-4xl font-extrabold text-white">
+                            ความปลอดภัยและเสถียรภาพระดับองค์กร
+                        </h2>
+                        <p class="mt-6 text-lg text-gray-300 leading-relaxed">
+                            ParkIQ ถูกออกแบบให้รองรับการใช้งานระยะยาว
+                            ทั้งด้านความปลอดภัยของข้อมูลและความมั่นคงของระบบ
+                        </p>
+                        <ul class="mt-8 space-y-4 text-sm text-gray-300">
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1 h-3 w-3 rounded-full bg-pink-primary"></span>
+                                <span>TLS Encryption ครอบคลุมทุกการสื่อสารระหว่างอุปกรณ์และเซิร์ฟเวอร์</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1 h-3 w-3 rounded-full bg-purple-primary"></span>
+                                <span>Role Based Access Control แยกสิทธิ์ผู้ใช้ตามบทบาท</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1 h-3 w-3 rounded-full bg-sky-neon"></span>
+                                <span>Audit Log เก็บประวัติการทำงานทุกคำสั่งเพื่อการตรวจสอบย้อนหลัง</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1 h-3 w-3 rounded-full bg-emerald-300"></span>
+                                <span>Fallback และ Retry Mechanism เมื่อการเชื่อมต่อขัดข้อง</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div data-animate>
+                        <div class="glass-card rounded-[2rem] p-8 space-y-6">
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <h3 class="text-lg font-semibold text-white">High Availability</h3>
+                                <p class="mt-3 text-sm text-gray-400">
+                                    ออกแบบให้รองรับการทำงานแบบ Fault Tolerant พร้อมระบบ Health Check ที่ตรวจสอบสถานะแต่ละบริการ
+                                </p>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <h3 class="text-lg font-semibold text-white">Data Protection</h3>
+                                <p class="mt-3 text-sm text-gray-400">
+                                    สำรองข้อมูลอัตโนมัติ ร่วมกับการเข้ารหัสข้อมูลสำคัญทั้งขณะส่งและขณะพัก
+                                </p>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <h3 class="text-lg font-semibold text-white">Scalability</h3>
+                                <p class="mt-3 text-sm text-gray-400">
+                                    รองรับการเพิ่มจำนวนช่องจอดและสาขาได้ทันที ผ่านการเพิ่ม Node ของ ESP32 และการขยายโครงสร้าง Backend
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="glass-card rounded-[2.5rem] px-8 py-16 md:px-16 text-center" data-animate>
+                    <span class="badge-soft">Ready to integrate</span>
+                    <h2 class="mt-6 text-4xl md:text-5xl font-extrabold text-white">
+                        พร้อมต่อยอดระบบของคุณด้วย ParkIQ แล้วหรือยัง?
+                    </h2>
+                    <p class="mt-6 text-lg text-gray-300">
+                        เราพร้อมช่วยออกแบบการติดตั้ง ตั้งแต่การวิเคราะห์พื้นที่ การปรับแต่งอัลกอริทึม
+                        ไปจนถึงการเชื่อมต่อกับระบบที่คุณใช้อยู่แล้ว
+                    </p>
+                    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="contact.html" class="btn-primary px-10 py-4 rounded-2xl text-base font-semibold shadow-glow">
+                            นัดหมายพูดคุยกับทีมเทคนิค
+                        </a>
+                        <a href="benefits.html" class="btn-secondary px-10 py-4 rounded-2xl text-base font-semibold">
+                            ดูประโยชน์ต่อองค์กรของคุณ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black/80 backdrop-blur border-t border-white/10 px-4 pt-16 pb-8">
+        <div class="container mx-auto">
+            <div class="grid gap-12 md:grid-cols-4">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <img src="images/logo.png" alt="ParkIQ Logo" class="h-12 w-auto">
+                        <span class="text-xl font-semibold">ParkIQ</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                        ระบบจัดการที่จอดรถอัจฉริยะที่ผสาน IoT และ AI เพื่อเปลี่ยนพื้นที่จอดรถให้เป็นศูนย์ข้อมูลที่พร้อมใช้งานทันที
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-400">นำทาง</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li><a href="index.html" class="hover:text-pink-primary transition">หน้าแรก</a></li>
+                        <li><a href="about.html" class="hover:text-pink-primary transition">เกี่ยวกับเรา</a></li>
+                        <li><a href="benefits.html" class="hover:text-pink-primary transition">ประโยชน์</a></li>
+                        <li><a href="contact.html" class="hover:text-pink-primary transition">ติดต่อเรา</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-400">โครงสร้างระบบ</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li>Hardware Documentation</li>
+                        <li>API Specification</li>
+                        <li>Integration Guide</li>
+                        <li>Deployment Checklist</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-400">ติดต่อเรา</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li>โทร: 099 073 2424</li>
+                        <li>อีเมล: parkiqloeitech@gmail.com</li>
+                        <li>ที่อยู่: 272 เจริญรัฐ ตำบลกุดป่อง อำเภอเมืองเลย</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 flex flex-col md:flex-row md:items-center md:justify-between text-sm text-gray-500 border-t border-white/10 pt-6">
+                <p>&copy; 2025 ParkIQ. สงวนลิขสิทธิ์</p>
+                <p class="mt-2 md:mt-0">พัฒนาโดยทีม ParkIQ - วิทยาลัยเทคนิคเลย</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
+

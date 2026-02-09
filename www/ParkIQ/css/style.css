@@ -1,0 +1,369 @@
+/* ParkIQ Custom Styles */
+
+:root {
+    --color-bg: #030712;
+    --color-surface: rgba(15, 23, 42, 0.65);
+    --color-surface-strong: rgba(15, 23, 42, 0.85);
+    --color-border: rgba(148, 163, 184, 0.18);
+    --color-border-strong: rgba(168, 85, 247, 0.45);
+    --color-primary: #ec4899;
+    --color-secondary: #a855f7;
+    /* --color-accent: #22d3ee; */
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Base background */
+body {
+    background-color: var(--color-bg);
+    background-image:
+        radial-gradient(circle at top left, rgba(236, 72, 153, 0.15), transparent 55%),
+        radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.12), transparent 45%),
+        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1), transparent 55%);
+    min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(120% 120% at 50% 20%, rgba(168, 85, 247, 0.08), transparent),
+                linear-gradient(120deg, rgba(236, 72, 153, 0.06), transparent 40%, rgba(6, 182, 212, 0.08));
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Scroll progress */
+#scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    box-shadow: 0 0 18px rgba(236, 72, 153, 0.35);
+    z-index: 60;
+    transition: width 0.2s ease-out;
+}
+
+/* Custom scrollbar */
+::selection {
+    background: rgba(236, 72, 153, 0.3);
+    color: #fff;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #ec4899, #a855f7);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #db2777, #9333ea);
+}
+
+/* Animation for fade in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Gradient text animation */
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.gradient-animate {
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+/* Subtle pulse */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+    0% {
+        transform: translateX(-150%);
+    }
+    50% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(150%);
+    }
+}
+
+/* Marquee animation */
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Animate on scroll */
+[data-animate] {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease;
+    will-change: opacity, transform;
+}
+
+[data-animate].animate-in {
+    opacity: 1;
+    transform: translateY(0);
+    filter: none;
+}
+
+[data-animate].animate-delay-1 {
+    transition-delay: 0.15s;
+}
+
+[data-animate].animate-delay-2 {
+    transition-delay: 0.3s;
+}
+
+[data-animate].animate-delay-3 {
+    transition-delay: 0.45s;
+}
+
+/* Glassmorphism cards */
+.glass-card {
+    background: linear-gradient(135deg, var(--color-surface), rgba(17, 24, 39, 0.45));
+    border: 1px solid var(--color-border);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(236, 72, 153, 0.45);
+    box-shadow: 0 28px 80px rgba(236, 72, 153, 0.25);
+}
+
+/* Badges */
+.badge-soft {
+    border-radius: 9999px;
+    background: linear-gradient(90deg, rgba(236, 72, 153, 0.12), rgba(168, 85, 247, 0.12));
+    border: 1px solid rgba(236, 72, 153, 0.25);
+    color: rgba(248, 250, 252, 0.8);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* Hover lift */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(168, 85, 247, 0.28);
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 18px 45px rgba(236, 72, 153, 0.35);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.btn-secondary {
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    background: rgba(15, 23, 42, 0.6);
+    color: rgba(248, 250, 252, 0.8);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-secondary:hover {
+    border-color: rgba(236, 72, 153, 0.45);
+    transform: translateY(-2px);
+}
+
+/* Cards */
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.45);
+}
+
+/* Marquee */
+.marquee {
+    overflow: hidden;
+    position: relative;
+}
+
+.marquee::after,
+.marquee::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 80px;
+    height: 100%;
+    z-index: 2;
+}
+
+.marquee::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--color-bg), rgba(3, 7, 18, 0));
+}
+
+.marquee::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--color-bg), rgba(3, 7, 18, 0));
+}
+
+.marquee-track {
+    display: inline-flex;
+    gap: 3.5rem;
+    padding: 0.75rem 0;
+    min-width: 200%;
+    animation: marquee 28s linear infinite;
+}
+
+/* Floating elements */
+.floating-shape {
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.35), rgba(168, 85, 247, 0.05));
+    border-radius: 9999px;
+    filter: blur(0px);
+    animation: float 12s ease-in-out infinite;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: rgba(236, 72, 153, 0.55);
+    box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.15);
+    background: rgba(2, 6, 23, 0.85);
+}
+
+/* Form status */
+.form-status {
+    display: none;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(34, 211, 238, 0.45);
+    background: rgba(8, 145, 178, 0.12);
+    color: #bae6fd;
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+}
+
+.form-status.is-visible {
+    display: block;
+}
+
+/* Accordion */
+.accordion-panel {
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(17, 24, 39, 0.5));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.accordion-panel:hover {
+    border-color: rgba(236, 72, 153, 0.4);
+    transform: translateY(-4px);
+}
+
+.accordion-content {
+    transition: opacity 0.25s ease;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    [data-animate] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* Utility */
+.shadow-glow {
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.15);
+}
+
+.blur-gradient {
+    filter: blur(120px);
+    pointer-events: none;
+}
+

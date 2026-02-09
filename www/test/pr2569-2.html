@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>รับสมัครนักเรียน นักศึกษา 2569 - วิทยาลัยเทคนิคเลย</title>
+
+  <!-- Tailwind CSS CDN removed -->
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Full width gallery grid */
+    .gallery-grid {
+      display: grid;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .gallery-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 0.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      will-change: transform;
+      cursor: pointer;
+      aspect-ratio: 1 / 1;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.05);
+      z-index: 10;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .gallery-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.6) 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-item:hover .card-overlay {
+      opacity: 1;
+    }
+
+    .chip {
+      display: inline-flex;
+      gap: 0.4rem;
+      align-items: center;
+      padding: 0.35rem 0.75rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 999px;
+      font-weight: 600;
+      color: #111827;
+      font-size: 0.75rem;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 1rem;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox-inner {
+      max-width: 100%;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .lightbox-img {
+      max-width: 90%;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 0.5rem;
+    }
+
+    .lightbox-meta {
+      color: #f3f4f6;
+      flex-shrink: 0;
+      width: auto;
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+    }
+
+    .filter-btn {
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(90deg, #06b6d4 0%, #06b6b4 100%);
+      color: white;
+      box-shadow: 0 6px 18px rgba(6, 182, 212, 0.18);
+    }
+
+    .container-full {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body class="antialiased bg-gray-900 text-gray-800">
+
+  <!-- HERO / HEADER - Full Width -->
+  <header class="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-emerald-700 text-white py-16 md:py-20">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+        <div class="flex-1">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight">
+            วิทยาลัยเทคนิคเลย
+          </h1>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-100 mt-2">
+            รับสมัครนักเรียน นักศึกษา ประจำปี 2569
+          </h2>
+          <p class="mt-4 text-base sm:text-lg text-gray-100 max-w-2xl leading-relaxed">
+            ยินดีต้อนรับสู่หลักสูตรคุณภาพ เราพร้อมพัฒนาทักษะที่ตลาดงานต้องการ สำรองที่นั่งหรือดูรายละเอียดเพิ่มเติมได้ที่นี่
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row gap-3">
+            <a href="#" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-green-700 font-semibold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition">
+              <i class="fas fa-pen-to-square"></i> สมัครเรียนตอนนี้
+            </a>
+            <a href="#" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/15 border-2 border-white text-white font-semibold rounded-lg hover:bg-white/25 transition">
+              <i class="fas fa-book"></i> ดูหลักสูตร
+            </a>
+          </div>
+        </div>
+
+        <div class="flex-1 lg:flex-none">
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+            <div class="text-center space-y-3">
+              <div>
+                <span class="block text-sm text-gray-200 font-medium">📅 รับสมัคร</span>
+                <span class="block text-4xl font-bold mt-1">รอบโควต้า</span>
+              </div>
+              <div class="bg-white/10 rounded-lg p-4">
+                <span class="block text-xs text-gray-100 mb-1">ปีการศึกษา</span>
+                <span class="block text-5xl font-extrabold text-green-200">2569</span>
+              </div>
+              <div class="border-t border-white/20 pt-4 mt-4">
+                <span class="block text-xs text-gray-300 mb-2">⏰ ปิดรับสมัคร</span>
+                <span class="block text-lg font-bold text-yellow-300">24 พฤศจิกายน 2568</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT - Full Width -->
+  <main class="w-full bg-gray-50">
+    <div class="w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      
+      <!-- FILTERS - Full Width -->
+      <section class="mb-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div class="flex flex-wrap gap-2">
+            <button class="filter-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-sm font-semibold hover:border-cyan-500 transition" data-filter="all">
+              <i class="fas fa-th mr-2"></i>ทั้งหมด
+            </button>
+            <button class="filter-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-sm font-semibold hover:border-cyan-500 transition" data-filter="admission">
+              <i class="fas fa-clipboard mr-2"></i>รับสมัคร
+            </button>
+            <button class="filter-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-sm font-semibold hover:border-cyan-500 transition" data-filter="spotlight">
+              <i class="fas fa-graduation-cap mr-2"></i>หลักสูตร
+            </button>
+            <button class="filter-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-sm font-semibold hover:border-cyan-500 transition" data-filter="student-life">
+              <i class="fas fa-users mr-2"></i>กิจกรรม
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- GALLERY - Full Width -->
+      <section id="gallery" class="w-full">
+        <div class="gallery-grid">
+          <!-- Item 1 -->
+          <figure class="gallery-item" data-category="admission" data-title="เปิดรับสมัครช่างยนต์ 2569">
+            <img class="gallery-thumb" src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=500&fit=crop" alt="เปิดรับสมัครช่างยนต์ 2569">
+            <figcaption class="card-overlay">
+              <div class="w-full">
+                <div class="flex justify-between items-end">
+                  <div>
+                    <div class="text-sm font-semibold text-white">เปิดรับสมัครช่างยนต์</div>
+                    <div class="text-xs text-gray-200">หลักสูตร 2 ปี</div>
+                  </div>
+                  <div class="chip"><i class="fas fa-search"></i> ดูภาพ</div>
+                </div>
+              </div>
+            </figcaption>
+          </figure>
+
+          <!-- Item 2 -->
+          <figure class="gallery-item" data-category="spotlight" data-title="แนะนำห้องปฏิบัติการใหม่">
+            <img class="gallery-thumb" src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500&h=500&fit=crop" alt="แนะนำห้องปฏิบัติการใหม่">
+            <figcaption class="card-overlay">
+              <div class="w-full">
+                <div class="flex justify-between items-end">
+                  <div>
+                    <div class="text-sm font-semibold text-white">ห้องปฏิบัติการใหม่</div>
+                    <div class="text-xs text-gray-200">เครื่องมือทันสมัย</div>
+                  </div>
+                  <div class="chip"><i class="fas fa-search"></i> ดูภาพ</div>
+                </div>
+              </div>
+            </figcaption>
+          </figure>
+
+          <!-- Item 3 -->
+          <figure class="gallery-item" data-category="student-life" data-title="กิจกรรมแนะแนวการศึกษา">
+            <img class="gallery-thumb" src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=500&fit=crop" alt="กิจกรรมแนะแนวการศึกษา">
+            <figcaption class="card-overlay">
+              <div class="w-full">
+                <div class="flex justify-between items-end">
+                  <div>
+                    <div class="text-sm font-semibold text-white">กิจกรรมแนะแนว</div>
+                    <div class="text-xs text-gray-200">พบกับพี่ ๆ ให้คำปรึกษา</div>
+                  </div>
+                  <div class="chip"><i class="fas fa-search"></i> ดูภาพ</div>
+                </div>
+              </div>
+            </figcaption>
+          </figure>
+
+          <!-- Item 4 -->
+          <figure class="gallery-item" data-category="admission" data-title="การเรียนการสอนภาคปฏิบัติ">
+            <img class="gallery-thumb" src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500&h=500&fit=crop" alt="การเรียนการสอนภาคปฏิบัติ">
+            <figcaption class="card-overlay">
+              <div class="w-full">
+                <div class="flex justify-between items-end">
+                  <div>
+                    <div class="text-sm font-semibold text-white">ภาคปฏิบัติ</div>
+                    <div class="text-xs text-gray-200">เรียนจริงทักษะจริง</div>
+                  </div>
+                  <div class="chip"><i class="fas fa-search"></i> ดูภาพ</div>
+                </div>
+              </div>
+            </figcaption>
+          </figure>
+
+          <!-- Item 5 -->
+          <figure class="gallery-item" data-category="spotlight" data-title="ศิษย์เก่าที่ประสบความสำเร็จ">
+            <img class="gallery-thumb" src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=500&fit=crop" alt="ศิษย์เก่าที่ประสบความสำเร็จ">
+            <figcaption class="card-overlay">
+              <div class="w-full">
+                <div class="flex justify-between items-end">
+                  <div>
+                    <div class="text-sm font-semibold text-white">ศิษย์เก่าก้าวหน้า</div>
+                    <div class="text-xs text-gray-200">ตัวอย่างความสำเร็จ</div>
+                  </div>
+                  <div class="chip"><i class="fas fa-search"></i> ดูภาพ</div>
+                </div>
+              </div>
+            </figcaption>
+          </figure>
+
+          <!-- Item 6 -->
+          <figure class="gallery-item" data-category="student-life" data-title="กิจกรรมกีฬาและสันทนาการ">
+            <img class="gallery-thumb" src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500&h=500&fit=crop" alt="กิจกรรมกีฬาและสันทนาการ">
+            <figcaption class="card-overlay">
+              <div class="w-full">
+                <div class="flex justify-between items-end">
+                  <div>
+                    <div class="text-sm font-semibold text-white">กิจกรรมกีฬา</div>
+                    <div class="text-xs text-gray-200">ชีวิตนักเรียนสดใส</div>
+                  </div>
+                  <div class="chip"><i class="fas fa-search"></i> ดูภาพ</div>
+                </div>
+              </div>
+            </figcaption>
+          </figure>
+
+          <!-- Item 7 -->
+          <figure class="gallery-item" data-category="admission" data-title="สิ่งอำนวยความสะดวกครบครัน">
+            <img class="gallery-thumb" src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=500&fit=crop" alt="สิ่งอำนวยความสะดวก">
+            <figcaption class="card-overlay">
+              <div class="w-full">
+                <div class="flex justify-between items-end">
+                  <div>
+                    <div class="text-sm font-semibold text-white">สิ่งอำนวยความสะดวก</div>
+                    <div class="text-xs text-gray-200">มีทุกอย่างที่คุณต้องการ</div>
+                  </div>
+                  <div class="chip"><i class="fas fa-search"></i> ดูภาพ</div>
+                </div>
+              </div>
+            </figcaption>
+          </figure>
+
+          <!-- Item 8 -->
+          <figure class="gallery-item" data-category="spotlight" data-title="โครงการอาชีวศึกษาขั้นสูง">
+            <img class="gallery-thumb" src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500&h=500&fit=crop" alt="โครงการขั้นสูง">
+            <figcaption class="card-overlay">
+              <div class="w-full">
+                <div class="flex justify-between items-end">
+                  <div>
+                    <div class="text-sm font-semibold text-white">โครงการขั้นสูง</div>
+                    <div class="text-xs text-gray-200">เรียนต่อระดับสูง</div>
+                  </div>
+                  <div class="chip"><i class="fas fa-search"></i> ดูภาพ</div>
+                </div>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="mt-16 text-center py-8">
+        <div class="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-xl shadow-2xl hover:shadow-3xl hover:scale-105 transition">
+          <a href="#" class="flex items-center gap-3 font-bold text-lg">
+            <i class="fas fa-file-signature text-xl"></i>
+            ติดต่อสอบถาม
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button id="lightbox-close" aria-label="ปิด" class="absolute right-6 top-6 text-white text-3xl z-70 hover:text-gray-300"><i class="fas fa-times-circle"></i></button>
+    
+    <button id="lightbox-prev" aria-label="Previous" class="absolute left-4 top-1/2 -translate-y-1/2 p-4 text-white text-2xl hover:scale-110 transition"><i class="fas fa-chevron-left"></i></button>
+    
+    <div class="lightbox-inner">
+      <img id="lightbox-img" class="lightbox-img" alt="Full image">
+    </div>
+
+    <button id="lightbox-next" aria-label="Next" class="absolute right-4 top-1/2 -translate-y-1/2 p-4 text-white text-2xl hover:scale-110 transition"><i class="fas fa-chevron-right"></i></button>
+
+    <div class="lightbox-meta">
+      <h3 id="lightbox-title" class="text-lg font-bold">Title</h3>
+      <p class="text-xs text-gray-400 mt-2">กด ESC เพื่อปิด • ใช้ลูกศรเพื่อเลื่อนรูป</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const items = Array.from(document.querySelectorAll('.gallery-item'));
+      const lightbox = document.getElementById('lightbox');
+      const imgEl = document.getElementById('lightbox-img');
+      const titleEl = document.getElementById('lightbox-title');
+      const btnPrev = document.getElementById('lightbox-prev');
+      const btnNext = document.getElementById('lightbox-next');
+      const btnClose = document.getElementById('lightbox-close');
+
+      let currentIndex = -1;
+
+      function openLightbox(index) {
+        currentIndex = index;
+        const el = items[index];
+        const fullSrc = el.querySelector('img').getAttribute('src');
+        const title = el.dataset.title || '';
+        imgEl.src = fullSrc;
+        imgEl.alt = title;
+        titleEl.textContent = title;
+        lightbox.classList.add('active');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('active');
+        lightbox.setAttribute('aria-hidden', 'true');
+        imgEl.src = '';
+        currentIndex = -1;
+        document.body.style.overflow = 'auto';
+      }
+
+      function showNext(delta) {
+        if (currentIndex < 0) return;
+        let nextIndex = (currentIndex + delta + items.length) % items.length;
+        openLightbox(nextIndex);
+      }
+
+      items.forEach((it, i) => {
+        it.addEventListener('click', (e) => {
+          openLightbox(i);
+        });
+      });
+
+      btnPrev.addEventListener('click', () => showNext(-1));
+      btnNext.addEventListener('click', () => showNext(1));
+      btnClose.addEventListener('click', closeLightbox);
+
+      document.addEventListener('keydown', (ev) => {
+        if (lightbox.classList.contains('active')) {
+          if (ev.key === 'Escape') closeLightbox();
+          if (ev.key === 'ArrowLeft') showNext(-1);
+          if (ev.key === 'ArrowRight') showNext(1);
+        }
+      });
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      const filterButtons = Array.from(document.querySelectorAll('.filter-btn'));
+      const searchInput = document.getElementById('search-gallery');
+
+      function applyFilter() {
+        const active = filterButtons.find(b => b.classList.contains('active')) || filterButtons[0];
+        const filter = active.dataset.filter;
+        const q = (searchInput.value || '').trim().toLowerCase();
+
+        items.forEach(el => {
+          const title = (el.dataset.title || '').toLowerCase();
+          const cat = el.dataset.category || '';
+          const matchFilter = (filter === 'all') || (cat === filter);
+          const matchSearch = !q || title.indexOf(q) !== -1;
+          el.style.display = (matchFilter && matchSearch) ? 'inline-block' : 'none';
+        });
+      }
+
+      filterButtons.forEach(b => {
+        b.addEventListener('click', () => {
+          filterButtons.forEach(x => x.classList.remove('active'));
+          b.classList.add('active');
+          applyFilter();
+        });
+      });
+
+      if (filterButtons.length) filterButtons[0].click();
+
+      searchInput.addEventListener('input', applyFilter);
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกี่ยวกับ ParkIQ - วิสัยทัศน์ ทีมพัฒนา และการเดินทางของเรา</title>
+    <meta name="description" content="เรียนรู้เรื่องราวของ ParkIQ โซลูชันที่จอดรถอัจฉริยะ พร้อมทำความรู้จักทีมพัฒนา วิสัยทัศน์ และเส้นทางการสร้างนวัตกรรม IoT + AI จากวิทยาลัยเทคนิคเลย">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ParkIQ Team">
+    <meta name="keywords" content="เกี่ยวกับ ParkIQ, ทีมพัฒนา, วิสัยทัศน์ ParkIQ, IoT Parking, AI Parking, นวัตกรรมลานจอดรถ">
+    <link rel="canonical" href="about.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="th_TH">
+    <meta property="og:site_name" content="ParkIQ">
+    <meta property="og:title" content="เกี่ยวกับ ParkIQ - วิสัยทัศน์ ทีม และการเดินทางของเรา">
+    <meta property="og:description" content="รู้จักทีม ParkIQ ที่พัฒนาโซลูชันที่จอดรถอัจฉริยะ ผสาน IoT และ AI เพื่อสร้างประสบการณ์ใหม่ในการจัดการลานจอด">
+    <meta property="og:url" content="about.html">
+    <meta property="og:image" content="images/logo.png">
+    <meta property="og:image:alt" content="ParkIQ Team">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="เกี่ยวกับ ParkIQ - วิสัยทัศน์ ทีม และการเดินทางของเรา">
+    <meta name="twitter:description" content="ทำความรู้จักทีมพัฒนา วิสัยทัศน์ และเส้นทางของ ParkIQ">
+    <meta name="twitter:image" content="images/logo.png">
+    <meta name="twitter:image:alt" content="ParkIQ Team">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pink-primary': '#ec4899',
+                        'pink-dark': '#db2777',
+                        'purple-primary': '#a855f7',
+                        'purple-dark': '#9333ea',
+                        'sky-neon': '#22d3ee'
+                    },
+                    fontFamily: {
+                        sans: ['"Sarabun"', 'Inter', 'ui-sans-serif', 'system-ui'],
+                        display: ['"Sarabun"', 'Inter', 'ui-sans-serif', 'system-ui']
+                    },
+                    boxShadow: {
+                        glow: '0 0 45px rgba(236, 72, 153, 0.35)'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="about" class="bg-black text-white font-sans antialiased">
+    <div id="scroll-progress"></div>
+
+    <nav class="fixed top-0 left-0 w-full bg-black/70 backdrop-blur-xl border-b border-white/5 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between gap-6 py-4">
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="relative">
+                        <span class="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-primary/40 via-purple-primary/30 to-sky-neon/30 blur-lg opacity-60 group-hover:opacity-80 transition"></span>
+                        <img src="images/logo.png" alt="ParkIQ Logo" class="relative h-12 w-auto drop-shadow-lg" data-priority="true" fetchpriority="high" decoding="async" width="96" height="48">
+                    </div>
+                    <span class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-pink-primary via-purple-primary to-sky-neon bg-clip-text text-transparent">ParkIQ</span>
+                </a>
+                <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                    <a data-nav="home" href="index.html" class="transition hover:text-pink-primary">หน้าแรก</a>
+                    <a data-nav="about" href="about.html" class="transition hover:text-pink-primary">เกี่ยวกับเรา</a>
+                    <a data-nav="how-it-works" href="how-it-works.html" class="transition hover:text-pink-primary">หลักการทำงาน</a>
+                    <a data-nav="benefits" href="benefits.html" class="transition hover:text-pink-primary">ประโยชน์</a>
+                    <a data-nav="contact" href="contact.html" class="transition hover:text-pink-primary">ติดต่อเรา</a>
+                </div>
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="#timeline" class="btn-secondary px-5 py-2.5 rounded-xl text-sm">เส้นทางของเรา</a>
+                    <a href="contact.html" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold shadow-glow">ร่วมโครงการ</a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-pink-primary hover:text-purple-primary transition" aria-label="เปิดเมนู" aria-expanded="false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden pb-6 border-t border-white/10">
+                <div class="flex flex-col gap-3 pt-4 text-sm">
+                    <a data-nav="home" href="index.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">หน้าแรก</a>
+                    <a data-nav="about" href="about.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">เกี่ยวกับเรา</a>
+                    <a data-nav="how-it-works" href="how-it-works.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">หลักการทำงาน</a>
+                    <a data-nav="benefits" href="benefits.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">ประโยชน์</a>
+                    <a data-nav="contact" href="contact.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">ติดต่อเรา</a>
+                    <a href="contact.html" class="btn-primary px-4 py-3 rounded-lg text-center font-semibold mt-2">พูดคุยกับทีมงาน</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 md:pt-32">
+        <section class="relative overflow-hidden pt-28 pb-20 px-4">
+            <div class="absolute -top-32 left-0 w-80 h-80 floating-shape opacity-40 blur-gradient"></div>
+            <div class="absolute top-10 right-10 w-60 h-60 floating-shape opacity-30 blur-gradient"></div>
+            <div class="absolute bottom-0 left-1/2 w-72 h-72 floating-shape opacity-30 blur-gradient"></div>
+
+            <div class="container mx-auto relative">
+                <div class="max-w-4xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Our Story</span>
+                    <h1 class="mt-6 text-4xl md:text-6xl font-extrabold leading-tight">
+                        จากโครงการนักศึกษา สู่แพลตฟอร์มที่จอดรถอัจฉริยะระดับมืออาชีพ
+                    </h1>
+                    <p class="mt-6 text-lg text-gray-300">
+                        ParkIQ เริ่มต้นจากทีมวิทยาลัยเทคนิคเลยที่ต้องการแก้ปัญหาการจอดรถจริงในชุมชน
+                        ด้วยการผสาน IoT และ AI เข้าด้วยกัน เราสร้างระบบที่มองเห็นทุกช่องจอด
+                        ขยายได้ และพร้อมยกระดับประสบการณ์ผู้ใช้ในทุกพื้นที่
+                    </p>
+                </div>
+                <div class="mt-14 grid gap-6 sm:grid-cols-3" data-animate>
+                    <div class="glass-card rounded-3xl p-6">
+                        <p class="text-xs uppercase tracking-[0.35em] text-gray-400">ก่อตั้ง</p>
+                        <p class="mt-3 text-3xl font-semibold text-white">2025</p>
+                        <p class="mt-2 text-sm text-gray-400">ปีที่เราเริ่มทดลองภาคสนามครั้งแรก</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 animate-delay-1">
+                        <p class="text-xs uppercase tracking-[0.35em] text-gray-400">ทีมหลัก</p>
+                        <p class="mt-3 text-3xl font-semibold text-white">4 คน</p>
+                        <p class="mt-2 text-sm text-gray-400">จับมือกันทั้งด้านฮาร์ดแวร์และซอฟต์แวร์</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 animate-delay-2">
+                        <p class="text-xs uppercase tracking-[0.35em] text-gray-400">ความแม่นยำ</p>
+                        <p class="mt-3 text-3xl font-semibold text-white">98%</p>
+                        <p class="mt-2 text-sm text-gray-400">ผลจากการพัฒนา AI + Sensor แบบคู่ขนาน</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="grid lg:grid-cols-2 gap-14 items-start">
+                    <div data-animate>
+                        <span class="badge-soft">Mission</span>
+                        <h2 class="mt-6 text-3xl md:text-4xl font-extrabold text-white">
+                            ภารกิจของเราคือการทำให้การจอดรถง่ายและโปร่งใสสำหรับทุกคน
+                        </h2>
+                        <p class="mt-6 text-lg text-gray-300 leading-relaxed">
+                            เราพัฒนาระบบ ParkIQ เพื่อช่วยลดความเสียเวลาจากการวนหาที่จอดรถ
+                            ลดความสับสนเรื่องสถานะช่องว่าง และเพิ่มประสิทธิภาพการใช้พื้นที่ให้สูงที่สุด
+                            โดยคำนึงถึงผู้ใช้งานทุกคน ตั้งแต่เจ้าของพื้นที่ไปจนถึงผู้ขับรถ
+                        </p>
+                        <div class="mt-10 glass-card rounded-[2rem] p-8 space-y-4">
+                            <p class="text-sm uppercase tracking-[0.35em] text-gray-400">สิ่งที่เราเชื่อ</p>
+                            <ul class="space-y-3 text-gray-300">
+                                <li class="flex items-start gap-3">
+                                    <span class="mt-1 h-3 w-3 rounded-full bg-pink-primary"></span>
+                                    <span>ข้อมูลที่ดีช่วยลดความตึงเครียดในการเดินทาง</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="mt-1 h-3 w-3 rounded-full bg-purple-primary"></span>
+                                    <span>การออกแบบต้องเริ่มจากความต้องการผู้ใช้จริง</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="mt-1 h-3 w-3 rounded-full bg-sky-neon"></span>
+                                    <span>เทคโนโลยีควรเข้าถึงง่ายและปรับใช้ได้จริง</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div data-animate>
+                        <div class="glass-card rounded-[2rem] p-8 space-y-8">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.35em] text-gray-400">Core Focus</p>
+                                <h3 class="mt-3 text-2xl font-semibold text-white">ผสานฮาร์ดแวร์และซอฟต์แวร์แบบไร้รอยต่อ</h3>
+                                <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                                    ทีมเราทำงานร่วมกันตั้งแต่การออกแบบบอร์ด ESP32 การจัดวางเซ็นเซอร์
+                                    ไปจนถึงการสร้างแดชบอร์ดและ API เพื่อให้การสื่อสารระหว่างอุปกรณ์เป็นไปอย่างลื่นไหล
+                                </p>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <p class="text-sm uppercase tracking-[0.35em] text-gray-400">ผลลัพธ์ที่เห็นได้ชัด</p>
+                                <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                                    <li>• ลดเวลาการวนหาที่จอดเฉลี่ย 45%</li>
+                                    <li>• เพิ่มอัตราการใช้พื้นที่รวม 30%</li>
+                                    <li>• ระบบแจ้งเตือนอัตโนมัติลดการทำงานซ้ำของเจ้าหน้าที่</li>
+                                </ul>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <p class="text-sm uppercase tracking-[0.35em] text-gray-400">แนวทางการทำงาน</p>
+                                <p class="mt-3 text-sm text-gray-300 leading-relaxed">
+                                    เราปรับปรุงระบบผ่าน Feedback Loop สั้น ๆ ทดลองจริงในพื้นที่
+                                    วิเคราะห์ข้อมูล แล้วนำกลับมาปรับปรุงอย่างต่อเนื่อง
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4 bg-gradient-to-b from-white/5 via-transparent to-white/0">
+            <div class="container mx-auto">
+                <div class="max-w-3xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Vision</span>
+                    <h2 class="mt-6 text-4xl font-extrabold text-white">วิสัยทัศน์ของ ParkIQ</h2>
+                    <p class="mt-6 text-lg text-gray-300">
+                        เราเชื่อว่าระบบที่จอดรถควรเป็นส่วนหนึ่งของเมืองอัจฉริยะในอนาคต
+                        ทำงานอัตโนมัติ เชื่อมต่อกับระบบขนส่ง และสร้างข้อมูลที่ใช้พัฒนาพื้นที่ได้จริง
+                    </p>
+                </div>
+                <div class="mt-16 grid md:grid-cols-3 gap-8">
+                    <div class="glass-card rounded-3xl p-8" data-animate>
+                        <h3 class="text-xl font-semibold text-white">Smart Mobility</h3>
+                        <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                            ผสานการจอดรถกับระบบขนส่งสาธารณะและการเดินทางรูปแบบใหม่
+                            เพื่อลดการจราจรและเสริมความสะดวกในการเดินทาง
+                        </p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 animate-delay-1" data-animate>
+                        <h3 class="text-xl font-semibold text-white">Data-Driven City</h3>
+                        <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                            ให้ข้อมูลการใช้พื้นที่แบบเรียลไทม์ เพื่อช่วยผู้บริหารตัดสินใจเรื่องโครงสร้างพื้นฐานได้แม่นยำ
+                        </p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 animate-delay-2" data-animate>
+                        <h3 class="text-xl font-semibold text-white">Inclusive Design</h3>
+                        <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                            สร้างประสบการณ์ผู้ใช้ที่ทุกคนเข้าถึงได้ ทั้งผู้สูงอายุ ผู้ใช้วีลแชร์ และผู้ที่ไม่คุ้นเคยกับเทคโนโลยี
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="timeline" class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="max-w-3xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Timeline</span>
+                    <h2 class="mt-6 text-4xl font-extrabold text-white">เส้นทางการพัฒนาของเรา</h2>
+                </div>
+                <div class="mt-16 relative" data-animate>
+                    <div class="absolute top-4 bottom-4 left-4 md:left-1/2 md:-translate-x-1/2 w-px bg-gradient-to-b from-pink-primary/40 via-purple-primary/30 to-transparent pointer-events-none hidden md:block"></div>
+                    <ol class="space-y-10 md:space-y-16">
+                        <li class="md:grid md:grid-cols-2 md:gap-10 md:items-center">
+                            <div class="md:text-right md:pr-10">
+                                <span class="badge-soft">Q3 2023</span>
+                                <h3 class="mt-4 text-2xl font-semibold text-white">เริ่มต้นจากปัญหาที่พบจริง</h3>
+                                <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                                    ทีมพบปัญหาการจอดรถในสถานศึกษาและชุมชน จึงเริ่มทำวิจัยเกี่ยวกับการใช้ IoT
+                                    เพื่อแก้ปัญหาการจัดการพื้นที่
+                                </p>
+                            </div>
+                            <div class="glass-card rounded-3xl p-6 md:ml-10 mt-6 md:mt-0">
+                                <p class="text-xs uppercase tracking-[0.35em] text-gray-400">Prototype 1</p>
+                                <p class="mt-3 text-sm text-gray-300">
+                                    ทดลองใช้เซ็นเซอร์อินฟราเรดเพื่อจับหลักการตรวจจับช่องว่างเบื้องต้น
+                                </p>
+                            </div>
+                        </li>
+                        <li class="md:grid md:grid-cols-2 md:gap-10 md:items-center">
+                            <div class="glass-card rounded-3xl p-6 md:mr-10 md:order-1">
+                                <p class="text-xs uppercase tracking-[0.35em] text-gray-400">Prototype 2</p>
+                                <p class="mt-3 text-sm text-gray-300">
+                                    เพิ่ม ESP32-CAM เพื่อยืนยันสถานะ และเริ่มพัฒนาแดชบอร์ดบนเว็บ
+                                </p>
+                            </div>
+                            <div class="md:pl-10">
+                                <span class="badge-soft">Q1 2025</span>
+                                <h3 class="mt-4 text-2xl font-semibold text-white">ผสาน AI & Dashboard</h3>
+                                <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                                    พัฒนาระบบ AI เพื่อวิเคราะห์รูปภาพ พร้อมสร้างแดชบอร์ดที่แสดงสถานะและข้อมูลเชิงลึกแบบเรียลไทม์
+                                </p>
+                            </div>
+                        </li>
+                        <li class="md:grid md:grid-cols-2 md:gap-10 md:items-center">
+                            <div class="md:text-right md:pr-10">
+                                <span class="badge-soft">กลางปี 2025</span>
+                                <h3 class="mt-4 text-2xl font-semibold text-white">ทดสอบจริงในพื้นที่</h3>
+                                <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                                    นำระบบไปทดสอบกับพื้นที่ลานจอดจริง เก็บข้อมูลการใช้งานและปรับปรุงให้มั่นคงยิ่งขึ้น
+                                </p>
+                            </div>
+                            <div class="glass-card rounded-3xl p-6 md:ml-10 mt-6 md:mt-0">
+                                <p class="text-xs uppercase tracking-[0.35em] text-gray-400">Field Testing</p>
+                                <p class="mt-3 text-sm text-gray-300">
+                                    เก็บข้อมูลกว่า 1,000 เหตุการณ์การจอด เพื่อเทรนโมเดลและปรับประสิทธิภาพ
+                                </p>
+                            </div>
+                        </li>
+                        <li class="md:grid md:grid-cols-2 md:gap-10 md:items-center">
+                            <div class="glass-card rounded-3xl p-6 md:mr-10 md:order-1">
+                                <p class="text-xs uppercase tracking-[0.35em] text-gray-400">วันนี้</p>
+                                <p class="mt-3 text-sm text-gray-300">
+                                    เราพร้อมนำเสนอ ParkIQ Platform 2.0 ที่ยืดหยุ่น ปรับแต่งได้ และรองรับการขยายในอนาคต
+                                </p>
+                            </div>
+                            <div class="md:pl-10">
+                                <span class="badge-soft">อนาคต</span>
+                                <h3 class="mt-4 text-2xl font-semibold text-white">เตรียมสู่การใช้งานในระดับเมือง</h3>
+                                <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                                    ระยะถัดไปคือการต่อยอดไปสู่ Smart City และการเชื่อมต่อกับระบบขนส่งในวงกว้าง
+                                </p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+            <div class="container mx-auto">
+                <div class="max-w-3xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Core Values</span>
+                    <h2 class="mt-6 text-4xl font-extrabold text-white">ค่านิยมที่ยึดถือในทุกการตัดสินใจ</h2>
+                </div>
+                <div class="mt-16 grid md:grid-cols-3 gap-8">
+                    <div class="glass-card rounded-3xl p-8" data-animate>
+                        <h3 class="text-xl font-semibold text-white">มุ่งเน้นผลลัพธ์จริง</h3>
+                        <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                            ทุกฟีเจอร์ถูกวัดผลด้วยข้อมูลการใช้งานจริง เราปรับปรุงก็ต่อเมื่อเห็นว่าผู้ใช้ได้ประโยชน์เพิ่มขึ้น
+                        </p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 animate-delay-1" data-animate>
+                        <h3 class="text-xl font-semibold text-white">เรียนรู้จากผู้ใช้</h3>
+                        <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                            เราลงพื้นที่ พูดคุยกับเจ้าของลานจอดและผู้ใช้บริการ เพื่อเข้าใจสถานการณ์ที่แท้จริงก่อนลงมือพัฒนา
+                        </p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 animate-delay-2" data-animate>
+                        <h3 class="text-xl font-semibold text-white">ทำงานร่วมกัน</h3>
+                        <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                            ฮาร์ดแวร์ ซอฟต์แวร์ และการออกแบบทำงานร่วมกันตั้งแต่วันแรก เพื่อให้ประสบการณ์ผู้ใช้ไร้รอยต่อ
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="max-w-3xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Team</span>
+                    <h2 class="mt-6 text-4xl font-extrabold text-white">ทีมที่อยู่เบื้องหลัง ParkIQ</h2>
+                    <p class="mt-6 text-lg text-gray-300">
+                        เราคือกลุ่มนักพัฒนา นักออกแบบ และผู้เชี่ยวชาญด้านฮาร์ดแวร์จากวิทยาลัยเทคนิคเลย
+                        ที่มุ่งมั่นสร้างระบบที่ใช้ได้จริงในชีวิตประจำวัน
+                    </p>
+                </div>
+                <div class="mt-16 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+                    <div class="glass-card rounded-3xl p-6 text-center" data-animate>
+                        <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-pink-primary/40 to-purple-primary/30 text-lg font-semibold">
+                            KS
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">นายกิตติภัทร สุวรรณศรี</h3>
+                        <p class="text-sm text-pink-primary font-semibold">Lead Backend & System Architect</p>
+                        <p class="mt-3 text-sm text-gray-400">ออกแบบโครงสร้างระบบและ API ให้รองรับการขยายในอนาคต</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 text-center animate-delay-1" data-animate>
+                        <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-primary/40 to-sky-neon/30 text-lg font-semibold">
+                            TP
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">นายทีภากร ประพาสถาพร</h3>
+                        <p class="text-sm text-pink-primary font-semibold">Hardware & IoT Specialist</p>
+                        <p class="mt-3 text-sm text-gray-400">ดูแลการออกแบบบอร์ด ESP32 การจัดวางเซ็นเซอร์ และการสื่อสารข้อมูล</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 text-center animate-delay-2" data-animate>
+                        <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-sky-neon/40 to-pink-primary/30 text-lg font-semibold">
+                            TK
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">นายธนากร แสงชมภู</h3>
+                        <p class="text-sm text-pink-primary font-semibold">Frontend Engineer & UX</p>
+                        <p class="mt-3 text-sm text-gray-400">ออกแบบประสบการณ์ผู้ใช้และพัฒนาเว็บให้ตอบสนองได้ดีทุกอุปกรณ์</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 text-center animate-delay-3" data-animate>
+                        <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-primary/40 to-emerald-400/30 text-lg font-semibold">
+                            WS
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-white">นายวัชรศักดิ์ สุขทองสา</h3>
+                        <p class="text-sm text-pink-primary font-semibold">Product Research & QA</p>
+                        <p class="mt-3 text-sm text-gray-400">เก็บข้อมูลจากการใช้งานจริง วิเคราะห์ผล และดูแลคุณภาพระบบ</p>
+                    </div>
+                </div>
+                <div class="mt-16 glass-card rounded-[2rem] p-8 md:p-10 lg:max-w-2xl mx-auto text-center" data-animate>
+                    <p class="text-sm uppercase tracking-[0.35em] text-gray-400">Advisor</p>
+                    <h3 class="mt-4 text-2xl font-semibold text-white">นางสาวสวรินทร์ จันทร์สว่าง</h3>
+                    <p class="mt-3 text-sm text-gray-400 leading-relaxed">
+                        ที่ปรึกษาโครงการ ผู้ให้คำแนะนำด้านการวางแผนและมาตรฐานวิศวกรรม
+                        เพื่อให้ ParkIQ ก้าวไปสู่ระดับการใช้งานเชิงพาณิชย์
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4 bg-gradient-to-b from-white/5 via-transparent to-white/0">
+            <div class="container mx-auto">
+                <div class="glass-card rounded-[2.5rem] px-8 py-16 md:px-16" data-animate>
+                    <div class="grid lg:grid-cols-2 gap-12">
+                        <div>
+                            <span class="badge-soft">Culture</span>
+                            <h2 class="mt-6 text-3xl font-extrabold text-white">วัฒนธรรมการทำงานของเรา</h2>
+                            <p class="mt-6 text-lg text-gray-300 leading-relaxed">
+                                เราสร้างทีมบนพื้นฐานของความไว้วางใจ ความโปร่งใส และความกล้าที่จะทดลอง
+                                เพื่อให้ทุกคนกล้าเสนอไอเดียและลงมือทำอย่างเต็มที่
+                            </p>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <h3 class="text-lg font-semibold text-white">1. Build in public</h3>
+                                <p class="mt-3 text-sm text-gray-400">
+                                    เราแชร์ความคืบหน้าและบทเรียนกับผู้ใช้อย่างสม่ำเสมอ เพื่อให้ทุกคนเติบโตไปพร้อมกัน
+                                </p>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <h3 class="text-lg font-semibold text-white">2. Prototype fast</h3>
+                                <p class="mt-3 text-sm text-gray-400">
+                                    ทดลองแนวคิดใหม่อย่างรวดเร็ว เก็บข้อมูล และเรียนรู้เพื่อนำกลับมาพัฒนาต่อยอด
+                                </p>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <h3 class="text-lg font-semibold text-white">3. Care deeply</h3>
+                                <p class="mt-3 text-sm text-gray-400">
+                                    ใส่ใจผู้ใช้งานและทีมพัฒนาเท่าเทียมกัน เพื่อให้โซลูชันตอบโจทย์ทุกฝ่ายที่เกี่ยวข้อง
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="glass-card rounded-[2.5rem] px-8 py-16 md:px-16 text-center" data-animate>
+                    <span class="badge-soft">Join Us</span>
+                    <h2 class="mt-6 text-4xl md:text-5xl font-extrabold text-white">
+                        อยากร่วมสร้างอนาคตการจอดรถที่ดีกว่าไปกับเราไหม?
+                    </h2>
+                    <p class="mt-6 text-lg text-gray-300">
+                        ไม่ว่าคุณจะเป็นเจ้าของพื้นที่จอดรถ องค์กร หรือผู้สนใจด้าน Smart City
+                        ทีม ParkIQ พร้อมทำงานร่วมกับคุณ
+                    </p>
+                    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="contact.html" class="btn-primary px-10 py-4 rounded-2xl text-base font-semibold shadow-glow">
+                            นัดหมายพูดคุย
+                        </a>
+                        <a href="benefits.html" class="btn-secondary px-10 py-4 rounded-2xl text-base font-semibold">
+                            ดูประโยชน์ที่คุณได้รับ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black/80 backdrop-blur border-t border-white/10 px-4 pt-16 pb-8">
+        <div class="container mx-auto">
+            <div class="grid gap-12 md:grid-cols-4">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <img src="images/logo.png" alt="ParkIQ Logo" class="h-12 w-auto">
+                        <span class="text-xl font-semibold">ParkIQ</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                        เรามุ่งมั่นพัฒนาโซลูชันที่จอดรถอัจฉริยะที่เชื่อมต่อทุกสิ่งแบบเรียลไทม์
+                        เพื่อให้ทุกพื้นที่ใช้งานได้อย่างคุ้มค่าและยั่งยืน
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-400">นำทาง</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li><a href="index.html" class="hover:text-pink-primary transition">หน้าแรก</a></li>
+                        <li><a href="how-it-works.html" class="hover:text-pink-primary transition">หลักการทำงาน</a></li>
+                        <li><a href="benefits.html" class="hover:text-pink-primary transition">ประโยชน์</a></li>
+                        <li><a href="contact.html" class="hover:text-pink-primary transition">ติดต่อเรา</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-400">ด้านเทคนิค</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li>Hardware Blueprint</li>
+                        <li>AI Model Overview</li>
+                        <li>API Integration Guide</li>
+                        <li>Deployment Checklist</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-400">ติดต่อเรา</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li>โทร: 099 073 2424</li>
+                        <li>อีเมล: parkiqloeitech@gmail.com</li>
+                        <li>ที่อยู่: 272 เจริญรัฐ ตำบลกุดป่อง อำเภอเมืองเลย</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 flex flex-col md:flex-row md:items-center md:justify-between text-sm text-gray-500 border-t border-white/10 pt-6">
+                <p>&copy; 2025 ParkIQ. สงวนลิขสิทธิ์</p>
+                <p class="mt-2 md:mt-0">พัฒนาโดยทีม ParkIQ - วิทยาลัยเทคนิคเลย</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
+

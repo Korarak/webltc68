@@ -1,0 +1,6 @@
+*.env
+*.env-production
+docker-compose.yml
+Dockerfile
+*.sql
+mysql_data

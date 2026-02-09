@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ประโยชน์จาก ParkIQ - ยกระดับลานจอดรถด้วยข้อมูลและระบบอัตโนมัติ</title>
+    <meta name="description" content="ค้นหาประโยชน์ของ ParkIQ ต่อธุรกิจและผู้ใช้ ตั้งแต่การลดต้นทุน เพิ่มรายได้ ไปจนถึงการสร้างประสบการณ์การจอดรถที่ดีกว่า พร้อมตัวชี้วัดและกรณีศึกษา">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ParkIQ Team">
+    <meta name="keywords" content="ประโยชน์ ParkIQ, ลดต้นทุนลานจอดรถ, เพิ่มรายได้ค่าจอด, Smart Parking ROI, Parking Analytics Case Study">
+    <link rel="canonical" href="benefits.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="th_TH">
+    <meta property="og:site_name" content="ParkIQ">
+    <meta property="og:title" content="ประโยชน์จาก ParkIQ - ยกระดับลานจอดรถด้วยข้อมูล">
+    <meta property="og:description" content="เรียนรู้ผลลัพธ์ที่จับต้องได้จากลูกค้าที่ใช้ ParkIQ ทั้งด้านรายได้ ต้นทุน และประสบการณ์ผู้ใช้">
+    <meta property="og:url" content="benefits.html">
+    <meta property="og:image" content="images/logo.png">
+    <meta property="og:image:alt" content="ParkIQ Benefits">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ประโยชน์จาก ParkIQ - ยกระดับลานจอดรถด้วยข้อมูล">
+    <meta name="twitter:description" content="ดูข้อมูลตัวชี้วัดและกรณีศึกษาจากลูกค้าที่เปลี่ยนมาใช้ ParkIQ">
+    <meta name="twitter:image" content="images/logo.png">
+    <meta name="twitter:image:alt" content="ParkIQ Benefits">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pink-primary': '#ec4899',
+                        'pink-dark': '#db2777',
+                        'purple-primary': '#a855f7',
+                        'purple-dark': '#9333ea',
+                        'sky-neon': '#22d3ee'
+                    },
+                    fontFamily: {
+                        sans: ['"Sarabun"', 'Inter', 'ui-sans-serif', 'system-ui'],
+                        display: ['"Sarabun"', 'Inter', 'ui-sans-serif', 'system-ui']
+                    },
+                    boxShadow: {
+                        glow: '0 0 45px rgba(236, 72, 153, 0.35)'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="benefits" class="bg-black text-white font-sans antialiased">
+    <div id="scroll-progress"></div>
+
+    <nav class="fixed top-0 left-0 w-full bg-black/70 backdrop-blur-xl border-b border-white/5 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between gap-6 py-4">
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="relative">
+                        <span class="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-primary/40 via-purple-primary/30 to-sky-neon/30 blur-lg opacity-60 group-hover:opacity-80 transition"></span>
+                        <img src="images/logo.png" alt="ParkIQ Logo" class="relative h-12 w-auto drop-shadow-lg" data-priority="true" fetchpriority="high" decoding="async" width="96" height="48">
+                    </div>
+                    <span class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-pink-primary via-purple-primary to-sky-neon bg-clip-text text-transparent">ParkIQ</span>
+                </a>
+                <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                    <a data-nav="home" href="index.html" class="transition hover:text-pink-primary">หน้าแรก</a>
+                    <a data-nav="about" href="about.html" class="transition hover:text-pink-primary">เกี่ยวกับเรา</a>
+                    <a data-nav="how-it-works" href="how-it-works.html" class="transition hover:text-pink-primary">หลักการทำงาน</a>
+                    <a data-nav="benefits" href="benefits.html" class="transition hover:text-pink-primary">ประโยชน์</a>
+                    <a data-nav="contact" href="contact.html" class="transition hover:text-pink-primary">ติดต่อเรา</a>
+                </div>
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="#impact" class="btn-secondary px-5 py-2.5 rounded-xl text-sm">ตัวชี้วัดผลลัพธ์</a>
+                    <a href="contact.html" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold shadow-glow">เริ่มใช้งาน</a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-pink-primary hover:text-purple-primary transition" aria-label="เปิดเมนู" aria-expanded="false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden pb-6 border-t border-white/10">
+                <div class="flex flex-col gap-3 pt-4 text-sm">
+                    <a data-nav="home" href="index.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">หน้าแรก</a>
+                    <a data-nav="about" href="about.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">เกี่ยวกับเรา</a>
+                    <a data-nav="how-it-works" href="how-it-works.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">หลักการทำงาน</a>
+                    <a data-nav="benefits" href="benefits.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">ประโยชน์</a>
+                    <a data-nav="contact" href="contact.html" class="px-2 py-2 rounded-lg hover:bg-white/5 transition">ติดต่อเรา</a>
+                    <a href="contact.html" class="btn-primary px-4 py-3 rounded-lg text-center font-semibold mt-2">พูดคุยกับทีมงาน</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 md:pt-32">
+        <section class="relative overflow-hidden pt-28 pb-20 px-4">
+            <div class="absolute -top-36 left-0 w-80 h-80 floating-shape opacity-40 blur-gradient"></div>
+            <div class="absolute top-8 right-8 w-64 h-64 floating-shape opacity-30 blur-gradient"></div>
+            <div class="absolute bottom-0 left-1/2 w-72 h-72 floating-shape opacity-30 blur-gradient"></div>
+
+            <div class="container mx-auto relative">
+                <div class="max-w-4xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Value Delivered</span>
+                    <h1 class="mt-6 text-4xl md:text-6xl font-extrabold leading-tight">
+                        ParkIQ ช่วยเพิ่มมูลค่าให้ลานจอดรถของคุณอย่างไร?
+                    </h1>
+                    <p class="mt-6 text-lg text-gray-300">
+                        จากการลดต้นทุน เพิ่มประสิทธิภาพ ไปจนถึงการสร้างประสบการณ์ที่ดีกว่า
+                        ParkIQ ถูกออกแบบให้สร้างผลลัพธ์ที่จับต้องได้ทั้งในเชิงธุรกิจและผู้ใช้งาน
+                    </p>
+                </div>
+                <div class="mt-14 grid gap-6 md:grid-cols-3" data-animate>
+                    <div class="glass-card rounded-3xl p-6">
+                        <p class="text-xs uppercase tracking-[0.35em] text-gray-400">ลดต้นทุน</p>
+                        <p class="mt-3 text-3xl font-semibold text-white">30%</p>
+                        <p class="mt-2 text-sm text-gray-400">ลดการใช้แรงงานและการจัดการแบบแมนนวล</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 animate-delay-1">
+                        <p class="text-xs uppercase tracking-[0.35em] text-gray-400">เพิ่มรายได้</p>
+                        <p class="mt-3 text-3xl font-semibold text-white">+25%</p>
+                        <p class="mt-2 text-sm text-gray-400">จากการใช้พื้นที่ได้เต็มประสิทธิภาพและการจองล่วงหน้า</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 animate-delay-2">
+                        <p class="text-xs uppercase tracking-[0.35em] text-gray-400">ความพึงพอใจ</p>
+                        <p class="mt-3 text-3xl font-semibold text-white">92%</p>
+                        <p class="mt-2 text-sm text-gray-400">คะแนนจากการสำรวจผู้ใช้ในพื้นที่ทดลองนำร่อง</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="grid lg:grid-cols-2 gap-14 items-start">
+                    <div data-animate>
+                        <span class="badge-soft">Business Impact</span>
+                        <h2 class="mt-6 text-3xl md:text-4xl font-extrabold text-white">
+                            ผลลัพธ์ที่องค์กรได้รับเมื่อใช้ ParkIQ
+                        </h2>
+                        <p class="mt-6 text-lg text-gray-300 leading-relaxed">
+                            ข้อมูลด้านล่างอ้างอิงจากการทดลองใช้งานจริงในพื้นที่ขนาดกลาง 250 ช่องจอด
+                            ภายในระยะเวลา 6 เดือน
+                        </p>
+                        <div class="mt-10 space-y-6">
+                            <div class="glass-card rounded-2xl p-6 flex items-start gap-4">
+                                <span class="h-10 w-10 rounded-full bg-pink-primary/25 text-pink-primary flex items-center justify-center font-semibold">1</span>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">ลดเวลาการวนหาที่จอด</h3>
+                                    <p class="mt-2 text-sm text-gray-400">เฉลี่ย 4.5 นาที → 2.5 นาที ต่อคัน</p>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-2xl p-6 flex items-start gap-4">
+                                <span class="h-10 w-10 rounded-full bg-purple-primary/25 text-purple-primary flex items-center justify-center font-semibold">2</span>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">เพิ่มอัตราการใช้พื้นที่</h3>
+                                    <p class="mt-2 text-sm text-gray-400">ใช้พื้นที่ว่างได้เต็มประสิทธิภาพทั้งในช่วงพีคและนอกพีค</p>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-2xl p-6 flex items-start gap-4">
+                                <span class="h-10 w-10 rounded-full bg-sky-neon/25 text-sky-neon flex items-center justify-center font-semibold">3</span>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">ความโปร่งใสในการจัดการ</h3>
+                                    <p class="mt-2 text-sm text-gray-400">มีข้อมูลการจอง การจ่ายเงิน และประวัติการใช้งานครบถ้วน</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-animate>
+                        <div class="glass-card rounded-[2rem] p-8 space-y-8">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.35em] text-gray-400">ROI Projection</p>
+                                <div class="mt-6 aspect-[16/9] rounded-2xl border border-white/10 bg-black/40 overflow-hidden">
+                                    <img src="images/img5.JPG" alt="กราฟ ROI 6 เดือน" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <p class="text-sm uppercase tracking-[0.35em] text-gray-400">ตัวชี้วัด</p>
+                                <ul class="mt-3 space-y-3 text-sm text-gray-300">
+                                    <li>• ค่าใช้จ่ายต่อช่องจอดลดลง 18%</li>
+                                    <li>• รายได้เฉลี่ยต่อวันเพิ่มขึ้น 22%</li>
+                                    <li>• อัตราการกลับมาใช้บริการอีกครั้งเพิ่ม 35%</li>
+                                </ul>
+                            </div>
+                            <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                                <p class="text-sm uppercase tracking-[0.35em] text-gray-400">ค่าคืนทุน</p>
+                                <p class="mt-3 text-sm text-gray-300">ระยะเวลาคืนทุนเฉลี่ย 5-7 เดือน ขึ้นกับขนาดพื้นที่และค่าแรงเดิม</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4 bg-gradient-to-b from-white/5 via-transparent to-white/0">
+            <div class="container mx-auto">
+                <div class="max-w-3xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Value Pillars</span>
+                    <h2 class="mt-6 text-4xl font-extrabold text-white">4 แกนหลักของประโยชน์ ParkIQ</h2>
+                </div>
+                <div class="mt-16 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="glass-card rounded-3xl p-8" data-animate>
+                        <h3 class="text-xl font-semibold text-white">ด้านเศรษฐกิจ</h3>
+                        <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                            <li>• ลดค่าใช้จ่ายบุคลากร</li>
+                            <li>• บริหารพื้นที่ให้ได้รายได้สูงสุด</li>
+                            <li>• มีข้อมูลวิเคราะห์เพื่อวางแผน</li>
+                        </ul>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 animate-delay-1" data-animate>
+                        <h3 class="text-xl font-semibold text-white">ประสบการณ์ลูกค้า</h3>
+                        <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                            <li>• หาที่จอดง่ายขึ้น ลดความเครียด</li>
+                            <li>• แจ้งเตือนสถานะและเวลาที่เหลือ</li>
+                            <li>• ระบบชำระเงินสะดวก ปลอดภัย</li>
+                        </ul>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 animate-delay-2" data-animate>
+                        <h3 class="text-xl font-semibold text-white">ความยั่งยืน</h3>
+                        <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                            <li>• ลดการวนรถ ลดการปล่อยคาร์บอน</li>
+                            <li>• บริหารไฟส่องสว่างตามการใช้งานจริง</li>
+                            <li>• ใช้พลังงานอย่างมีประสิทธิภาพ</li>
+                        </ul>
+                    </div>
+                    <div class="glass-card rounded-3xl p-8 animate-delay-3" data-animate>
+                        <h3 class="text-xl font-semibold text-white">เทคโนโลยี & ข้อมูล</h3>
+                        <ul class="mt-4 space-y-3 text-sm text-gray-300">
+                            <li>• เชื่อมต่อ API ได้ง่าย</li>
+                            <li>• บันทึกประวัติครบถ้วน ตรวจสอบได้</li>
+                            <li>• รองรับการขยายในอนาคต</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="glass-card rounded-[2.5rem] p-8 md:p-12" data-animate>
+                    <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+                        <div>
+                            <span class="badge-soft">Case Study</span>
+                            <h2 class="mt-6 text-3xl font-extrabold text-white">กรณีศึกษา: Innovation Mall</h2>
+                            <p class="mt-6 text-lg text-gray-300 leading-relaxed">
+                                ลานจอดรถขนาด 280 ช่องจอดที่ติดตั้ง ParkIQ ในระยะเวลา 3 เดือน
+                                ลดปัญหารถวนหาที่จอดและเพิ่มรายได้ส่วนค่าจอดรายชั่วโมง
+                            </p>
+                            <ul class="mt-6 space-y-3 text-sm text-gray-300">
+                                <li>• อัตราการใช้พื้นที่จาก 58% → 81%</li>
+                                <li>• รายได้ส่วนค่าจอดเฉลี่ยเพิ่มขึ้น 27%</li>
+                                <li>• คะแนนความพึงพอใจลูกค้าเพิ่มจาก 3.4 → 4.6 จาก 5 คะแนน</li>
+                                <li>• แจ้งเตือนรถจอดเกินเวลาได้แม่นยำ ลดการร้องเรียน 60%</li>
+                            </ul>
+                            <div class="mt-8 grid gap-4">
+                                <div class="rounded-2xl border border-white/10 bg-black/40 p-5">
+                                    <p class="text-xs uppercase tracking-[0.35em] text-gray-400 mb-3">ข้อมูลการติดตั้ง</p>
+                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <p class="text-gray-500">จำนวนช่องจอด</p>
+                                            <p class="mt-1 font-semibold text-white">280 ช่อง</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-500">ระยะเวลาติดตั้ง</p>
+                                            <p class="mt-1 font-semibold text-white">3 เดือน</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-500">จำนวนเซ็นเซอร์</p>
+                                            <p class="mt-1 font-semibold text-white">18 ชุด</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-500">ระยะเวลาคืนทุน</p>
+                                            <p class="mt-1 font-semibold text-white">8 เดือน</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rounded-2xl border border-white/10 bg-black/40 p-5">
+                                    <p class="text-xs uppercase tracking-[0.35em] text-gray-400 mb-3">ผลลัพธ์เพิ่มเติม</p>
+                                    <ul class="space-y-2 text-sm text-gray-300">
+                                        <li>• ลดเวลาเฉลี่ยในการหาที่จอดจาก 6 นาที → 3 นาที</li>
+                                        <li>• ลดการปล่อยก๊าซ CO₂ จากรถวนหาที่จอด 35%</li>
+                                        <li>• เพิ่มจำนวนลูกค้าที่กลับมาใช้บริการซ้ำ 18%</li>
+                                        <li>• ลดต้นทุนการจัดการและบำรุงรักษา 22%</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="glass-card rounded-[2rem] p-6 bg-black/40 border border-white/10">
+                                <div class="aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 mb-6">
+                                    <img src="images/web3.png" alt="กรณีศึกษา Innovation Mall" class="w-full h-full object-cover">
+                                </div>
+                                <p class="text-sm uppercase tracking-[0.35em] text-gray-400">Before / After</p>
+                                <div class="mt-6 grid gap-4">
+                                    <div class="rounded-2xl border border-white/10 bg-black/40 p-5">
+                                        <p class="text-sm text-gray-400">ก่อนติดตั้ง</p>
+                                        <p class="mt-2 text-lg font-semibold text-white">เวลาหาที่จอดเฉลี่ย 6 นาที</p>
+                                    </div>
+                                    <div class="rounded-2xl border border-white/10 bg-black/40 p-5">
+                                        <p class="text-sm text-gray-400">หลังติดตั้ง 8 สัปดาห์</p>
+                                        <p class="mt-2 text-lg font-semibold text-white">เวลาหาที่จอดเฉลี่ย 3 นาที</p>
+                                    </div>
+                                </div>
+                                <div class="mt-6 rounded-2xl border border-white/10 bg-black/40 p-5">
+                                    <p class="text-sm text-gray-400">"ระบบ ParkIQ ทำให้ทีมสามารถบริหารพื้นที่ได้คล่องตัว
+                                        และลูกค้ารู้สึกถึงความสะดวกตั้งแต่ครั้งแรก"</p>
+                                    <p class="mt-3 text-sm text-pink-primary font-semibold">ผู้จัดการศูนย์การค้า Innovation Mall</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+            <div class="container mx-auto">
+                <div class="max-w-3xl mx-auto text-center" data-animate>
+                    <span class="badge-soft">Reasons to choose ParkIQ</span>
+                    <h2 class="mt-6 text-4xl font-extrabold text-white">ทำไมองค์กรถึงเลือกเรา</h2>
+                </div>
+                <div class="mt-16 grid lg:grid-cols-2 gap-10">
+                    <div class="glass-card rounded-[2rem] p-8 space-y-6" data-animate>
+                        <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                            <h3 class="text-lg font-semibold text-white">รองรับการปรับแต่ง</h3>
+                            <p class="mt-3 text-sm text-gray-400">ปรับการตั้งเวลา ราคา และการแจ้งเตือนได้ตามนโยบายของแต่ละองค์กร</p>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                            <h3 class="text-lg font-semibold text-white">เชื่อมต่อกับระบบเดิม</h3>
+                            <p class="mt-3 text-sm text-gray-400">มี API และ Webhook เพื่อเชื่อมกับ CRM, ERP หรือแอปสมาชิกที่มีอยู่แล้ว</p>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-[2rem] p-8 space-y-6 animate-delay-1" data-animate>
+                        <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                            <h3 class="text-lg font-semibold text-white">Support ครบวงจร</h3>
+                            <p class="mt-3 text-sm text-gray-400">ทีมงานช่วยตั้งแต่การสำรวจพื้นที่ ติดตั้ง ไปจนถึงการเทรนนิ่งผู้ใช้งาน</p>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-black/40 p-6">
+                            <h3 class="text-lg font-semibold text-white">รายงานเชิงลึก</h3>
+                            <p class="mt-3 text-sm text-gray-400">แดชบอร์ดรายงานยอดสรุป ความหนาแน่น และแนวโน้มการใช้งานเพื่อการตัดสินใจ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-4">
+            <div class="container mx-auto">
+                <div class="glass-card rounded-[2.5rem] px-8 py-16 md:px-16 text-center" data-animate>
+                    <span class="badge-soft">Next Step</span>
+                    <h2 class="mt-6 text-4xl md:text-5xl font-extrabold text-white">
+                        พร้อมให้ ParkIQ ยกระดับพื้นที่ของคุณหรือยัง?
+                    </h2>
+                    <p class="mt-6 text-lg text-gray-300">
+                        นัดหมายเพื่อรับคำปรึกษาฟรี ทีมงานจะช่วยวิเคราะห์พื้นที่ วางแผนการติดตั้ง
+                        และคำนวณผลตอบแทนที่คุณจะได้รับ
+                    </p>
+                    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="contact.html" class="btn-primary px-10 py-4 rounded-2xl text-base font-semibold shadow-glow">
+                            นัดหมายพูดคุย
+                        </a>
+                        <a href="how-it-works.html" class="btn-secondary px-10 py-4 rounded-2xl text-base font-semibold">
+                            ดูวิธีการทำงานของระบบ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black/80 backdrop-blur border-t border-white/10 px-4 pt-16 pb-8">
+        <div class="container mx-auto">
+            <div class="grid gap-12 md:grid-cols-4">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <img src="images/logo.png" alt="ParkIQ Logo" class="h-12 w-auto">
+                        <span class="text-xl font-semibold">ParkIQ</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                        เราช่วยให้ทุกพื้นที่จอดรถจัดการได้ง่ายขึ้น ด้วยข้อมูลแบบเรียลไทม์
+                        และระบบอัตโนมัติที่สร้างผลลัพธ์จริง
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-400">นำทาง</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li><a href="index.html" class="hover:text-pink-primary transition">หน้าแรก</a></li>
+                        <li><a href="about.html" class="hover:text-pink-primary transition">เกี่ยวกับเรา</a></li>
+                        <li><a href="how-it-works.html" class="hover:text-pink-primary transition">หลักการทำงาน</a></li>
+                        <li><a href="contact.html" class="hover:text-pink-primary transition">ติดต่อเรา</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-400">ทรัพยากร</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li>คู่มือการติดตั้ง</li>
+                        <li>เทมเพลต ROI</li>
+                        <li>API Integration</li>
+                        <li>Roadmap การพัฒนา</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-gray-400">ติดต่อเรา</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-400">
+                        <li>โทร: 099 073 2424</li>
+                        <li>อีเมล: parkiqloeitech@gmail.com</li>
+                        <li>ที่อยู่: 272 เจริญรัฐ ตำบลกุดป่อง อำเภอเมืองเลย</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 flex flex-col md:flex-row md:items-center md:justify-between text-sm text-gray-500 border-t border-white/10 pt-6">
+                <p>&copy; 2025 ParkIQ. สงวนลิขสิทธิ์</p>
+                <p class="mt-2 md:mt-0">พัฒนาโดยทีม ParkIQ - วิทยาลัยเทคนิคเลย</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
+
