@@ -42,8 +42,16 @@ $last_sort_order = $max_order_result->fetch_assoc()['max_order'];
 <div class="container mx-auto px-2 sm:px-4 py-8 max-w-7xl"> 
     
     <!-- Tab Navigation -->
-    <div class="mb-8" data-aos="fade-down">
-        <div class="flex overflow-x-auto pb-4 gap-2 no-scrollbar scroll-smooth" id="newsTabs" role="tablist">
+    <div class="mb-8 relative group" data-aos="fade-down">
+        <!-- Scroll Fade Effect & Arrow (Right) - Visible on mobile/tablet -->
+        <div id="scroll-indicator-right" class="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white via-white/80 to-transparent z-10 md:hidden flex items-center justify-end pr-1 transition-opacity duration-300">
+            <button onclick="scrollTabs('right')" class="bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-md hover:bg-white text-green-600 border border-green-100 animate-pulse">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <!-- Scrollable Container -->
+        <div class="flex overflow-x-auto pb-4 pt-2 px-1 gap-3 no-scrollbar scroll-smooth relative z-0" id="newsTabs" role="tablist" onscroll="checkScroll()">
             <?php foreach ($categories as $index => $cat): 
                 $isActive = ($index === 0);
                 $tabId = 'tab-btn-' . $cat['id'];
@@ -55,9 +63,9 @@ $last_sort_order = $max_order_result->fetch_assoc()['max_order'];
                     role="tab"
                     aria-controls="<?= $contentId ?>"
                     aria-selected="<?= $isActive ? 'true' : 'false' ?>"
-                    class="tab-button whitespace-nowrap px-6 py-3 rounded-full text-base font-semibold transition-all duration-300 border-2 
+                    class="tab-button whitespace-nowrap px-5 py-2.5 rounded-full text-sm md:text-base font-semibold transition-all duration-300 border-2 flex-shrink-0
                     <?= $isActive 
-                        ? 'bg-green-600 text-white border-green-600 shadow-lg scale-105' 
+                        ? 'bg-green-600 text-white border-green-600 shadow-md scale-100' 
                         : 'bg-white text-gray-600 border-gray-200 hover:border-green-400 hover:text-green-600' 
                     ?>"
                 >
@@ -69,6 +77,8 @@ $last_sort_order = $max_order_result->fetch_assoc()['max_order'];
                     <?= htmlspecialchars($cat['name']) ?>
                 </button>
             <?php endforeach; ?>
+            <!-- Spacer to ensure last item isn't covered by fade -->
+            <div class="w-8 flex-shrink-0 md:hidden"></div>
         </div>
     </div>
 
@@ -275,6 +285,32 @@ function switchTab(catId) {
         }, 10);
     }
 }
+
+
+function scrollTabs(direction) {
+    const container = document.getElementById('newsTabs');
+    const scrollAmount = 200; // Adjust scroll distance as needed
+    if (direction === 'right') {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    } else {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    }
+}
+
+function checkScroll() {
+    const container = document.getElementById('newsTabs');
+    const indicatorRight = document.getElementById('scroll-indicator-right');
+    
+    // Check if scrolled to the end (allow 5px buffer)
+    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+        indicatorRight.classList.add('opacity-0', 'pointer-events-none');
+    } else {
+        indicatorRight.classList.remove('opacity-0', 'pointer-events-none');
+    }
+}
+
+// Initial check on load
+document.addEventListener('DOMContentLoaded', checkScroll);
 
 // Restore original AOS initialization and utility checks
 if (typeof AOS !== 'undefined') {

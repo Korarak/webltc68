@@ -309,37 +309,54 @@ if (file_exists($lang_file)) {
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-800"><?= $lang['consultant_title'] ?></h2>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Consultant Card 1 -->
-                <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden flex flex-row items-center p-4 gap-4 card-shadow">
-                    <img src="https://ui-avatars.com/api/?name=Admin+LTC&background=0284c7&color=fff" class="w-20 h-20 rounded-full object-cover shadow-sm">
-                    <div>
-                        <h4 class="font-bold text-gray-800 text-lg">อาจารย์ Xxxxxx Xxxxxx</h4>
-                        <p class="text-sm text-gray-500 mb-1"><?= $lang['consultant_role_trainer_admin'] ?></p>
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded font-semibold">MTCNA</span>
-                        <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded font-semibold">MTCRE</span>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <?php
+                $trainers = [
+                    [
+                        'file' => 'mr-korarak-mtcna-mtctce.png',
+                        'name' => 'Mr. Korarak',
+                        'role' => $lang['consultant_role_trainer_admin'],
+                        'certs' => ['MTCNA', 'MTCTCE']
+                    ],
+                    [
+                        'file' => 'mr-chaiyut-mtcna-mtctce.png',
+                        'name' => 'Mr. Chaiyut',
+                        'role' => $lang['consultant_role_trainer'],
+                        'certs' => ['MTCNA', 'MTCTCE']
+                    ],
+                    [
+                        'file' => 'miss-chanidapha-mtcna-mtctce.png',
+                        'name' => 'Miss Chanidapha',
+                        'role' => $lang['consultant_role_trainer'],
+                        'certs' => ['MTCNA', 'MTCTCE']
+                    ],
+                    [
+                        'file' => 'miss-sawarin-mtcna.png',
+                        'name' => 'Miss Sawarin',
+                        'role' => $lang['consultant_role_assistant'],
+                        'certs' => ['MTCNA']
+                    ]
+                ];
 
-                <!-- Consultant Card 2 -->
-                <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden flex flex-row items-center p-4 gap-4 card-shadow">
-                    <img src="https://ui-avatars.com/api/?name=Staff+One&background=0284c7&color=fff" class="w-20 h-20 rounded-full object-cover shadow-sm">
+                foreach ($trainers as $trainer) {
+                ?>
+                <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden p-4 flex flex-col items-center text-center card-shadow hover:bg-gray-50 transition">
+                    <div class="w-24 h-24 mb-4 relative">
+                        <img src="images/trainer/<?= $trainer['file'] ?>" class="w-full h-full rounded-full object-cover shadow-md border-2 border-white ring-2 ring-gray-100">
+                    </div>
                     <div>
-                        <h4 class="font-bold text-gray-800 text-lg">อาจารย์ Xxxxxx Xxxxxx</h4>
-                        <p class="text-sm text-gray-500 mb-1"><?= $lang['consultant_role_trainer'] ?></p>
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded font-semibold">MTCNA</span>
+                        <h4 class="font-bold text-gray-800 text-lg mb-1"><?= $trainer['name'] ?></h4>
+                        <p class="text-xs text-gray-500 mb-3 uppercase tracking-wide"><?= $trainer['role'] ?></p>
+                        <div class="flex flex-wrap justify-center gap-1.5">
+                            <?php foreach ($trainer['certs'] as $cert): 
+                                $bg_color = ($cert == 'MTCNA') ? 'bg-blue-100 text-blue-800' : 'bg-indigo-100 text-indigo-800';
+                            ?>
+                            <span class="inline-block <?= $bg_color ?> text-[10px] px-2 py-0.5 rounded-full font-bold border border-white shadow-sm hover:scale-105 transition"><?= $cert ?></span>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
-
-                 <!-- Consultant Card 3 -->
-                <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden flex flex-row items-center p-4 gap-4 card-shadow">
-                     <img src="https://ui-avatars.com/api/?name=Staff+Two&background=0284c7&color=fff" class="w-20 h-20 rounded-full object-cover shadow-sm">
-                    <div>
-                        <h4 class="font-bold text-gray-800 text-lg">อาจารย์ Xxxxxx Xxxxxx</h4>
-                        <p class="text-sm text-gray-500 mb-1"><?= $lang['consultant_role_assistant'] ?></p>
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded font-semibold">MTCNA</span>
-                    </div>
-                </div>
+                <?php } ?>
             </div>
         </section>
 

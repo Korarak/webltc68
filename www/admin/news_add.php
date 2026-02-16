@@ -144,9 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ],
         fontNames: ['Sarabun', 'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New'],
         callbacks: {
-            onImageUpload: function(files) {
-                // Future: Upload image to server instead of Base64 if needed
-            }
+            // Default behavior handles Base64 insert
         }
     });
 

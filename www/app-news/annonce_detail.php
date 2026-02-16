@@ -152,7 +152,7 @@ $mysqli1->close();
           <div class="rounded border p-2 shadow-lg">
             <embed src="<?= $file_url ?>" type="application/pdf" width="100%" height="1000px" class="rounded border" />
             <p class="mt-4 text-sm text-gray-600 text-center">
-              หาก PDF ไม่แสดง <a href="<?= $file_url ?>" target="_blank" class="text-blue-600 underline hover:text-blue-800 font-medium">คลิกที่นี่เพื่อดาวน์โหลดไฟล์ PDF</a>
+              หาก PDF ไม่แสดง <a href="<?= $file_url ?>" download="<?= $file_name ?>" target="_blank" class="text-blue-600 underline hover:text-blue-800 font-medium">คลิกที่นี่เพื่อดาวน์โหลดไฟล์ PDF</a>
             </p>
           </div>
         <?php elseif (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])): ?>
@@ -161,7 +161,7 @@ $mysqli1->close();
               <img src="<?= $file_url ?>" alt="<?= $file_name ?>"
                    class="rounded shadow-md w-full max-h-[500px] object-contain mx-auto hover:opacity-90 transition duration-300 cursor-zoom-in">
             </a>
-            <p class="text-sm text-gray-600 mt-2 font-medium"><?= $file_name ?></p>
+            <!-- <p class="text-sm text-gray-600 mt-2 font-medium"><?= $file_name ?></p> -->
           </div>
 
         <?php elseif (in_array($ext, ['mp4', 'webm', 'ogg', 'mov', 'avi'])): ?>
@@ -178,8 +178,8 @@ $mysqli1->close();
               </video>
             </div>
             <div class="flex justify-between items-center mt-3 px-2">
-              <p class="text-sm text-gray-600 font-medium"><?= $file_name ?></p>
-              <a href="<?= $file_url ?>" download class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 transition">
+              <!-- <p class="text-sm text-gray-600 font-medium"><?= $file_name ?></p> -->
+              <a href="<?= $file_url ?>" download="<?= $file_name ?>" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 transition">
                 <i class="fas fa-download"></i>
                 ดาวน์โหลดวิดีโอ
               </a>
@@ -196,16 +196,16 @@ $mysqli1->close();
               elseif (in_array($ext, ['zip', 'rar'])) $icon = 'fas fa-file-archive text-purple-500';
             ?>
             <i class="<?= $icon ?> text-3xl mb-2"></i>
-            <p class="text-sm text-gray-700 font-medium mb-2"><?= $file_name ?> (<?= strtoupper($ext) ?>)</p>
-            <a href="<?= $file_url ?>" target="_blank" class="text-blue-600 underline hover:text-blue-800 font-semibold flex items-center justify-center gap-2">
+            <!-- <p class="text-sm text-gray-700 font-medium mb-2"><?= $file_name ?> (<?= strtoupper($ext) ?>)</p> -->
+            <a href="<?= $file_url ?>" download="<?= $file_name ?>" target="_blank" class="text-blue-600 underline hover:text-blue-800 font-semibold flex items-center justify-center gap-2">
                 <i class="fas fa-download"></i> ดาวน์โหลดไฟล์แนบ
             </a>
           </div>
         <?php else: ?>
           <div class="p-4 bg-gray-100 rounded border text-center mb-4 shadow-sm">
             <i class="fas fa-file text-gray-500 text-3xl mb-2"></i>
-            <p class="text-sm text-gray-700 font-medium mb-2"><?= $file_name ?></p>
-            <a href="<?= $file_url ?>" target="_blank" class="text-blue-600 underline hover:text-blue-800 font-semibold">ดาวน์โหลดไฟล์แนบ</a>
+            <!-- <p class="text-sm text-gray-700 font-medium mb-2"><?= $file_name ?></p> -->
+            <a href="<?= $file_url ?>" download="<?= $file_name ?>" target="_blank" class="text-blue-600 underline hover:text-blue-800 font-semibold">ดาวน์โหลดไฟล์แนบ</a>
           </div>
         <?php endif; ?>
       <?php endforeach; ?>

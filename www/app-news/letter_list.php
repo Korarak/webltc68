@@ -39,11 +39,11 @@ function getThaiMonth($monthNumber) {
 }
 ?>
 <!-- Breadcrumb Navigation -->
-<nav class="text-sm text-gray-600 mt-12 mb-4 max-w-7xl ">
+<nav class="text-sm text-gray-600 mt-[84px] mb-4 max-w-7xl mx-auto px-4">
   <ol class="list-reset flex items-center space-x-2">
-    <li><a href="/" class="hover:underline hover:text-green-600">หน้าแรก</a></li>
+    <li><a href="/" class="hover:underline hover:text-green-600 font-medium">หน้าแรก</a></li>
     <li>/</li>
-    <li><a href="letter_list.php" class="hover:underline hover:text-green-600">จดหมายข่าว</a></li>
+    <li><span class="text-green-700 font-bold">จดหมายข่าว</span></li>
   </ol>
 </nav>
 

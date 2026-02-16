@@ -190,6 +190,7 @@ $cats = $conn->query("SELECT * FROM categories ORDER BY sort_order ASC");
                             </div>
                         </div>
                  <?php endwhile; ?>
+                 <input type="hidden" name="delete_at_id" value="">
                  <input type="hidden" name="delete_at_path" value="">
                  <input type="hidden" name="attachment_order" id="attachment_order" value="">
              </div>

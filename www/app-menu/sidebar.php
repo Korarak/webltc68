@@ -204,7 +204,7 @@ main {
 }
 
 @media (min-width: 1536px) {
-  body.sidebar-open main {
+  body.sidebar-open main.shiftable-content {
     /* ปรับ margin-left ให้พอดีกับ w-56 (14rem) + gap */
     margin-left: 15rem; 
   }

@@ -128,7 +128,16 @@
   ?>
   <!-- Main content -->
 
-  <?= $content ?? ''; ?>
+  <!-- Main content -->
+  <?php 
+  // Check if it's home page for sidebar shift logic
+  // $current_page is already basename($_SERVER['REQUEST_URI'])
+  $is_home = ($current_page === '' || $current_page === 'index.php' || $current_page === 'www');
+  $main_class = $is_home ? '' : 'shiftable-content';
+  ?>
+  <main class="<?= $main_class ?>">
+    <?= $content ?? ''; ?>
+  </main>
 
   <!-- Footer -->
   <?php require_once "app-footer/footer.php"; ?>
