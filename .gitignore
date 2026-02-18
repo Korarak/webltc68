@@ -1,6 +1,32 @@
+# Environment Variables
+.env
+.env*
 *.env
-*.env-production
-docker-compose.yml
-Dockerfile
+
+# Dependencies
+www/vendor/
+node_modules/
+
+# User Uploads (Keep directory but ignore content)
+www/uploads/*
+!www/uploads/.gitkeep
+
+# Logs
+*.log
+error_log
+access_log
+
+# Database Exports & Data
 *.sql
-mysql_data
+mysql_data/
+mysql_backup/
+
+# IDE & System Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Sensitive Configs (if not using env)
+# www/config.php (Currently uses getenv, so sage)

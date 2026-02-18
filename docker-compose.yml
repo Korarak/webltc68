@@ -1,0 +1,46 @@
+services:
+  web:
+    build:
+      context: .
+    container_name: php_web
+    restart: always
+    volumes:
+      - ./www:/var/www/html
+    ports:
+      - "8001:80"
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_DATABASE1: ${MYSQL_DATABASE1}
+      MYSQL_DATABASE2: ${MYSQL_DATABASE2}
+      MYSQL_DATABASE3: ${MYSQL_DATABASE3}
+      MYSQL_DATABASE4: ${MYSQL_DATABASE4}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  db:
+    image: mariadb:latest
+    container_name: mariadb-webltc
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE1: ${MYSQL_DATABASE1}
+      MYSQL_DATABASE2: ${MYSQL_DATABASE2}
+      MYSQL_DATABASE3: ${MYSQL_DATABASE3}
+      MYSQL_DATABASE4: ${MYSQL_DATABASE4}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "8002:80"
+
+volumes:
+  db_data:
