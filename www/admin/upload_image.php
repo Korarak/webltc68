@@ -23,6 +23,10 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
     $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     if (in_array($ext, $allowed)) {
         if (move_uploaded_file($tmp_name, $target_file)) {
+            // บีบอัดภาพอัตโนมัติ
+            require_once __DIR__ . '/../includes/optimize_image.php';
+            optimizeImage($target_file, 1200, 80);
+
             $response = [
                 'success' => 1,
                 'file' => [

@@ -56,7 +56,8 @@ if ($is_homepage && !empty($letter['carousel_pic'])):
       ?>
       <img src="<?= htmlspecialchars($img_src); ?>"
            alt="Modal Image"
-           class="max-w-full max-h-[80vh] object-contain rounded shadow" />
+           class="max-w-full max-h-[80vh] object-contain rounded shadow"
+           loading="lazy" />
     </div>
   </div>
 </div>

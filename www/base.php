@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/init.php'; ?>
 <!doctype html>
 <!-- <html lang="th" class="monochrome"> -->
 <html lang="th">
@@ -5,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>วิทยาลัยเทคนิคเลย - Loei Technical College</title>
+  <title><?php if (!empty($title) && $title !== 'หน้าแรก'): ?><?= htmlspecialchars($title) ?> | <?php endif; ?>วิทยาลัยเทคนิคเลย</title>
   <meta name="description" content="วิทยาลัยเทคนิคเลย สถาบันการศึกษาอาชีวศึกษาภาคตะวันออกเฉียงเหนือ 1">
   <meta name="author" content="Korarak Promjabok">
   <?php if (isset($og_title)): ?>
@@ -37,6 +38,7 @@
   <!-- FontAwesome & Material Icons -->
   <!-- FontAwesome (Local removed: 404) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+  <link rel="stylesheet" href="/css/shared.css">
 
   <style>
     /* Monochrome Class */
@@ -121,8 +123,9 @@
   <!-- Navbar -->
   <?php require_once "app-menu/top_nav.php"; ?>
   <?php
-  $current_page = basename($_SERVER['REQUEST_URI']);
-  if ($current_page === '') {
+  $request_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+  $current_page = basename($request_path);
+  if ($request_path === '/' || $current_page === '' || $current_page === 'index.php') {
     require_once "app-menu/carousel.php";
   }
   ?>
@@ -132,7 +135,7 @@
   <?php 
   // Check if it's home page for sidebar shift logic
   // $current_page is already basename($_SERVER['REQUEST_URI'])
-  $is_home = ($current_page === '' || $current_page === 'index.php' || $current_page === 'www');
+  $is_home = ($request_path === '/' || $current_page === '' || $current_page === 'index.php');
   $main_class = $is_home ? '' : 'shiftable-content';
   ?>
   <main class="<?= $main_class ?>">
@@ -175,6 +178,29 @@
     function scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    /* --- Image Shimmer Placeholder --- */
+    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+      // ข้ามภาพที่โหลดเสร็จแล้ว หรืออยู่ใน wrapper อยู่แล้ว
+      if (img.complete || img.parentElement.classList.contains('img-shimmer')) return;
+      
+      const wrapper = document.createElement('div');
+      wrapper.className = 'img-shimmer';
+      // คัดลอก aspect-ratio class ของ parent (ถ้ามี)
+      const style = window.getComputedStyle(img.parentElement);
+      if (style.aspectRatio && style.aspectRatio !== 'auto') {
+        wrapper.style.aspectRatio = style.aspectRatio;
+      }
+      img.parentElement.insertBefore(wrapper, img);
+      wrapper.appendChild(img);
+      
+      const onLoad = () => {
+        wrapper.classList.add('loaded');
+        img.removeEventListener('load', onLoad);
+      };
+      img.addEventListener('load', onLoad);
+      if (img.complete) onLoad();
+    });
   </script>
 </body>
 

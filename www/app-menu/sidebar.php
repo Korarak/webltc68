@@ -12,21 +12,31 @@ if (!function_exists('normalize_url')) {
 }
 ?>
 
-<button id="sidebarToggle" class="fixed left-4 top-20 z-[60] bg-white/80 hover:bg-emerald-600 text-emerald-700 hover:text-white backdrop-blur-sm border border-emerald-100 p-2 rounded-lg shadow-lg transition-all duration-300 group">
-  <i class="fas fa-bars text-base"></i>
+<button id="sidebarToggle" class="fixed left-4 top-20 z-[60] bg-white hover:bg-emerald-600 text-emerald-600 hover:text-white backdrop-blur-sm border border-gray-200 hover:border-emerald-600 w-10 h-10 flex items-center justify-center rounded-xl shadow-lg hover:shadow-emerald-200 transition-all duration-300">
+  <i class="fas fa-bars text-sm"></i>
 </button>
 
 <div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
 
-<div id="sidebar" class="fixed top-20 left-4 bottom-4 w-56 bg-white/95 backdrop-blur-md shadow-2xl z-50 transform -translate-x-[120%] transition-transform duration-300 overflow-hidden flex flex-col rounded-2xl border border-white/50 ring-1 ring-gray-900/5">
+<div id="sidebar" class="fixed top-20 left-4 bottom-4 w-64 bg-white shadow-2xl z-50 transform -translate-x-[120%] transition-transform duration-300 overflow-hidden flex flex-col rounded-2xl border border-gray-200">
   
-  <div class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-2 flex items-center justify-end shadow-md shrink-0">
-    <button id="sidebarClose" class="text-black hover:text-emerald-100 hover:bg-white/20 p-1 rounded transition">
-      <i class="fa fa-arrow-left text-base text-white"></i>
+  <!-- Sidebar Header -->
+  <div class="bg-gradient-to-r from-emerald-600 to-teal-500 text-white px-4 py-3 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+        <i class="fas fa-th-large text-sm"></i>
+      </div>
+      <div>
+        <span class="font-semibold text-sm tracking-wide">เมนู</span>
+      </div>
+    </div>
+    <button id="sidebarClose" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white/20 transition-colors">
+      <i class="fa fa-times text-sm text-white/80 hover:text-white"></i>
     </button>
   </div>
 
-  <div class="p-2 overflow-y-auto flex-1 custom-scrollbar">
+  <!-- Scrollable Menu Content -->
+  <div class="p-3 overflow-y-auto flex-1 custom-scrollbar">
 
     <?php
     $sidebarMenusQuery = "SELECT * FROM main_menus WHERE visible = 1 AND position_type IN ('sidebar', 'both') ORDER BY menu_order ASC";
@@ -35,9 +45,7 @@ if (!function_exists('normalize_url')) {
         $sidebarMenusResult = $mysqli4->query($sidebarMenusQuery);
         
         if ($sidebarMenusResult && $sidebarMenusResult->num_rows > 0) {
-          echo '<div class="mb-3">';
-          echo '<h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">เมนูทั้งหมด</h3>';
-          echo '<div class="space-y-0.5">';
+          echo '<div class="space-y-1">';
           
           while ($menu = $sidebarMenusResult->fetch_assoc()) {
             $menuId = $menu['menu_id'];
@@ -47,7 +55,8 @@ if (!function_exists('normalize_url')) {
             // ตรวจสอบ target_blank ของเมนูหลัก
             $target = ($menu['target_blank'] == 1) ? 'target="_blank"' : '';
 
-            $iconHtml = '<div class="w-7 h-7 flex items-center justify-center rounded bg-gray-100 text-gray-500 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors"><i class="fas ' . ($isDropdown ? 'fa-folder' : 'fa-link') . ' text-[11px]"></i></div>';
+            $iconClass = $isDropdown ? 'fa-folder-open' : 'fa-link';
+            $iconHtml = '<div class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-50 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-200 shrink-0"><i class="fas ' . $iconClass . ' text-xs"></i></div>';
 
             if ($isDropdown) {
               $subMenuQuery = "SELECT * FROM sub_main_menus WHERE menu_id = $menuId AND visible = 1 ORDER BY submenu_order ASC";
@@ -55,28 +64,28 @@ if (!function_exists('normalize_url')) {
               
               if ($subMenuResult && $subMenuResult->num_rows > 0) {
                 // Dropdown Structure
-                echo '<div class="dropdown-menu group">';
-                echo '<button class="dropdown-toggle flex items-center justify-between w-full text-gray-600 hover:text-emerald-700 p-1 rounded-lg hover:bg-emerald-50/80 transition-all duration-200 font-medium text-xs">';
-                echo '<span class="flex items-center space-x-2">';
+                echo '<div class="dropdown-menu">';
+                echo '<button class="dropdown-toggle flex items-center justify-between w-full text-gray-600 hover:text-emerald-700 px-2 py-2 rounded-xl hover:bg-emerald-50 transition-all duration-200 group">';
+                echo '<span class="flex items-center gap-2.5">';
                 echo $iconHtml;
-                echo '<span class="truncate w-32 text-left">' . htmlspecialchars($menuName) . '</span>';
+                echo '<span class="font-medium text-[13px] truncate max-w-[140px] text-left">' . htmlspecialchars($menuName) . '</span>';
                 echo '</span>';
-                echo '<i class="fas fa-chevron-down text-[9px] text-gray-400 transition-transform duration-300 group-hover:text-emerald-500 transform"></i>';
+                echo '<i class="fas fa-chevron-down text-[10px] text-gray-400 transition-transform duration-300 group-hover:text-emerald-500"></i>';
                 echo '</button>';
                 
                 // Submenu Items
-                echo '<div class="dropdown-content hidden space-y-0.5 ml-3 mt-0.5 border-l-2 border-emerald-100 pl-1.5">';
+                echo '<div class="dropdown-content hidden ml-4 mt-1 mb-1 space-y-0.5 border-l-2 border-emerald-100 pl-3">';
                 while ($subMenu = $subMenuResult->fetch_assoc()) {
                   // ตรวจสอบ target_blank ของเมนูย่อย
                   $subTarget = ($subMenu['target_blank'] == 1) ? 'target="_blank"' : '';
                   
-                  echo '<a href="' . htmlspecialchars(normalize_url($subMenu['submenu_link'])) . '" ' . $subTarget . ' class="flex items-center space-x-2 text-gray-500 hover:text-emerald-600 py-1 px-2 rounded hover:bg-emerald-50 transition text-[11px]">';
-                  echo '<div class="w-1 h-1 rounded-full bg-gray-300 group-hover:bg-emerald-400"></div>';
+                  echo '<a href="' . htmlspecialchars(normalize_url($subMenu['submenu_link'])) . '" ' . $subTarget . ' class="flex items-center gap-2.5 text-gray-500 hover:text-emerald-600 py-1.5 px-2.5 rounded-lg hover:bg-emerald-50 transition-all duration-200 group text-[12px]">';
+                  echo '<div class="w-1.5 h-1.5 rounded-full bg-gray-300 group-hover:bg-emerald-400 shrink-0 transition-colors"></div>';
                   echo '<span class="truncate">' . htmlspecialchars($subMenu['submenu_name']) . '</span>';
                   
                   // ไอคอนลูกศรเล็กๆ ถ้าเป็น New Tab
                   if ($subTarget) {
-                      echo '<i class="fas fa-external-link-alt text-[8px] opacity-50 ml-auto"></i>';
+                      echo '<i class="fas fa-external-link-alt text-[8px] opacity-40 ml-auto"></i>';
                   }
                   
                   echo '</a>';
@@ -85,25 +94,33 @@ if (!function_exists('normalize_url')) {
 
               } else {
                  // Dropdown empty -> Fallback to Link
-                 echo '<a href="' . htmlspecialchars(normalize_url($menuLink)) . '" ' . $target . ' class="flex items-center space-x-2 text-gray-600 hover:text-emerald-700 p-1 rounded-lg hover:bg-emerald-50/80 transition-all duration-200 group text-xs">';
+                 echo '<a href="' . htmlspecialchars(normalize_url($menuLink)) . '" ' . $target . ' class="flex items-center gap-2.5 text-gray-600 hover:text-emerald-700 px-2 py-2 rounded-xl hover:bg-emerald-50 transition-all duration-200 group">';
                  echo $iconHtml;
-                 echo '<span class="font-medium truncate">' . htmlspecialchars($menuName) . '</span>';
-                 if ($target) echo '<i class="fas fa-external-link-alt text-[9px] opacity-50 ml-auto mr-1"></i>';
+                 echo '<span class="font-medium text-[13px] truncate">' . htmlspecialchars($menuName) . '</span>';
+                 if ($target) echo '<i class="fas fa-external-link-alt text-[9px] opacity-40 ml-auto mr-1"></i>';
                  echo '</a>';
               }
             } else {
               // Normal Link
-              echo '<a href="' . htmlspecialchars(normalize_url($menuLink)) . '" ' . $target . ' class="flex items-center space-x-2 text-gray-600 hover:text-emerald-700 p-1 rounded-lg hover:bg-emerald-50/80 transition-all duration-200 group text-xs">';
+              echo '<a href="' . htmlspecialchars(normalize_url($menuLink)) . '" ' . $target . ' class="flex items-center gap-2.5 text-gray-600 hover:text-emerald-700 px-2 py-2 rounded-xl hover:bg-emerald-50 transition-all duration-200 group">';
               echo $iconHtml;
-              echo '<span class="font-medium truncate">' . htmlspecialchars($menuName) . '</span>';
-              if ($target) echo '<i class="fas fa-external-link-alt text-[9px] opacity-50 ml-auto mr-1"></i>';
+              echo '<span class="font-medium text-[13px] truncate">' . htmlspecialchars($menuName) . '</span>';
+              if ($target) echo '<i class="fas fa-external-link-alt text-[9px] opacity-40 ml-auto mr-1"></i>';
               echo '</a>';
             }
           }
-          echo '</div></div>';
+          echo '</div>';
         }
     }
     ?>
+  </div>
+
+  <!-- Sidebar Footer -->
+  <div class="px-4 py-3 border-t border-gray-100 shrink-0">
+    <div class="flex items-center gap-2 text-[11px] text-gray-400">
+      <i class="fas fa-info-circle"></i>
+      <span>วิทยาลัยเทคนิคเลย</span>
+    </div>
   </div>
 </div>
 
@@ -205,8 +222,7 @@ main {
 
 @media (min-width: 1536px) {
   body.sidebar-open main.shiftable-content {
-    /* ปรับ margin-left ให้พอดีกับ w-56 (14rem) + gap */
-    margin-left: 15rem; 
+    margin-left: 17.5rem; 
   }
   
   #sidebar {
@@ -218,8 +234,18 @@ main {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.custom-scrollbar::-webkit-scrollbar { width: 3px; }
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Dropdown animation */
+.dropdown-content {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>

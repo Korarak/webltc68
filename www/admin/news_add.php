@@ -45,6 +45,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         // File Move: ../uploads/news/YYYY/MM/filename
                         
                         if (move_uploaded_file($_FILES['attachments']['tmp_name'][$key], $target_file)) {
+                            // บีบอัดเฉพาะไฟล์ภาพ
+                            if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                                require_once __DIR__ . '/../includes/optimize_image.php';
+                                optimizeImage($target_file, 1200, 80);
+                            }
+
                             $f_type = mime_content_type($target_file);
                             $f_size = round($_FILES['attachments']['size'][$key] / 1024);
                             

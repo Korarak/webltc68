@@ -1,0 +1,130 @@
+/* ===========================================
+   shared.css — CSS ที่ใช้ร่วมกันหลายหน้า
+   Include จาก base.php เท่านั้น
+   =========================================== */
+
+/* --- Sheen Button Effect --- */
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent 45%, rgba(255, 255, 255, .45) 50%, transparent 55%);
+  transform: translateX(-120%) skewX(-20deg);
+}
+
+.btn-sheen:hover::after {
+  animation: sheen 950ms ease-in-out 1;
+}
+
+@keyframes sheen {
+  0% {
+    transform: translateX(-120%) skewX(-20deg);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+
+  100% {
+    transform: translateX(120%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+/* --- Soft Shadow --- */
+.soft-shadow {
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, .25);
+}
+
+/* --- Card Float Animation --- */
+.card-float:hover {
+  animation: float-y 1.6s ease-in-out infinite;
+}
+
+@keyframes float-y {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* --- Glow Pulse --- */
+.glow {
+  animation: pulse-glow 2.6s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(16, 185, 129, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 24px rgba(16, 185, 129, .35);
+  }
+}
+
+/* --- Ring Hover --- */
+.ring-hover:hover {
+  box-shadow: 0 0 0 6px rgba(16, 185, 129, .12);
+}
+
+/* --- Timeline Dot --- */
+.timeline-dot {
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.20);
+}
+
+/* --- Image Shimmer Placeholder --- */
+.img-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.img-shimmer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: shimmer 1.5s ease-in-out infinite;
+  z-index: 1;
+}
+
+.img-shimmer.loaded::before {
+  display: none;
+}
+
+.img-shimmer img {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.img-shimmer.loaded img {
+  opacity: 1;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}

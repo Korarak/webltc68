@@ -114,7 +114,8 @@ while ($row_boss = $result_boss->fetch_assoc()) {
               <div class="aspect-[3/4] overflow-hidden">
                   <img src="/<?= htmlspecialchars($row['letter_attenmath']); ?>"
                        alt="จดหมายข่าว"
-                       class="w-full h-full object-cover group-hover:scale-110">
+                       class="w-full h-full object-cover group-hover:scale-110"
+                       loading="lazy">
               </div>
 
               <div class="p-2 text-center">

@@ -27,6 +27,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $target_db = "uploads/newsletter/" . $filename;
         
         if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_physical)) {
+            // บีบอัดภาพอัตโนมัติ
+            require_once __DIR__ . '/../includes/optimize_image.php';
+            optimizeImage($target_physical, 800, 80);
+
             // Remove old file if exists
             // Fix path relative to admin/
             $old_file_physical = "../" . $old_file;

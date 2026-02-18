@@ -48,7 +48,8 @@ if ($badges_result && $badges_result->num_rows > 0) {
                 <!-- Image Badge Mode - Show ONLY Image (no shape) -->
                 <img src="<?= htmlspecialchars($badge['badge_image']) ?>" 
                      alt="<?= $badge_name ?>"
-                     class="h-16 object-cover shadow-lg rounded-md">
+                     class="h-16 object-cover shadow-lg rounded-md"
+                     loading="lazy">
             <?php else : ?>
                 <!-- Icon Badge Mode - Icon + Text -->
                 <div class="bg-white bg-opacity-20 h-16 w-16 flex items-center justify-center rounded-full backdrop-blur-sm shrink-0">

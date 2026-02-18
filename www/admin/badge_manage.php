@@ -59,6 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_badge'])) {
         $file_ext = strtolower(pathinfo($_FILES['badge_image']['name'], PATHINFO_EXTENSION));
         $file_name = uniqid('badge_') . '.' . $file_ext;
         if (move_uploaded_file($_FILES['badge_image']['tmp_name'], $upload_dir . $file_name)) {
+            require_once __DIR__ . '/../includes/optimize_image.php';
+            optimizeImage($upload_dir . $file_name, 400, 80);
             $badge_image = 'uploads/badges/' . $file_name;
         }
     }
@@ -95,6 +97,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_badge'])) {
         $file_ext = strtolower(pathinfo($_FILES['badge_image']['name'], PATHINFO_EXTENSION));
         $file_name = uniqid('badge_') . '.' . $file_ext;
         if (move_uploaded_file($_FILES['badge_image']['tmp_name'], $upload_dir . $file_name)) {
+            require_once __DIR__ . '/../includes/optimize_image.php';
+            optimizeImage($upload_dir . $file_name, 400, 80);
             $badge_image = 'uploads/badges/' . $file_name;
             if($old_img && file_exists('../'.$old_img)) unlink('../'.$old_img);
         }

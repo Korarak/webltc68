@@ -91,7 +91,8 @@ function getThaiMonth($monthNumber) {
                 ?>
                 <img src="<?= htmlspecialchars($view_url) ?>"
                      alt="thumbnail"
-                     class="w-20 h-12 object-cover rounded border">
+                     class="w-20 h-12 object-cover rounded border"
+                     loading="lazy">
               </td>
               <td class="py-2 px-4"><?= htmlspecialchars($row['letter_made']) ?></td>
               <td class="py-2 px-4">

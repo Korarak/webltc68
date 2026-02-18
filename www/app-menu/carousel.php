@@ -39,10 +39,21 @@ if (!empty($slides)):
                 if (strpos($clean_path, 'uploads/') !== 0) $clean_path = 'uploads/' . $clean_path;
                 $img_src = "../" . $clean_path;
             ?>
-            <img src="<?= htmlspecialchars($img_src) ?>"
-                 class="carousel-image"
-                 alt="Slide <?= $index + 1 ?>"
-                 loading="lazy">
+            <?php
+                // ตรวจหา WebP version
+                $pathInfo = pathinfo($img_src);
+                $webp_src = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '.webp';
+                $has_webp = file_exists($webp_src);
+            ?>
+            <picture>
+              <?php if ($has_webp): ?>
+                <source srcset="<?= htmlspecialchars($webp_src) ?>" type="image/webp">
+              <?php endif; ?>
+              <img src="<?= htmlspecialchars($img_src) ?>"
+                   class="carousel-image"
+                   alt="Slide <?= $index + 1 ?>"
+                   loading="<?= $index === 0 ? 'eager' : 'lazy' ?>">
+            </picture>
           </div>
 
           <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/50 to-transparent text-white text-center py-6 px-4">

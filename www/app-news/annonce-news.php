@@ -114,16 +114,16 @@ $last_sort_order = $max_order_result->fetch_assoc()['max_order'];
                             <?php if ($result->num_rows > 0): ?>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                                 <?php while ($row = $result->fetch_assoc()):
-                                    $title = strip_tags($row['title']);
+                                    $news_title = strip_tags($row['title']);
                                     $content = strip_tags($row['content']);
-                                    $title_display = mb_strlen($title, 'UTF-8') > 80 ? mb_substr($title, 0, 80, 'UTF-8') . '...' : $title;
+                                    $title_display = mb_strlen($news_title, 'UTF-8') > 80 ? mb_substr($news_title, 0, 80, 'UTF-8') . '...' : $news_title;
                                     $content_display = mb_strlen($content, 'UTF-8') > 150 ? mb_substr($content, 0, 150, 'UTF-8') . '...' : $content;
                                     $detail_url = 'app-news/annonce_detail.php?id=' . $row['id'];
                                     $cover_image = !empty($row['cover_image']) ? '../admin/' . htmlspecialchars($row['cover_image']) : './images/OG-TAG-Website-Loeitech.jpg';
                                 ?>
                                 <article class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col group transform hover:scale-[1.02]">
                                     <div class="relative overflow-hidden aspect-video">
-                                        <img src="<?= $cover_image ?>" alt="<?= htmlspecialchars($title) ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                                        <img src="<?= $cover_image ?>" alt="<?= htmlspecialchars($news_title) ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                     </div>
                                     <div class="p-4 md:p-5 flex flex-col flex-grow">
@@ -178,8 +178,8 @@ $last_sort_order = $max_order_result->fetch_assoc()['max_order'];
                             <div class="space-y-4">
                                 <?php if ($result->num_rows > 0): ?>
                                     <?php while ($row = $result->fetch_assoc()):
-                                        $title = strip_tags($row['title']);
-                                        $title_display = mb_strlen($title, 'UTF-8') > 100 ? mb_substr($title, 0, 100, 'UTF-8') . '...' : $title;
+                                        $news_title = strip_tags($row['title']);
+                                        $title_display = mb_strlen($news_title, 'UTF-8') > 100 ? mb_substr($news_title, 0, 100, 'UTF-8') . '...' : $news_title;
                                         $uploaddate = $row['upload_datetime'];
                                         $detail_url = 'app-news/annonce_detail.php?id=' . $row['id'];
                                     ?>

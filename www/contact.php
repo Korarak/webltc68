@@ -182,21 +182,6 @@ ob_start();
   </div>
 </section>
 
-<!-- small utilities for sheen & copy -->
-<style>
-  .btn-sheen { position: relative; overflow: hidden; }
-  .btn-sheen::after{
-    content:""; position:absolute; inset:0; pointer-events:none;
-    background: linear-gradient(120deg, transparent 45%, rgba(255,255,255,.45) 50%, transparent 55%);
-    transform: translateX(-120%) skewX(-20deg);
-  }
-  .btn-sheen:hover::after{ animation: sheen 950ms ease-in-out 1; }
-  @keyframes sheen{
-    0%{ transform: translateX(-120%) skewX(-20deg); opacity:0 }
-    50%{ opacity:.25 }
-    100%{ transform: translateX(120%) skewX(-20deg); opacity:0 }
-  }
-</style>
 
 <script>
   function copyText(text, btn){

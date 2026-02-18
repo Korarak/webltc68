@@ -143,6 +143,7 @@ if (file_exists($lang_file)) {
                 <div class="hidden md:flex space-x-8">
                     <a href="#home" class="nav-link text-gray-600 hover:text-primary-600 font-medium py-2"><?= $lang['nav_home'] ?></a>
                     <a href="#courses" class="nav-link text-gray-600 hover:text-primary-600 font-medium py-2"><?= $lang['nav_course'] ?></a>
+                    <a href="#usage" class="nav-link text-gray-600 hover:text-primary-600 font-medium py-2"><?= $lang['nav_usage'] ?></a>
                     <a href="#activity" class="nav-link text-gray-600 hover:text-primary-600 font-medium py-2"><?= $lang['nav_activity'] ?></a>
                     <a href="#consultants" class="nav-link text-gray-600 hover:text-primary-600 font-medium py-2"><?= $lang['nav_consultant'] ?></a>
                     <a href="#contact" class="nav-link text-gray-600 hover:text-primary-600 font-medium py-2"><?= $lang['nav_contact'] ?></a>
@@ -154,16 +155,38 @@ if (file_exists($lang_file)) {
                 </div>
 
                 <!-- Mobile Menu Button -->
-                <button class="md:hidden text-gray-600 hover:text-primary-600">
-                    <span class="material-symbols-outlined text-3xl">menu</span>
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden text-gray-600 hover:text-primary-600 focus:outline-none">
+                    <span id="menu-icon" class="material-symbols-outlined text-3xl transition-transform duration-300">menu</span>
                 </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                <div class="pb-4 pt-2 space-y-1 border-t border-gray-100">
+                    <a href="#home" onclick="closeMobileMenu()" class="block px-4 py-2.5 text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium transition"><?= $lang['nav_home'] ?></a>
+                    <a href="#courses" onclick="closeMobileMenu()" class="block px-4 py-2.5 text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium transition"><?= $lang['nav_course'] ?></a>
+                    <a href="#usage" onclick="closeMobileMenu()" class="block px-4 py-2.5 text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium transition"><?= $lang['nav_usage'] ?></a>
+                    <a href="#activity" onclick="closeMobileMenu()" class="block px-4 py-2.5 text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium transition"><?= $lang['nav_activity'] ?></a>
+                    <a href="#consultants" onclick="closeMobileMenu()" class="block px-4 py-2.5 text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium transition"><?= $lang['nav_consultant'] ?></a>
+                    <a href="#contact" onclick="closeMobileMenu()" class="block px-4 py-2.5 text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium transition"><?= $lang['nav_contact'] ?></a>
+                    <div class="flex items-center gap-3 px-4 pt-2 border-t border-gray-100 mt-2">
+                        <a href="?lang=th" class="font-medium hover:text-primary-600 <?= $_SESSION['lang'] == 'th' ? 'text-primary-600' : 'text-gray-400' ?>">TH</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="?lang=en" class="font-medium hover:text-primary-600 <?= $_SESSION['lang'] == 'en' ? 'text-primary-600' : 'text-gray-400' ?>">EN</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero / Slider -->
+    <?php
+    $hero_dir = __DIR__ . '/images/gallery';
+    $hero_images = glob($hero_dir . "/*.{jpg,jpeg,png,gif,webp}", GLOB_BRACE);
+    $hero_bg = $hero_images ? 'images/gallery/' . basename($hero_images[array_rand($hero_images)]) : 'https://images.unsplash.com/photo-1544197150-b99a580bbcbf?q=80&w=2071&auto=format&fit=crop';
+    ?>
     <header id="home" class="relative bg-gray-100 h-[500px] flex items-center justify-center overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1544197150-b99a580bbcbf?q=80&w=2071&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover">
+        <img src="<?= $hero_bg ?>" class="absolute inset-0 w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/40"></div>
         <div class="relative z-10 text-center text-white max-w-4xl px-4">
             <h1 class="text-4xl md:text-6xl font-bold mb-4"><?= $lang['hero_title'] ?></h1>
@@ -205,48 +228,139 @@ if (file_exists($lang_file)) {
                     <p class="text-lg font-medium text-gray-800 mb-2"><?= $lang['course_mtcna_subtitle'] ?></p>
                     <p class="text-gray-600 mb-6"><?= $lang['course_mtcna_desc'] ?></p>
                     
-                    <div class="space-y-6">
-                        <div>
-                            <h4 class="font-bold text-gray-800 mb-3 border-l-4 border-gray-300 pl-3"><?= $lang['course_equip_title'] ?></h4>
-                            <ul class="space-y-2 text-gray-600 ml-4">
-                                <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary-500 text-sm mt-1">check_circle</span> <?= $lang['course_equip_1'] ?></li>
-                                <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary-500 text-sm mt-1">check_circle</span> <?= $lang['course_equip_2'] ?></li>
-                                <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary-500 text-sm mt-1">check_circle</span> <?= $lang['course_equip_3'] ?></li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 class="font-bold text-gray-800 mb-3 border-l-4 border-gray-300 pl-3"><?= $lang['course_cert_title'] ?></h4>
-                            <ul class="space-y-2 text-gray-600 ml-4">
-                                <li class="flex items-start gap-2"><span class="material-symbols-outlined text-yellow-500 text-sm mt-1">stars</span> <?= $lang['course_cert_1'] ?></li>
-                                <li class="flex items-start gap-2"><span class="material-symbols-outlined text-yellow-500 text-sm mt-1">stars</span> <?= $lang['course_cert_2'] ?></li>
-                                <li class="flex items-start gap-2"><span class="material-symbols-outlined text-yellow-500 text-sm mt-1">stars</span> <?= $lang['course_cert_3'] ?></li>
-                            </ul>
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-4 border-l-4 border-primary-600 pl-3"><?= $lang['course_topics_title'] ?></h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <?php for ($i = 1; $i <= 9; $i++): ?>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-lg px-3 py-2.5 hover:bg-primary-50 transition">
+                                <span class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0"><?= $i ?></span>
+                                <span class="text-sm text-gray-700"><?= $lang['course_topic_' . $i] ?></span>
+                            </div>
+                            <?php endfor; ?>
                         </div>
                     </div>
                 </div>
                 <div class="bg-gray-50 flex items-center justify-center p-8">
-                    <!-- Placeholder for Video -->
-                    <div class="w-full aspect-video bg-gray-200 rounded-xl shadow-inner flex items-center justify-center overflow-hidden relative group cursor-pointer">
-                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2000&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-500" alt="Video Thumbnail">
-                        <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg z-10 group-hover:scale-110 transition">
-                            <span class="material-symbols-outlined text-primary-600 text-4xl ml-1">play_arrow</span>
-                        </div>
+                    <!-- YouTube Video -->
+                    <div class="w-full aspect-video rounded-xl shadow-inner overflow-hidden">
+                        <iframe 
+                            src="https://www.youtube.com/embed/gVDubJTegV4" 
+                            title="MikroTik MTCNA" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen 
+                            class="w-full h-full rounded-xl"
+                        ></iframe>
                     </div>
                 </div>
             </div>
-            
-            <!-- Additional Training Card -->
-            <div class="mt-12 bg-white rounded-xl shadow-lg border border-gray-100 p-8 flex flex-col md:flex-row items-center gap-8">
-                <div class="w-full md:w-1/3">
-                    <img src="https://help.mikrotik.com/docs/download/attachments/7340036/certification.png" alt="MTCNA Logo" class="w-full max-w-[250px] mx-auto">
+        </section>
+
+        <!-- Usage Section -->
+        <section id="usage" class="mb-24 scroll-mt-24">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-1.5 h-8 bg-emerald-600 rounded"></div>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800"><?= $lang['usage_title'] ?></h2>
+            </div>
+
+            <!-- Curriculum Integration -->
+            <div class="mb-16">
+                <h3 class="text-xl font-bold text-gray-700 mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-emerald-600">auto_stories</span> <?= $lang['usage_curriculum_title'] ?>
+                </h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Subject 1 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition card-shadow">
+                        <div class="text-emerald-600 font-bold mb-1"><?= $lang['usage_subject_1_title'] ?></div>
+                        <h4 class="font-bold text-gray-800 mb-3"><?= $lang['usage_subject_1_name'] ?></h4>
+                        <div class="text-sm font-semibold text-gray-600 mb-3 bg-emerald-50 p-2 rounded"><?= $lang['usage_subject_1_topic'] ?></div>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_1_content_1'] ?></li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_1_content_2'] ?></li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_1_content_3'] ?></li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_1_content_4'] ?></li>
+                        </ul>
+                    </div>
+                    <!-- Subject 2 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition card-shadow">
+                        <div class="text-emerald-600 font-bold mb-1"><?= $lang['usage_subject_2_title'] ?></div>
+                        <h4 class="font-bold text-gray-800 mb-3"><?= $lang['usage_subject_2_name'] ?></h4>
+                        <div class="text-sm font-semibold text-gray-600 mb-3 bg-emerald-50 p-2 rounded"><?= $lang['usage_subject_2_topic'] ?></div>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_2_content_1'] ?></li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_2_content_2'] ?></li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_2_content_3'] ?></li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_2_content_4'] ?></li>
+                        </ul>
+                    </div>
+                    <!-- Subject 3 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition card-shadow">
+                        <div class="text-emerald-600 font-bold mb-1"><?= $lang['usage_subject_3_title'] ?></div>
+                        <h4 class="font-bold text-gray-800 mb-3"><?= $lang['usage_subject_3_name'] ?></h4>
+                        <div class="text-sm font-semibold text-gray-600 mb-3 bg-emerald-50 p-2 rounded"><?= $lang['usage_subject_3_topic'] ?></div>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_3_content_1'] ?></li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_3_content_2'] ?></li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <?= $lang['usage_subject_3_content_3'] ?></li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="w-full md:w-2/3">
-                    <h3 class="text-xl font-bold text-gray-800 mb-2"><?= $lang['course_more_title'] ?></h3>
-                    <p class="text-gray-600 mb-6"><?= $lang['course_more_desc'] ?></p>
-                    <a href="https://mikrotik.com/training/about" target="_blank" class="inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-800 hover:bg-primary-50 px-4 py-2 rounded-lg transition">
-                        <?= $lang['course_more_btn'] ?> <span class="material-symbols-outlined text-sm">open_in_new</span>
-                    </a>
+            </div>
+
+            <!-- Infrastructure Integration -->
+            <div class="bg-emerald-50 rounded-2xl p-8 md:p-12 border border-emerald-100">
+                <h3 class="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-emerald-600">settings_input_component</span> <?= $lang['usage_infra_title'] ?>
+                </h3>
+                <p class="text-gray-600 mb-8"><?= $lang['usage_infra_arch_title'] ?>: <?= $lang['usage_infra_arch_desc'] ?></p>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm shrink-0">
+                                <span class="material-symbols-outlined text-emerald-600">router</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800"><?= $lang['usage_infra_core_title'] ?></h4>
+                                <p class="text-sm text-gray-600 mt-1"><?= $lang['usage_infra_core_desc'] ?></p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm shrink-0 p-1.5">
+                                <img src="images/logo/proxmox.png" alt="Proxmox" class="w-full h-full object-contain">
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800"><?= $lang['usage_infra_vfw_title'] ?></h4>
+                                <p class="text-sm text-gray-600 mt-1"><?= $lang['usage_infra_vfw_desc'] ?></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-emerald-100">
+                        <h4 class="font-bold text-emerald-600 mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">hub</span> <?= $lang['usage_infra_services_title'] ?>
+                        </h4>
+                        <ul class="space-y-4 text-sm text-gray-600">
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 shrink-0 text-xs font-bold">1</span>
+                                <span><?= $lang['usage_infra_svc_1'] ?></span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 shrink-0 text-xs font-bold">2</span>
+                                <span><?= $lang['usage_infra_svc_2'] ?></span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 shrink-0 text-xs font-bold">3</span>
+                                <span><?= $lang['usage_infra_svc_3'] ?></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Powered by logos -->
+                <div class="mt-8 pt-6 border-t border-emerald-200 flex flex-wrap items-center justify-center gap-8">
+                    <span class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Powered by</span>
+                    <img src="images/logo/MikroTik_Logo_(2022).svg" alt="MikroTik" class="h-8 opacity-60 hover:opacity-100 transition">
+                    <img src="images/logo/proxmox.png" alt="Proxmox VE" class="h-8 opacity-60 hover:opacity-100 transition">
                 </div>
             </div>
         </section>
@@ -268,14 +382,15 @@ if (file_exists($lang_file)) {
                 $images = glob($gallery_dir . "/*.{jpg,jpeg,png,gif,webp}", GLOB_BRACE);
                 
                 if ($images) {
+                    shuffle($images); // สุ่มลำดับภาพ
                     foreach ($images as $image) {
                         $filename = basename($image);
                         $file_url = $gallery_url . '/' . $filename;
                         ?>
-                        <div class="aspect-[4/3] rounded-lg overflow-hidden group relative card-shadow cursor-pointer transition-all duration-300 hover:z-10">
+                        <div class="aspect-[4/3] rounded-lg overflow-hidden group relative card-shadow cursor-pointer transition-all duration-300 hover:z-10" onclick="openLightbox('<?= $file_url ?>')">
                             <img src="<?= $file_url ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" loading="lazy">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none">
-                                <span class="material-symbols-outlined text-white text-3xl">visibility</span>
+                                <span class="material-symbols-outlined text-white text-3xl">zoom_in</span>
                             </div>
                         </div>
                         <?php
@@ -314,44 +429,46 @@ if (file_exists($lang_file)) {
                 $trainers = [
                     [
                         'file' => 'mr-korarak-mtcna-mtctce.png',
-                        'name' => 'Mr. Korarak',
+                        'name' => $lang['consultant_1_name'],
                         'role' => $lang['consultant_role_trainer_admin'],
                         'certs' => ['MTCNA', 'MTCTCE']
                     ],
                     [
-                        'file' => 'mr-chaiyut-mtcna-mtctce.png',
-                        'name' => 'Mr. Chaiyut',
-                        'role' => $lang['consultant_role_trainer'],
-                        'certs' => ['MTCNA', 'MTCTCE']
-                    ],
-                    [
                         'file' => 'miss-chanidapha-mtcna-mtctce.png',
-                        'name' => 'Miss Chanidapha',
+                        // Corrected filename from content.md to match actual file
+                        'name' => $lang['consultant_2_name'],
                         'role' => $lang['consultant_role_trainer'],
                         'certs' => ['MTCNA', 'MTCTCE']
                     ],
                     [
+                        'file' => 'mr-chaiyut-mtcna-mtctce.png',
+                        'name' => $lang['consultant_3_name'],
+                        'role' => $lang['consultant_role_trainer'],
+                        'certs' => ['MTCNA', 'MTCTCE']
+                    ],
+                    /* [
                         'file' => 'miss-sawarin-mtcna.png',
-                        'name' => 'Miss Sawarin',
+                        // Corrected filename from content.md to match actual file
+                        'name' => $lang['consultant_4_name'],
                         'role' => $lang['consultant_role_assistant'],
                         'certs' => ['MTCNA']
-                    ]
+                    ] */
                 ];
 
                 foreach ($trainers as $trainer) {
                 ?>
-                <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden p-4 flex flex-col items-center text-center card-shadow hover:bg-gray-50 transition">
-                    <div class="w-24 h-24 mb-4 relative">
-                        <img src="images/trainer/<?= $trainer['file'] ?>" class="w-full h-full rounded-full object-cover shadow-md border-2 border-white ring-2 ring-gray-100">
+                <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden p-6 flex flex-col items-center text-center card-shadow hover:bg-gray-50 transition min-h-[400px]">
+                    <div class="w-48 h-48 mb-6 relative"> <!-- Increased size from w-24 h-24 to w-48 h-48 -->
+                        <img src="images/trainer/<?= $trainer['file'] ?>" class="w-full h-full rounded-full object-cover shadow-md border-4 border-white ring-2 ring-gray-100">
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-800 text-lg mb-1"><?= $trainer['name'] ?></h4>
-                        <p class="text-xs text-gray-500 mb-3 uppercase tracking-wide"><?= $trainer['role'] ?></p>
-                        <div class="flex flex-wrap justify-center gap-1.5">
+                        <h4 class="font-bold text-gray-800 text-lg mb-2"><?= $trainer['name'] ?></h4>
+                        <p class="text-sm text-gray-500 mb-4 uppercase tracking-wide font-semibold"><?= $trainer['role'] ?></p>
+                        <div class="flex flex-wrap justify-center gap-2">
                             <?php foreach ($trainer['certs'] as $cert): 
                                 $bg_color = ($cert == 'MTCNA') ? 'bg-blue-100 text-blue-800' : 'bg-indigo-100 text-indigo-800';
                             ?>
-                            <span class="inline-block <?= $bg_color ?> text-[10px] px-2 py-0.5 rounded-full font-bold border border-white shadow-sm hover:scale-105 transition"><?= $cert ?></span>
+                            <span class="inline-block <?= $bg_color ?> text-xs px-3 py-1 rounded-full font-bold border border-white shadow-sm hover:scale-105 transition"><?= $cert ?></span>
                             <?php endforeach; ?>
                         </div>
                     </div>
@@ -425,6 +542,50 @@ if (file_exists($lang_file)) {
              </div>
         </div>
     </footer>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 z-[9999] bg-black/90 hidden items-center justify-center cursor-pointer" onclick="closeLightbox()">
+        <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 transition z-10">&times;</button>
+        <img id="lightbox-img" src="" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl" onclick="event.stopPropagation()">
+    </div>
+
+    <script>
+    // Lightbox
+    function openLightbox(src) {
+        const lb = document.getElementById('lightbox');
+        document.getElementById('lightbox-img').src = src;
+        lb.classList.remove('hidden');
+        lb.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        const lb = document.getElementById('lightbox');
+        lb.classList.add('hidden');
+        lb.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    // Mobile Menu Toggle
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = document.getElementById('menu-icon');
+        if (menu.style.maxHeight && menu.style.maxHeight !== '0px') {
+            closeMobileMenu();
+        } else {
+            menu.style.maxHeight = menu.scrollHeight + 'px';
+            icon.textContent = 'close';
+            icon.style.transform = 'rotate(90deg)';
+        }
+    }
+    function closeMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = document.getElementById('menu-icon');
+        menu.style.maxHeight = '0px';
+        icon.textContent = 'menu';
+        icon.style.transform = 'rotate(0deg)';
+    }
+    </script>
 
 </body>
 </html>

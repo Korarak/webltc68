@@ -41,6 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $db_path = "uploads/carousel/" . $filename;
 
             if (move_uploaded_file($_FILES['carousel_pic']['tmp_name'], $physical_path)) {
+                // บีบอัดภาพอัตโนมัติ
+                require_once __DIR__ . '/../includes/optimize_image.php';
+                optimizeImage($physical_path, 1600, 82);
+
                 // Delete old file
                 $old_physical = "../" . $carousel['carousel_pic'];
                 if (file_exists($old_physical) && is_file($old_physical)) unlink($old_physical);

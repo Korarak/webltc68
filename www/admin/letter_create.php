@@ -24,6 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db_path = "uploads/newsletter/" . $filename; // Store as agreed: uploads/newsletter/file
 
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+            // บีบอัดภาพอัตโนมัติ
+            require_once __DIR__ . '/../includes/optimize_image.php';
+            optimizeImage($target_file, 800, 80);
+
             $sql = "INSERT INTO letters (letter_title, letter_attenmath, letter_made) VALUES (?, ?, ?)";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("sss", $title, $db_path, $user);
