@@ -100,10 +100,6 @@ include 'middleware.php';
              <div class="w-8 h-8 rounded-lg bg-yellow-600/10 text-yellow-600 flex items-center justify-center"><i class="fas fa-medal"></i></div>
              จัดการ Badge
         </a>
-        <a href="building_manage.php" class="nav-item flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:text-blue-600">
-             <div class="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-500 flex items-center justify-center"><i class="fas fa-building"></i></div>
-             จัดการแผนผังอาคาร
-        </a>
         <a href="map_editor.php" class="nav-item flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:text-blue-600">
              <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center"><i class="fas fa-map-marked-alt"></i></div>
              เครื่องมือสร้างแผนผัง

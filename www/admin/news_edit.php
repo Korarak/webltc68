@@ -1,6 +1,10 @@
 <?php
 include 'middleware.php';
+file_put_contents('/tmp/debug_news_hit.log', date('Y-m-d H:i:s') . " - Page Accessed: " . $_SERVER['REQUEST_URI'] . "\n", FILE_APPEND);
 ob_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 include('db_news.php');
 
 $news_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -20,10 +24,13 @@ $att_stmt->execute();
 $attachments = $att_stmt->get_result();
 
 $upload_success_msg = "";
+$upload_error_msg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // DEBUG: Log POST and FILES data
+    file_put_contents('/tmp/debug_news.log', date('Y-m-d H:i:s') . " [EDIT] - POST: " . print_r($_POST, true) . "\nFILES: " . print_r($_FILES, true) . "\n", FILE_APPEND);
     // Check if delete attachment
-    if(isset($_POST['delete_at_id'])) {
+    if(!empty($_POST['delete_at_id'])) {
         $del_id = intval($_POST['delete_at_id']);
         $del_path = $_POST['delete_at_path'];
         if(file_exists($del_path)) unlink($del_path);
@@ -38,6 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $content = $_POST['content'] ?? '';
     // $category = $_POST['category'] ?? 1; // Assuming default if no category sys yet in my logic (Code from manage has category)
     $category_id = isset($_POST['category']) ? intval($_POST['category']) : $news['category_id'];
+    if ($category_id === 0) $category_id = null;
 
     $stmt = $conn->prepare("UPDATE news SET title=?, content=?, category_id=? WHERE id=?");
     $stmt->bind_param("ssii", $title, $content, $category_id, $news_id);
@@ -89,8 +97,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $upload_success_msg = "อัปเดตข้อมูลเรียบร้อยแล้ว";
         // Refresh data
-        $stmt->execute(); // Re-run update? No need.
+        // $stmt->execute(); // Re-run update? No need.
         // Reload page to show checkmark
+    } else {
+        $upload_error_msg = "Database Error: " . $conn->error;
     }
 }
 
@@ -113,7 +123,33 @@ $cats = $conn->query("SELECT * FROM categories ORDER BY sort_order ASC");
         </script>
     <?php endif; ?>
 
-    <form method="post" enctype="multipart/form-data" class="space-y-6">
+    <?php if(!empty($upload_error_msg)): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: '<?= htmlspecialchars($upload_error_msg, ENT_QUOTES, "UTF-8") ?>' });
+            });
+        </script>
+    <?php endif; ?>
+
+    <form id="newsForm" method="post" enctype="multipart/form-data" class="space-y-6">
+        <!-- ... form fields ... -->
+        <script>
+        function submitForm() {
+            console.log('Manual submission triggered');
+            // Ensure Summernote content is synced
+            var content = $('#summernote').summernote('code');
+            console.log('Summernote Content Length: ' + content.length);
+            
+            // Log to check if function is called
+            // Create a test image to confirm write access? No, console is enough.
+            
+            document.getElementById('newsForm').submit();
+        }
+        
+        document.getElementById('newsForm').addEventListener('submit', function(e) {
+            console.log('Form submitting event fired...');
+        });
+        </script>
         
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -124,6 +160,7 @@ $cats = $conn->query("SELECT * FROM categories ORDER BY sort_order ASC");
                 <div>
                      <label class="block text-gray-700 font-semibold mb-2">หมวดหมู่</label>
                      <select name="category" class="w-full text-lg border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all bg-white">
+                         <option value="0" <?= $news['category_id'] == 0 ? 'selected' : '' ?>>ทั่วไป</option>
                          <?php while($c = $cats->fetch_assoc()): ?>
                             <option value="<?= $c['id'] ?>" <?= $c['id'] == $news['category_id'] ? 'selected' : '' ?>><?= $c['name'] ?></option>
                          <?php endwhile; ?>
@@ -209,7 +246,7 @@ $cats = $conn->query("SELECT * FROM categories ORDER BY sort_order ASC");
 
         <div class="flex items-center justify-end gap-3 pt-4">
              <a href="news_manage.php" class="px-6 py-3 rounded-xl border border-gray-300 text-gray-600 font-semibold hover:bg-gray-50 transition-colors">ยกเลิก</a>
-             <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold shadow-lg shadow-orange-200 hover:shadow-xl hover:scale-[1.02] transition-all">
+             <button type="button" onclick="submitForm()" class="px-8 py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold shadow-lg shadow-orange-200 hover:shadow-xl hover:scale-[1.02] transition-all">
                  <i class="fas fa-save mr-2"></i> บันทึกการแก้ไข
              </button>
         </div>

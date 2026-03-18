@@ -53,24 +53,10 @@ $title = htmlspecialchars($page['title']);
   <?php endif; ?>
 
   <!-- Page Content -->
-<!-- Page Content -->
-<div class="bg-white rounded-lg shadow-md p-6 leading-relaxed text-gray-800 
-            prose prose-lg max-w-none 
-            prose-headings:text-gray-800
-            prose-p:text-gray-700
-            prose-ul:list-disc prose-ul:pl-6
-            prose-ol:list-decimal prose-ol:pl-6
-            prose-li:my-1
-            prose-a:text-blue-600 prose-a:no-underline hover:prose-a:text-blue-800
-            prose-blockquote:border-l-blue-400
-            prose-table:border prose-table:border-gray-300
-            prose-th:bg-gray-100
-            prose-img:rounded-lg
-            prose-strong:text-gray-800
-            prose-em:text-gray-700
-            content-area">
+  <!-- Page Content -->
+  <div class="bg-white rounded-lg shadow-md p-8 leading-relaxed text-gray-800 content-area">
     <?= $page['content'] ?>
-</div>
+  </div>
 
   <!-- Meta Information -->
   <div class="mt-8 pt-6 border-t border-gray-200">
@@ -87,84 +73,50 @@ $title = htmlspecialchars($page['title']);
 </main>
 
 <style>
-/* Editor.js / Notion-like Styling Override */
+/* 
+  Reset and base styles for Editor.js content that aren't perfectly covered by Tailwind preflight
+  but avoiding aggressive overrides so that inline styles (e.g., text-center) work.
+*/
 .content-area {
-    /* Use system fonts or Inter to match Notion/Editor.js look, overriding global IBM Plex Sans Thai */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    line-height: 1.7;
-    font-size: 1.1em; /* Slightly larger for readability */
-    color: #37352f; /* Notion text color */
+    /* Matches Editor.js base styling */
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
 }
 
-.content-area h1 {
-    font-size: 2.2em;
+/* Ensure bold and italic work normally inside paragraphs */
+.content-area b, .content-area strong {
     font-weight: 700;
-    margin: 1em 0 0.5em;
-    color: #111;
-    line-height: 1.3;
+}
+.content-area i, .content-area em {
+    font-style: italic;
 }
 
-.content-area h2 {
-    font-size: 1.75em;
-    font-weight: 600;
-    margin: 1.4em 0 0.4em;
-    color: #111;
-    line-height: 1.3;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 0.3em;
-}
-
-.content-area h3 {
-    font-size: 1.4em;
-    font-weight: 600;
-    margin: 1.2em 0 0.2em;
-    color: #111;
-    line-height: 1.3;
-}
-
-.content-area p {
-    margin: 0.8em 0;
-    min-height: 1em; /* Handle empty paragraphs */
-}
-
-/* สไตล์สำหรับลิสต์ */
-.content-area ul {
-    list-style-type: disc;
-    margin: 1em 0;
-    padding-left: 2em;
-}
-
-.content-area ol {
-    list-style-type: decimal;
-    margin: 1em 0;
-    padding-left: 2em;
-}
-
-.content-area li {
-    margin: 0.5em 0;
-    display: list-item;
-}
-
-/* สไตล์สำหรับ nested lists */
-.content-area ul ul, 
-.content-area ol ul {
-    list-style-type: circle;
-    margin: 0.5em 0;
-}
-
-.content-area ol ol,
-.content-area ul ol {
-    list-style-type: lower-latin;
-    margin: 0.5em 0;
-}
-
+/* Base link styling */
 .content-area a {
     color: #2563eb;
     text-decoration: underline;
 }
-
+.content-area a.no-underline {
+    text-decoration: none;
+}
 .content-area a:hover {
     color: #1d4ed8;
+}
+
+/* Lists that don't have inline tailwind */
+.content-area ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+.content-area ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+.content-area li {
+    margin-bottom: 0.25rem;
 }
 
 .content-area img {
@@ -173,57 +125,46 @@ $title = htmlspecialchars($page['title']);
     border-radius: 0.5rem;
 }
 
+/* Table styling for simple tables */
 .content-area table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1em 0;
+    margin-bottom: 1.5rem;
 }
-
-.content-area table, 
-.content-area th, 
-.content-area td {
-    border: 1px solid #d1d5db;
-}
-
-.content-area th, 
-.content-area td {
-    padding: 0.5em 1em;
+.content-area th, .content-area td {
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem 0.75rem;
     text-align: left;
 }
-
 .content-area th {
-    background-color: #f3f4f6;
-    font-weight: bold;
+    background-color: #f9fafb;
+    font-weight: 600;
 }
 
+/* Blockquote */
 .content-area blockquote {
-    border-left: 4px solid #d1d5db;
-    padding-left: 1em;
-    margin: 1em 0;
+    border-left: 4px solid #3b82f6; 
+    padding-left: 1rem;
+    margin: 1.5rem 0;
     font-style: italic;
-    color: #6b7280;
+    color: #4b5563;
+    background-color: #f3f4f6;
+    border-radius: 0 0.5rem 0.5rem 0;
 }
 
 .content-area code {
     background-color: #f3f4f6;
-    padding: 0.2em 0.4em;
+    padding: 0.2rem 0.4rem;
     border-radius: 0.25rem;
-    font-family: monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.875em;
 }
 
-.content-area pre {
-    background-color: #1f2937;
-    color: #f9fafb;
-    padding: 1em;
-    border-radius: 0.5rem;
-    overflow-x: auto;
-    margin: 1em 0;
-}
-
-.content-area pre code {
-    background-color: transparent;
-    padding: 0;
-    color: inherit;
+/* Responsive improvements */
+@media (max-width: 640px) {
+    .content-area {
+        font-size: 15px;
+    }
 }
 </style>
 

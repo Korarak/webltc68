@@ -12,9 +12,35 @@ if (!function_exists('normalize_url')) {
 }
 ?>
 
-<button id="sidebarToggle" class="fixed left-4 top-20 z-[60] bg-white hover:bg-emerald-600 text-emerald-600 hover:text-white backdrop-blur-sm border border-gray-200 hover:border-emerald-600 w-10 h-10 flex items-center justify-center rounded-xl shadow-lg hover:shadow-emerald-200 transition-all duration-300">
+<button id="sidebarToggle" class="hidden 2xl:flex fixed left-4 top-24 z-[60] bg-white hover:bg-emerald-600 text-emerald-600 hover:text-white backdrop-blur-sm border border-gray-200 hover:border-emerald-600 w-10 h-10 items-center justify-center rounded-xl shadow-lg hover:shadow-emerald-200 transition-all duration-300">
   <i class="fas fa-bars text-sm"></i>
 </button>
+
+<!-- Mobile Bottom Navigation -->
+<div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-gray-200 z-[9999] px-6 py-3 flex justify-between items-center 2xl:hidden shadow-[0_-5px_20px_rgba(0,0,0,0.05)] safe-area-pb">
+  
+  <a href="/" class="flex flex-col items-center gap-1 group w-16">
+    <div class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 flex items-center justify-center transition-all duration-300">
+      <i class="fas fa-home text-lg"></i>
+    </div>
+    <span class="text-[10px] font-medium text-gray-400 group-hover:text-emerald-600 transition-colors">หน้าแรก</span>
+  </a>
+
+  <button onclick="document.getElementById('menu-toggle').click()" class="flex flex-col items-center gap-1 group -mt-8">
+    <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 text-white shadow-lg shadow-emerald-200 flex items-center justify-center transform group-active:scale-95 transition-all duration-300 border-4 border-white">
+      <i class="fas fa-bars text-xl"></i>
+    </div>
+    <span class="text-[10px] font-medium text-emerald-600">เมนูหลัก</span>
+  </button>
+
+  <button onclick="toggleSidebar()" class="flex flex-col items-center gap-1 group w-16">
+    <div class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 flex items-center justify-center transition-all duration-300">
+      <i class="fas fa-th-large text-lg"></i>
+    </div>
+    <span class="text-[10px] font-medium text-gray-400 group-hover:text-emerald-600 transition-colors">เพิ่มเติม</span>
+  </button>
+
+</div>
 
 <div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
 
@@ -138,6 +164,7 @@ function openSidebar() {
   body.classList.add('sidebar-open');
   
   // Hide toggle button when sidebar is open
+  sidebarToggle.classList.remove('2xl:flex');
   sidebarToggle.classList.add('hidden');
   
   // Show overlay only on smaller screens
@@ -155,15 +182,18 @@ function closeSidebar() {
 
   // Show toggle button when sidebar is closed
   sidebarToggle.classList.remove('hidden');
+  sidebarToggle.classList.add('2xl:flex');
 }
 
-sidebarToggle.addEventListener('click', () => {
+function toggleSidebar() {
   if (sidebar.classList.contains('-translate-x-[120%]')) {
     openSidebar();
   } else {
     closeSidebar();
   }
-});
+}
+
+sidebarToggle.addEventListener('click', toggleSidebar);
 
 sidebarClose.addEventListener('click', closeSidebar);
 sidebarOverlay.addEventListener('click', closeSidebar);
@@ -247,5 +277,9 @@ main {
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 </style>

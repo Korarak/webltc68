@@ -251,7 +251,9 @@ if ($result && $row = $result->fetch_assoc()) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach($buildings as $b): ?>
+                            <?php foreach($buildings as $b): 
+                                if (isset($b['showInSearch']) && $b['showInSearch'] === false) continue;
+                            ?>
                             <tr>
                                 <td class="ps-4 fw-bold text-primary"><?= htmlspecialchars($b['label']) ?></td>
                                 <td class="text-muted small"><?= nl2br(htmlspecialchars($b['description'] ?? '-')) ?></td>
@@ -295,14 +297,23 @@ if ($result && $row = $result->fetch_assoc()) {
                 canvas.getObjects().forEach(obj => {
                     // Make objects "Interactive" but NOT "Selectable/Movable"
                     obj.selectable = false; 
-                    obj.evented = true; 
                     obj.lockMovementX = true;
                     obj.lockMovementY = true;
                     
-                    if (obj.label || obj.description) {
+                    // Only enable interaction if showInSearch is NOT false (default true)
+                    if ((obj.label || obj.description) && obj.showInSearch !== false) {
+                         obj.evented = true;
                          obj.hoverCursor = 'pointer';
+                    } else {
+                         obj.evented = false; // Disable all interactions (hover/click)
+                         obj.hoverCursor = 'default';
                     }
                 });
+                
+                // Set Canvas Size from JSON if available
+                if (savedJSON.width) canvas.setWidth(savedJSON.width);
+                if (savedJSON.height) canvas.setHeight(savedJSON.height);
+
                 canvas.renderAll();
                 initInteractions();
             });
@@ -315,7 +326,8 @@ if ($result && $row = $result->fetch_assoc()) {
                  canvas.setHeight(img.height);
                  canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
              });
-        } else {
+        } else if (!savedJSON.width) {
+             // Default only if not set by JSON
              canvas.setWidth(2000);
              canvas.setHeight(800);
         }

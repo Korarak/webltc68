@@ -153,10 +153,103 @@ while ($h = $headResult->fetch_assoc()) {
   .divider-line {
     background: linear-gradient(180deg, rgba(5, 150, 105, 0.5) 0%, rgba(5, 150, 105, 0.1) 100%);
   }
+
+  /* --- Print Styles --- */
+  @media print {
+    body {
+      background-color: white !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    .no-print, header, footer, .btn-print, #personModal {
+      display: none !important;
+    }
+
+    main {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      max-width: 100% !important;
+    }
+
+    .org-title {
+      background: #059669 !important;
+      box-shadow: none !important;
+      color: white !important;
+      padding: 16px 0 !important;
+      margin-bottom: 20px !important;
+      border-radius: 8px !important;
+    }
+
+    .card-director {
+      background: #059669 !important;
+      box-shadow: none !important;
+      border-radius: 8px !important;
+      border: 1px solid #10b981 !important;
+      page-break-inside: avoid;
+      padding: 16px !important;
+    }
+    
+    .card-vice {
+      box-shadow: none !important;
+      border: 1px solid #ccc !important;
+      border-radius: 8px !important;
+      page-break-inside: avoid;
+    }
+
+    .vice-header {
+      background: #f8fafc !important;
+      border-bottom: 1px solid #ccc !important;
+      padding: 12px !important;
+    }
+
+    .dept-section {
+      background: white !important;
+      border-top: none !important;
+      padding: 12px !important;
+    }
+
+    .work-item {
+      border: 1px solid #eee !important;
+      page-break-inside: avoid;
+      padding: 8px !important;
+    }
+
+    .head-badge {
+      border: 1px solid #059669 !important;
+      color: #059669 !important;
+      background: #ecfdf5 !important;
+    }
+
+    .grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 16px !important;
+    }
+    
+    .divider-line {
+       display: none !important;
+    }
+
+    .text-emerald-100 { color: #d1fae5 !important; }
+    .text-emerald-50 { color: #ecfdf5 !important; }
+    .bg-emerald-800\/30 { background-color: rgba(6, 78, 59, 0.3) !important; }
+    
+    /* Make Director card smaller for print */
+    .card-director h2 { font-size: 1.5rem !important; margin-bottom: 4px !important; }
+    .card-director .material-symbols-outlined { font-size: 2rem !important; }
+    .card-director .bg-white\/20 { padding: 8px !important; }
+  }
 </style>
 
 <main class="max-w-7xl mx-auto px-4 py-8 mt-[72px]">
   
+  <div class="flex justify-end mb-4 btn-print no-print">
+    <a href="organization_print.php" target="_blank" class="flex items-center gap-2 bg-slate-800 text-white px-5 py-2.5 rounded-xl hover:bg-slate-700 transition shadow-lg border border-slate-600 font-medium">
+      <span class="material-symbols-outlined">print</span> พิมพ์โครงสร้างองค์กร (PDF)
+    </a>
+  </div>
+
   <div class="org-title text-white text-center py-8 px-6 rounded-2xl mb-12 shadow-xl">
     <div class="flex justify-center mb-3">
       <span class="material-symbols-outlined text-5xl drop-shadow-md">account_balance</span>

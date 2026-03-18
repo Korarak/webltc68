@@ -6,7 +6,13 @@ include('db_news.php');
 $upload_success_msg = "";
 $upload_error_msg = "";
 
+// Fetch Categories for Select
+$cats = $conn->query("SELECT * FROM categories ORDER BY sort_order ASC");
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // DEBUG: Log POST and FILES data
+    file_put_contents('/tmp/debug_news.log', date('Y-m-d H:i:s') . " [ADD] - POST: " . print_r($_POST, true) . "\nFILES: " . print_r($_FILES, true) . "\n", FILE_APPEND);
+
     $title = trim($_POST['title'] ?? '');
     $content = $_POST['content'] ?? '';
     // Fix: Handle content images (Base64 -> File) if needed (Summernote does Base64 by default which is heavy for DB)
@@ -17,11 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $uploader = htmlspecialchars($decoded->username ?? 'Unknown'); 
 
+    $category_id = isset($_POST['category']) ? intval($_POST['category']) : 0;
+    if ($category_id === 0) $category_id = null;
+
     if (empty($title)) {
         $upload_error_msg = "กรุณากรอกหัวข้อข่าว";
     } else {
-        $stmt = $conn->prepare("INSERT INTO news (title, content, uploader) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $title, $content, $uploader);
+        $stmt = $conn->prepare("INSERT INTO news (title, content, category_id, uploader) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssis", $title, $content, $category_id, $uploader);
 
         if ($stmt->execute()) {
             $news_id = $stmt->insert_id;
@@ -88,12 +97,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </script>
     <?php endif; ?>
 
+    <?php if($upload_error_msg): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({ icon: 'error', title: 'ข้อผิดพลาด', text: '<?= htmlspecialchars($upload_error_msg, ENT_QUOTES, "UTF-8") ?>' });
+            });
+        </script>
+    <?php endif; ?>
+
     <form method="post" enctype="multipart/form-data" class="space-y-6">
         
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">หัวข้อข่าว <span class="text-red-500">*</span></label>
-                <input type="text" name="title" required class="w-full text-lg border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all" placeholder="ระบุชื่อเรื่อง...">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">หัวข้อข่าว <span class="text-red-500">*</span></label>
+                    <input type="text" name="title" required class="w-full text-lg border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all" placeholder="ระบุชื่อเรื่อง...">
+                </div>
+                <div>
+                     <label class="block text-gray-700 font-semibold mb-2">หมวดหมู่</label>
+                     <select name="category" class="w-full text-lg border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all bg-white">
+                         <option value="0">ทั่วไป</option>
+                         <?php while($c = $cats->fetch_assoc()): ?>
+                            <option value="<?= $c['id'] ?>"><?= $c['name'] ?></option>
+                         <?php endwhile; ?>
+                     </select>
+                </div>
             </div>
 
             <div class="mb-4">

@@ -57,17 +57,48 @@ if ($result && $row = $result->fetch_assoc()) {
         </div>
 
         <!-- Canvas Area -->
-        <div class="flex-1 bg-gray-200 rounded-xl shadow-inner border border-gray-300 overflow-auto relative flex justify-center items-center p-4">
+        <div class="flex-1 bg-gray-200 rounded-xl shadow-inner border border-gray-300 overflow-hidden relative flex justify-center items-center p-4">
             <canvas id="c"></canvas>
+            
+            <!-- Zoom Controls -->
+            <div class="absolute bottom-4 right-4 flex flex-col gap-2">
+                <div class="bg-white/90 backdrop-blur px-3 py-1 rounded text-xs text-gray-500 mb-1 shadow-sm border border-gray-100">
+                    Alt + Drag to Pan
+                </div>
+                <div class="flex flex-col bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
+                    <button onclick="zoomIn()" class="p-2 hover:bg-gray-50 text-gray-600 hover:text-blue-600 transition-colors border-b border-gray-100" title="Zoom In">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button onclick="zoomOut()" class="p-2 hover:bg-gray-50 text-gray-600 hover:text-blue-600 transition-colors border-b border-gray-100" title="Zoom Out">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button onclick="resetZoom()" class="p-2 hover:bg-gray-50 text-gray-600 hover:text-blue-600 transition-colors" title="Reset View">
+                        <i class="fas fa-compress"></i>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Properties Panel -->
         <div class="w-72 bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col gap-4 overflow-y-auto">
             <h3 class="font-bold text-gray-700 border-b pb-2">คุณสมบัติ (Properties)</h3>
             
-            <div id="no-selection" class="text-center py-8 text-gray-400">
-                <i class="fas fa-mouse-pointer text-3xl mb-2"></i>
-                <p>คลิกเลือกวัตถุเพื่อแก้ไข</p>
+            <div id="no-selection" class="flex flex-col gap-4">
+                <div class="text-center py-4 text-gray-400 border-b">
+                    <i class="fas fa-map text-3xl mb-2"></i>
+                    <p class="text-sm">การตั้งค่าแผนผัง (Global)</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ความกว้าง (Width)</label>
+                    <input type="number" id="map-width" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="2000">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ความสูง (Height)</label>
+                    <input type="number" id="map-height" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="800">
+                </div>
+                <div class="text-xs text-gray-400 mt-2">
+                    * คลิกที่วัตถุเพื่อแก้ไขคุณสมบัติของวัตถุนั้น
+                </div>
             </div>
 
             <div id="prop-form" class="hidden flex flex-col gap-4">
@@ -126,12 +157,27 @@ if ($result && $row = $result->fetch_assoc()) {
         backgroundColor: '#fff'
     });
 
+    // Map Settings Inputs
+    const mapWidthInput = document.getElementById('map-width');
+    const mapHeightInput = document.getElementById('map-height');
+
     // Load Data
     const savedJSON = <?php echo $map_json ?: '{}'; ?>;
     const savedBg = '<?php echo $bg_image; ?>';
 
     if (savedJSON && Object.keys(savedJSON).length > 0) {
-        canvas.loadFromJSON(savedJSON, canvas.renderAll.bind(canvas));
+        canvas.loadFromJSON(savedJSON, () => {
+             canvas.renderAll();
+             // Restore Canvas Size if saved
+             if (savedJSON.width) {
+                 canvas.setWidth(savedJSON.width);
+                 mapWidthInput.value = savedJSON.width;
+             }
+             if (savedJSON.height) {
+                 canvas.setHeight(savedJSON.height);
+                 mapHeightInput.value = savedJSON.height;
+             }
+        });
     }
     
     // Background Image
@@ -145,6 +191,11 @@ if ($result && $row = $result->fetch_assoc()) {
             // Let's set canvas size to image size for better mapping
             canvas.setWidth(img.width);
             canvas.setHeight(img.height);
+            
+            // Update inputs
+            mapWidthInput.value = img.width;
+            mapHeightInput.value = img.height;
+
             canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
                 scaleX: 1,
                 scaleY: 1
@@ -152,9 +203,155 @@ if ($result && $row = $result->fetch_assoc()) {
         });
     }
 
+    // --- Drawing Functions ---
+    function setupNewObject(obj) {
+        canvas.add(obj);
+        canvas.setActiveObject(obj);
+        canvas.requestRenderAll();
+    }
+
+    function addRect() {
+        setupNewObject(new fabric.Rect({
+            left: 100, top: 100, width: 100, height: 100,
+            fill: '#cccccc', stroke: '#000000', strokeWidth: 2,
+            opacity: 0.8
+        }));
+    }
+
+    function addCircle() {
+        setupNewObject(new fabric.Circle({
+            left: 100, top: 100, radius: 50,
+            fill: '#cccccc', stroke: '#000000', strokeWidth: 2,
+            opacity: 0.8
+        }));
+    }
+
+    function addTriangle() {
+        setupNewObject(new fabric.Triangle({
+            left: 100, top: 100, width: 100, height: 100,
+            fill: '#cccccc', stroke: '#000000', strokeWidth: 2,
+            opacity: 0.8
+        }));
+    }
+
+    function addText() {
+        setupNewObject(new fabric.IText('ข้อความ', {
+            left: 100, top: 100,
+            fontFamily: 'sans-serif',
+            fontSize: 24, fill: '#000000'
+        }));
+    }
+
+    function deleteSelected() {
+        const activeObjects = canvas.getActiveObjects();
+        if (activeObjects.length) {
+            canvas.discardActiveObject();
+            activeObjects.forEach(function(object) {
+                canvas.remove(object);
+            });
+        }
+    }
+
+    let isDrawingPoly = false;
+    let polyPoints = [];
+    let lineArray = [];
+    let activeLine = null;
+
+    function startPolygon() {
+        if (isDrawingPoly) {
+            finishPolygon();
+            return;
+        }
+        isDrawingPoly = true;
+        polyPoints = [];
+        lineArray = [];
+        activeLine = null;
+        canvas.selection = false;
+        canvas.defaultCursor = 'crosshair';
+        canvas.on('mouse:down', onPolyMouseDown);
+        canvas.on('mouse:move', onPolyMouseMove);
+    }
+
+    function onPolyMouseDown(o) {
+        if (!isDrawingPoly) return;
+        
+        let pointer = canvas.getPointer(o.e);
+        
+        // If double click or click near start point, finish polygon
+        if (polyPoints.length > 2) {
+            let startPt = polyPoints[0];
+            if (Math.abs(startPt.x - pointer.x) < 15 && Math.abs(startPt.y - pointer.y) < 15) {
+                finishPolygon();
+                return;
+            }
+        }
+        
+        polyPoints.push({x: pointer.x, y: pointer.y});
+        
+        let points = [pointer.x, pointer.y, pointer.x, pointer.y];
+        activeLine = new fabric.Line(points, {
+            strokeWidth: 2,
+            fill: '#999999',
+            stroke: '#999999',
+            originX: 'center',
+            originY: 'center',
+            selectable: false,
+            evented: false
+        });
+        lineArray.push(activeLine);
+        
+        let circle = new fabric.Circle({
+            radius: 4,
+            fill: '#ffffff',
+            stroke: '#333333',
+            strokeWidth: 1,
+            left: pointer.x,
+            top: pointer.y,
+            originX: 'center',
+            originY: 'center',
+            selectable: false,
+            evented: false
+        });
+        lineArray.push(circle);
+        
+        canvas.add(activeLine);
+        canvas.add(circle);
+    }
+
+    function onPolyMouseMove(o) {
+        if (!isDrawingPoly || !activeLine) return;
+        let pointer = canvas.getPointer(o.e);
+        activeLine.set({ x2: pointer.x, y2: pointer.y });
+        canvas.requestRenderAll();
+    }
+
+    function finishPolygon() {
+        isDrawingPoly = false;
+        canvas.selection = true;
+        canvas.defaultCursor = 'default';
+        canvas.off('mouse:down', onPolyMouseDown);
+        canvas.off('mouse:move', onPolyMouseMove);
+        
+        lineArray.forEach(function(l) {
+            canvas.remove(l);
+        });
+        lineArray = [];
+        
+        if (polyPoints.length > 2) {
+            // Need to remove the last line connecting to cursor
+            let polygon = new fabric.Polygon(polyPoints, {
+                fill: '#cccccc', stroke: '#000000', strokeWidth: 2,
+                opacity: 0.8
+            });
+            setupNewObject(polygon);
+        }
+    }
+
     // --- Interaction Logic ---
     const propForm = document.getElementById('prop-form');
     const noSelection = document.getElementById('no-selection');
+    
+    // ... (Object Props refs) ...
     const labelInput = document.getElementById('prop-label');
     const colorInput = document.getElementById('prop-color');
     const strokeInput = document.getElementById('prop-stroke');
@@ -162,6 +359,56 @@ if ($result && $row = $result->fetch_assoc()) {
     const showSearchInput = document.getElementById('prop-show-search');
     const descInput = document.getElementById('prop-desc');
     const opacityInput = document.getElementById('prop-opacity');
+
+    // --- Guide Border ---
+    let guideBorder = null;
+
+    function updateGuideBorder() {
+        if (guideBorder) {
+            canvas.remove(guideBorder);
+        }
+        
+        guideBorder = new fabric.Rect({
+            left: 0,
+            top: 0,
+            width: canvas.getWidth() - 2, // Inset slightly
+            height: canvas.getHeight() - 2,
+            fill: 'transparent',
+            stroke: '#9ca3af', // Gray-400
+            strokeWidth: 2,
+            strokeDashArray: [10, 10],
+            selectable: false,
+            evented: false,
+            isGuide: true,
+            excludeFromExport: true 
+        });
+        
+        canvas.add(guideBorder);
+        canvas.sendToBack(guideBorder); // Or bring to front? Front is better to see cut-off.
+        canvas.bringToFront(guideBorder);
+    }
+    
+    // Init Guide
+    updateGuideBorder();
+
+    // Update listeners
+    mapWidthInput.addEventListener('change', () => {
+        const w = parseInt(mapWidthInput.value, 10);
+        if(w > 0) {
+            canvas.setWidth(w);
+            updateGuideBorder();
+        }
+    });
+
+    mapHeightInput.addEventListener('change', () => {
+        const h = parseInt(mapHeightInput.value, 10);
+        if(h > 0) {
+            canvas.setHeight(h);
+            updateGuideBorder();
+        }
+    });
+
+    // ... (Active Object Logic) ...
 
     let activeObj = null;
 
@@ -174,6 +421,12 @@ if ($result && $row = $result->fetch_assoc()) {
     });
 
     function updateProps(e) {
+        // Skip guide object
+        if (e.selected[0] && e.selected[0].isGuide) {
+            canvas.discardActiveObject();
+            return;
+        }
+
         activeObj = e.selected[0];
         if (!activeObj) return;
 
@@ -181,7 +434,11 @@ if ($result && $row = $result->fetch_assoc()) {
         noSelection.classList.add('hidden');
 
         // Load values from object custom properties
-        labelInput.value = activeObj.label || '';
+        if (activeObj.type === 'i-text' || activeObj.type === 'text') {
+            labelInput.value = activeObj.text || '';
+        } else {
+            labelInput.value = activeObj.label || '';
+        }
         descInput.value = activeObj.description || '';
         colorInput.value = activeObj.fill || '#cccccc';
         strokeInput.value = activeObj.stroke || '#000000';
@@ -193,7 +450,11 @@ if ($result && $row = $result->fetch_assoc()) {
     // --- Property Change Listeners ---
     labelInput.addEventListener('input', () => {
         if (activeObj) {
-            activeObj.set('label', labelInput.value);
+            if (activeObj.type === 'i-text' || activeObj.type === 'text') {
+                activeObj.set('text', labelInput.value);
+            } else {
+                activeObj.set('label', labelInput.value);
+            }
             canvas.requestRenderAll();
         }
     });
@@ -238,164 +499,24 @@ if ($result && $row = $result->fetch_assoc()) {
         }
     });
 
-    // --- Toolbar Functions ---
-    function addRect() {
-        const rect = new fabric.Rect({
-            left: 100,
-            top: 100,
-            fill: 'rgba(59, 130, 246, 0.5)',
-            width: 100,
-            height: 100,
-            stroke: 'blue',
-            strokeWidth: 2,
-            label: 'อาคารใหม่',
-            description: ''
-        });
-        canvas.add(rect);
-        canvas.setActiveObject(rect);
-    }
-
-    function addCircle() {
-        const circle = new fabric.Circle({
-            left: 150,
-            top: 150,
-            radius: 50,
-            fill: 'rgba(16, 185, 129, 0.5)', // Green
-            stroke: 'green',
-            strokeWidth: 2,
-            label: 'วงกลม',
-            description: ''
-        });
-        canvas.add(circle);
-        canvas.setActiveObject(circle);
-    }
-
-    function addTriangle() {
-        const triangle = new fabric.Triangle({
-            left: 200,
-            top: 200,
-            width: 100,
-            height: 100,
-            fill: 'rgba(245, 158, 11, 0.5)', // Orange
-            stroke: 'orange',
-            strokeWidth: 2,
-            label: 'สามเหลี่ยม',
-            description: ''
-        });
-        canvas.add(triangle);
-        canvas.setActiveObject(triangle);
-    }
-
-    // --- Polygon Drawing Mode ---
-    let isDrawingPoly = false;
-    let polyPoints = [];
-    let activeLine = null;
-    let activeShape = null;
-
-    function startPolygon() {
-        isDrawingPoly = true;
-        polyPoints = [];
-        canvas.discardActiveObject();
-        canvas.requestRenderAll();
-        canvas.defaultCursor = 'crosshair';
-        canvas.selection = false; // Disable group selection while drawing
-        
-        // Notify user (Optional: Toast or Alert)
-        // alert('Click to add points. Double Click to finish.');
-    }
-
-    function finishPolygon() {
-        isDrawingPoly = false;
-        canvas.defaultCursor = 'default';
-        canvas.selection = true;
-
-        // Clear temp lines
-        canvas.getObjects('line').forEach(l => {
-            if (l.isTemp) canvas.remove(l);
-        });
-
-        // Create Final Polygon
-        if (polyPoints.length > 2) {
-            const polygon = new fabric.Polygon(polyPoints, {
-                fill: 'rgba(139, 92, 246, 0.5)', // Purple
-                stroke: 'purple',
-                strokeWidth: 2,
-                label: 'พื้นที่',
-                description: '',
-                objectCaching: false
-            });
-            canvas.add(polygon);
-            canvas.setActiveObject(polygon);
-        }
-        
-        polyPoints = [];
-    }
-
-    // Canvas Events for Polygon
-    canvas.on('mouse:down', function(options) {
-        if (!isDrawingPoly) return;
-        
-        const pointer = canvas.getPointer(options.e);
-        polyPoints.push({ x: pointer.x, y: pointer.y });
-        
-        // Draw little circle at point
-        const point = new fabric.Circle({
-            left: pointer.x,
-            top: pointer.y,
-            radius: 3,
-            fill: 'red',
-            originX: 'center',
-            originY: 'center',
-            selectable: false,
-            evented: false,
-            isTemp: true
-        });
-        canvas.add(point);
-
-        // Draw Line
-        if (polyPoints.length > 1) {
-            const start = polyPoints[polyPoints.length - 2];
-            const end = polyPoints[polyPoints.length - 1];
-            const line = new fabric.Line([start.x, start.y, end.x, end.y], {
-                stroke: 'red',
-                strokeWidth: 1,
-                selectable: false,
-                evented: false,
-                isTemp: true
-            });
-            canvas.add(line);
-        }
-    });
-
-    canvas.on('mouse:dblclick', function(options) {
-        if (isDrawingPoly) {
-            finishPolygon();
-        }
-    });
-
-    function addText() {
-        const text = new fabric.IText('ข้อความ', {
-            left: 100,
-            top: 100,
-            fontFamily: 'Sarabun',
-            fill: '#333',
-            fontSize: 20
-        });
-        canvas.add(text);
-        canvas.setActiveObject(text);
-    }
-
-    function deleteSelected() {
-        const active = canvas.getActiveObjects();
-        if (active.length) {
-            canvas.discardActiveObject();
-            active.forEach(obj => canvas.remove(obj));
-        }
-    }
+    // ...
 
     // --- Save & Upload ---
     function saveMap() {
-        const json = JSON.stringify(canvas.toJSON(['label', 'description', 'showInSearch'])); // Include custom properties
+        // Remove guide before saving or filter it out?
+        // Filtering is safer
+        const jsonObj = canvas.toJSON(['label', 'description', 'showInSearch', 'isGuide']);
+        
+        // Filter out the guide object
+        if (jsonObj.objects) {
+            jsonObj.objects = jsonObj.objects.filter(o => !o.isGuide);
+        }
+
+        // Append Canvas Size
+        jsonObj.width = canvas.getWidth();
+        jsonObj.height = canvas.getHeight();
+        
+        const json = JSON.stringify(jsonObj); 
         
         fetch('map_save.php', {
             method: 'POST',
@@ -449,8 +570,77 @@ if ($result && $row = $result->fetch_assoc()) {
         if (e.key === 'Delete' || e.key === 'Backspace') {
             // Only if not typing in input
             if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                if (activeObj && activeObj.isEditing) return; // Prevent deleting object while typing
                 deleteSelected();
             }
+        }
+    });
+
+    // --- Zoom & Pan ---
+    
+    function zoomIn() {
+        let zoom = canvas.getZoom();
+        zoom *= 1.1;
+        if (zoom > 5) zoom = 5;
+        canvas.zoomToPoint({ x: canvas.width / 2, y: canvas.height / 2 }, zoom);
+    }
+
+    function zoomOut() {
+        let zoom = canvas.getZoom();
+        zoom /= 1.1;
+        if (zoom < 0.1) zoom = 0.1;
+        canvas.zoomToPoint({ x: canvas.width / 2, y: canvas.height / 2 }, zoom);
+    }
+
+    function resetZoom() {
+        canvas.setZoom(1);
+        canvas.viewportTransform = [1,0,0,1,0,0]; 
+    }
+
+    canvas.on('mouse:wheel', function(opt) {
+        var delta = opt.e.deltaY;
+        var zoom = canvas.getZoom();
+        zoom *= 0.999 ** delta;
+        if (zoom > 5) zoom = 5;
+        if (zoom < 0.1) zoom = 0.1;
+        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+        opt.e.preventDefault();
+        opt.e.stopPropagation();
+    });
+
+    // Panning (Alt + Drag)
+    let isDragging = false;
+    let lastPosX, lastPosY;
+
+    canvas.on('mouse:down', function(opt) {
+        var evt = opt.e;
+        if (evt.altKey === true) {
+            isDragging = true;
+            canvas.selection = false;
+            lastPosX = evt.clientX;
+            lastPosY = evt.clientY;
+        }
+    });
+
+    canvas.on('mouse:move', function(opt) {
+        if (isDragging) {
+            var e = opt.e;
+            var vpt = canvas.viewportTransform;
+            vpt[4] += e.clientX - lastPosX;
+            vpt[5] += e.clientY - lastPosY;
+            canvas.requestRenderAll();
+            lastPosX = e.clientX;
+            lastPosY = e.clientY;
+        }
+    });
+
+    canvas.on('mouse:up', function(opt) {
+        // on mouse up we want to recalculate new interaction
+        // for all objects, so we call setViewportTransform
+        if(isDragging) {
+             canvas.setViewportTransform(canvas.viewportTransform);
+             isDragging = false;
+             canvas.selection = true;
         }
     });
 

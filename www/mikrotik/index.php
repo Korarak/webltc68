@@ -182,8 +182,14 @@ if (file_exists($lang_file)) {
     <!-- Hero / Slider -->
     <?php
     $hero_dir = __DIR__ . '/images/gallery';
-    $hero_images = glob($hero_dir . "/*.{jpg,jpeg,png,gif,webp}", GLOB_BRACE);
-    $hero_bg = $hero_images ? 'images/gallery/' . basename($hero_images[array_rand($hero_images)]) : 'https://images.unsplash.com/photo-1544197150-b99a580bbcbf?q=80&w=2071&auto=format&fit=crop';
+    $hero_images = glob($hero_dir . "/*.{webp,jpg,jpeg,png,gif}", GLOB_BRACE);
+    if ($hero_images) {
+        // Prefer WebP if available for the same image (glob sorted order might help, but let's be explicit)
+        $selected_image = $hero_images[array_rand($hero_images)];
+        $hero_bg = 'images/gallery/' . basename($selected_image);
+    } else {
+        $hero_bg = 'https://images.unsplash.com/photo-1544197150-b99a580bbcbf?q=80&w=2071&auto=format&fit=crop';
+    }
     ?>
     <header id="home" class="relative bg-gray-100 h-[500px] flex items-center justify-center overflow-hidden">
         <img src="<?= $hero_bg ?>" class="absolute inset-0 w-full h-full object-cover">
@@ -379,7 +385,7 @@ if (file_exists($lang_file)) {
                 $gallery_url = 'images/gallery';
                 
                 // Scan for images (jpg, jpeg, png, gif, webp)
-                $images = glob($gallery_dir . "/*.{jpg,jpeg,png,gif,webp}", GLOB_BRACE);
+                $images = glob($gallery_dir . "/*.{webp,jpg,jpeg,png,gif}", GLOB_BRACE);
                 
                 if ($images) {
                     shuffle($images); // สุ่มลำดับภาพ
@@ -459,7 +465,12 @@ if (file_exists($lang_file)) {
                 ?>
                 <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden p-6 flex flex-col items-center text-center card-shadow hover:bg-gray-50 transition min-h-[400px]">
                     <div class="w-48 h-48 mb-6 relative"> <!-- Increased size from w-24 h-24 to w-48 h-48 -->
-                        <img src="images/trainer/<?= $trainer['file'] ?>" class="w-full h-full rounded-full object-cover shadow-md border-4 border-white ring-2 ring-gray-100">
+                        <?php 
+                        $image_path = "images/trainer/" . $trainer['file'];
+                        $webp_path = str_replace(['.png', '.jpg', '.jpeg'], '.webp', $image_path);
+                        $display_path = file_exists(__DIR__ . '/' . $webp_path) ? $webp_path : $image_path;
+                        ?>
+                        <img src="<?= $display_path ?>" class="w-full h-full rounded-full object-cover shadow-md border-4 border-white ring-2 ring-gray-100">
                     </div>
                     <div>
                         <h4 class="font-bold text-gray-800 text-lg mb-2"><?= $trainer['name'] ?></h4>

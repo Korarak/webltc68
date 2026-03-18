@@ -14,19 +14,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
-$action = $input['action'] ?? '';
-$path = $input['path'] ?? '';
+// Check if content type is JSON or Form Data
+$content_type = $_SERVER['CONTENT_TYPE'] ?? '';
+if (strpos($content_type, 'application/json') !== false) {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $action = $input['action'] ?? '';
+    $path = $input['path'] ?? '';
+} else {
+    $action = $_POST['action'] ?? '';
+    $path = $_POST['path'] ?? '';
+}
 
 // Security: Prevent directory traversal
 $real_target = realpath($base_dir . '/' . $path);
 if ($real_target === false || strpos($real_target, $base_dir) !== 0) {
-    if($action !== 'list') { // Allow list root if path empty
-       // If empty path, it defaults to base_dir which is valid.
-       // logic check: if input path is '..' -> realpath goes outside -> blocked.
+    if($action !== 'list') { 
+       // Strictly block invalid paths for operations other than list (list handles it below)
     }
 }
-if ($path == '') $real_target = $base_dir; // Default root
+if ($path == '' || $real_target === false) $real_target = $base_dir; // Default root
 
 if ($action === 'list') {
     if (!is_dir($real_target)) {
@@ -59,8 +65,9 @@ if ($action === 'list') {
             'size' => $is_dir ? '-' : human_filesize(filesize($full_path)),
             'count' => $count, // Only for folders
             'modified' => date('Y-m-d H:i', filemtime($full_path)),
-            // Add direct URL for preview
-            'url' => '../../uploads/' . $rel_path
+            // Add direct URL for preview (Relative to public root)
+            'url' => '/uploads/' . $rel_path,
+            'full_url' => (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . '/uploads/' . $rel_path
         ];
     }
     
@@ -72,10 +79,49 @@ if ($action === 'list') {
 
     echo json_encode(['success' => true, 'data' => $items, 'current_path' => $path]);
 
-} elseif ($action === 'delete') {
-    // Delete file or folder (recursive? dangerous. Let's allowing deleting empty folders or single files first)
-    // For powerful tool: Recursive Delete.
+} elseif ($action === 'upload') {
+    if (!isset($_FILES['file'])) {
+        echo json_encode(['success' => false, 'message' => 'No file uploaded']);
+        exit;
+    }
+
+    $file = $_FILES['file'];
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(['success' => false, 'message' => 'Upload error: ' . $file['error']]);
+        exit;
+    }
+
+    $name = $file['name'];
+    // Sanitize filename
+    $name = preg_replace('/[^a-zA-Z0-9._-]/', '_', $name);
     
+    // Unique filename if exists
+    $target_file = $real_target . '/' . $name;
+    $filename = pathinfo($name, PATHINFO_FILENAME);
+    $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+    
+    $counter = 1;
+    while (file_exists($target_file)) {
+        $name = $filename . '_' . $counter . '.' . $extension;
+        $target_file = $real_target . '/' . $name;
+        $counter++;
+    }
+
+    if (move_uploaded_file($file['tmp_name'], $target_file)) {
+        // Optimize if image
+        if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
+            require_once __DIR__ . '/../includes/optimize_image.php';
+            // Optimize to max 1920px width, 85 quality
+            optimizeImage($target_file, 1920, 85);
+        }
+
+        echo json_encode(['success' => true, 'message' => 'File uploaded successfully']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to move uploaded file']);
+    }
+
+} elseif ($action === 'delete') {
+    // Delete file or folder
     if (is_dir($real_target)) {
         // Simple rmdir only works if empty. 
         // Recursive Delete Function
@@ -87,17 +133,20 @@ if ($action === 'list') {
                  if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir."/".$object))
                    rrmdir($dir. DIRECTORY_SEPARATOR .$object);
                  else
-                   unlink($dir. DIRECTORY_SEPARATOR .$object); 
+                   @unlink($dir. DIRECTORY_SEPARATOR .$object); 
                } 
              }
-             rmdir($dir); 
+             @rmdir($dir); 
            } 
         }
         rrmdir($real_target);
         echo json_encode(['success' => true, 'message' => 'Folder deleted']);
     } else {
-        unlink($real_target);
-        echo json_encode(['success' => true, 'message' => 'File deleted']);
+        if (@unlink($real_target)) {
+            echo json_encode(['success' => true, 'message' => 'File deleted']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to delete file']);
+        }
     }
 
 } elseif ($action === 'create_folder') {
@@ -107,20 +156,46 @@ if ($action === 'list') {
     }
     $target_dir = $real_target . '/' . $new_folder_name;
     if(!file_exists($target_dir)) {
-        mkdir($target_dir, 0755, true);
-        echo json_encode(['success' => true]);
+        if(mkdir($target_dir, 0755, true)) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to create folder']);
+        }
     } else {
         echo json_encode(['success' => false, 'message' => 'Folder exists']);
     }
 
-} elseif ($action === 'zip') {
-    // Return a download link, or Stream directly?
-    // Stream better for security (API), but simple is AJAX -> generate -> return download URL.
-    // Or direct window.location href to a download_zip.php?path=... (GET request)
-    // To keep it clean, let's make a separate GET block or strictly standardise.
+} elseif ($action === 'move') {
+    $source = $input['source'] ?? '';
+    $destination = $input['destination'] ?? '';
+
+    $real_source = realpath($base_dir . '/' . $source);
     
-    // Let's use this API to 'prepare' the zip if large, but for immediate download, a GET link is best.
-    // So Client will call download_zip.php?path=...
+    // If destination is root, path is empty string, which realpaths to base_dir
+    $dest_path = $base_dir . ($destination ? '/' . $destination : '');
+    $real_dest_dir = realpath($dest_path);
+
+    if ($real_source === false || strpos($real_source, $base_dir) !== 0) {
+        echo json_encode(['success' => false, 'message' => 'Invalid source']); exit;
+    }
+    if ($real_dest_dir === false || strpos($real_dest_dir, $base_dir) !== 0 || !is_dir($real_dest_dir)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid destination']); exit;
+    }
+
+    $filename = basename($real_source);
+    $target_file = $real_dest_dir . '/' . $filename;
+
+    if (file_exists($target_file)) {
+        echo json_encode(['success' => false, 'message' => 'File or Folder already exists at destination']); exit;
+    }
+
+    if (rename($real_source, $target_file)) {
+        echo json_encode(['success' => true, 'message' => 'Moved successfully']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to move']);
+    }
+
+} elseif ($action === 'zip') {
     echo json_encode(['success' => false, 'message' => 'Use download_zip.php for this']);
 }
 

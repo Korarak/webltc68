@@ -12,15 +12,29 @@ function editorJsToHtml($data) {
         switch ($block['type']) {
             case 'header':
                 $level = isset($block['data']['level']) ? $block['data']['level'] : 2;
-                $html .= "<h{$level} class='text-2xl font-bold my-4'>{$block['data']['text']}</h{$level}>";
+                 $alignClass = isset($block['data']['alignment']) ? 'text-' . $block['data']['alignment'] : 'text-left';
+                if(isset($block['tunes']['alignment']['alignment'])) {
+                     $alignClass = 'text-' . $block['tunes']['alignment']['alignment'];
+                }
+                $html .= "<h{$level} class='text-2xl font-bold my-4 {$alignClass}'>{$block['data']['text']}</h{$level}>";
                 break;
             case 'paragraph':
-                $html .= "<p class='mb-4 text-gray-700 leading-relaxed'>{$block['data']['text']}</p>";
+                $alignClass = isset($block['data']['alignment']) ? 'text-' . $block['data']['alignment'] : 'text-left';
+                if(isset($block['tunes']['alignment']['alignment'])) {
+                     $alignClass = 'text-' . $block['tunes']['alignment']['alignment'];
+                }
+                $html .= "<p class='mb-4 text-gray-700 leading-relaxed {$alignClass}'>{$block['data']['text']}</p>";
                 break;
             case 'list':
                 $tag = $block['data']['style'] === 'ordered' ? 'ol' : 'ul';
                 $listClass = $tag === 'ol' ? 'list-decimal' : 'list-disc';
-                $html .= "<{$tag} class='{$listClass} ml-6 mb-4 space-y-2'>";
+                // Alignment
+                $alignClass = isset($block['tunes']['anyTuneName']['alignment']) ? 'text-' . $block['tunes']['anyTuneName']['alignment'] : 'text-left';
+                if(isset($block['data']['alignment'])){
+                     $alignClass = 'text-' . $block['data']['alignment'];
+                }
+
+                $html .= "<{$tag} class='{$listClass} ml-6 mb-4 space-y-2 {$alignClass}'>";
                 foreach ($block['data']['items'] as $item) {
                      $html .= "<li>{$item}</li>";
                 }
@@ -40,6 +54,20 @@ function editorJsToHtml($data) {
                 }
                 $html .= "</figure>";
                 break;
+            case 'columns':
+                 $cols = $block['data']['cols'];
+                 $html .= "<div class='grid grid-cols-1 md:grid-cols-" . count($cols) . " gap-4 my-6'>";
+                 foreach($cols as $col){
+                     $html .= "<div class='prose max-w-none'>";
+                     if (isset($col['blocks'])) {
+                        // Create a dummy data structure for recursive call
+                        $dummyData = ['blocks' => $col['blocks']];
+                        $html .= editorJsToHtml($dummyData);
+                     }
+                     $html .= "</div>";
+                 }
+                 $html .= "</div>";
+                 break;
             case 'quote':
                 $html .= "<blockquote class='border-l-4 border-blue-500 pl-4 py-2 my-4 italic text-gray-600 bg-gray-50 rounded-r'>";
                 $html .= "<p>{$block['data']['text']}</p>";
@@ -86,6 +114,36 @@ function editorJsToHtml($data) {
                 }
                 $html .= "</a>";
                 break;
+            case 'attaches':
+                $file = $block['data']['file'];
+                $url = isset($file['url']) ? $file['url'] : '';
+                $name = isset($file['name']) ? $file['name'] : 'Download File';
+                $size = isset($file['size']) ? round($file['size'] / 1024, 2) . ' KB' : '';
+                $extension = isset($file['extension']) ? strtoupper($file['extension']) : '';
+                $title = isset($block['data']['title']) ? $block['data']['title'] : $name;
+                
+                $icon = 'fa-file-alt text-gray-400';
+                if ($extension === 'PDF') $icon = 'fa-file-pdf text-red-500';
+                elseif (in_array($extension, ['DOC', 'DOCX'])) $icon = 'fa-file-word text-blue-600';
+                elseif (in_array($extension, ['XLS', 'XLSX'])) $icon = 'fa-file-excel text-green-600';
+                elseif (in_array($extension, ['ZIP', 'RAR'])) $icon = 'fa-file-archive text-yellow-600';
+                elseif (in_array($extension, ['JPG', 'JPEG', 'PNG', 'GIF'])) $icon = 'fa-image text-purple-600';
+
+                $html .= "<a href='{$url}' target='_blank' class='flex items-center gap-4 p-4 my-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:shadow-sm transition bg-white no-underline group w-full max-w-2xl'>";
+                $html .= "<div class='w-12 h-12 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 group-hover:bg-white transition-colors flex-shrink-0'><i class='fas {$icon} text-2xl'></i></div>";
+                $html .= "<div class='flex-1 min-w-0 flex flex-col justify-center'>";
+                $html .= "<p class='font-bold text-gray-800 text-base group-hover:text-blue-600 transition-colors truncate m-0 leading-tight'>{$title}</p>";
+                $html .= "<p class='text-xs text-gray-500 m-0 mt-1 leading-tight'>{$extension} &bull; {$size}</p>";
+                $html .= "</div>";
+                $html .= "<div class='w-10 h-10 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors flex-shrink-0'><i class='fas fa-download text-sm'></i></div>";
+                $html .= "</a>";
+                break;
+            case 'raw':
+                $html .= "<div class='my-6 w-full overflow-hidden'>" . $block['data']['html'] . "</div>";
+                break;
+            case 'googleDrive':
+                $html .= "<div class='my-6 w-full rounded-lg overflow-hidden border border-gray-200 shadow-sm'>" . $block['data']['embedCode'] . "</div>";
+                break;
         }
     }
     return $html;
@@ -120,6 +178,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     // Editor Data
     $editor_json = $_POST['editor_json'];
+    if (empty($editor_json) || $editor_json === 'undefined' || $editor_json === 'null') {
+        $editor_json = '{}';
+    }
     // Generate HTML
     $data = json_decode($editor_json, true);
     $content = editorJsToHtml($data);
@@ -164,7 +225,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($update->execute()) {
         echo "<script>
             alert('บันทึกการแก้ไขสำเร็จ');
-            window.location.href = 'webpages_manage.php';
+            window.location.href = 'webpage_edit.php?id=" . $id . "';
         </script>";
         exit;
     } else {
@@ -288,12 +349,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script src="../assets/vendor/editorjs/delimiter.js"></script>
     <script src="../assets/vendor/editorjs/link.js"></script>
     <script src="../assets/vendor/editorjs/hyperlink.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-columns@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/editorjs-text-alignment-blocktune@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/attaches@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/raw@latest"></script>
+    <script src="../assets/vendor/editorjs/google-drive-embed.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             try {
                 // Load existing data
-                const initialData = <?= !empty($page['editor_json']) ? $page['editor_json'] : '{}' ?>;
+                <?php
+                $safe_json = '{}';
+                if (!empty($page['editor_json']) && $page['editor_json'] !== 'undefined' && $page['editor_json'] !== 'null') {
+                    $safe_json = $page['editor_json'];
+                }
+                ?>
+                const initialData = <?= $safe_json ?>;
 
                 if (typeof EditorJS === 'undefined') {
                     throw new Error('EditorJS is not loaded');
@@ -305,16 +377,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     tools: {
                         paragraph: {
                             inlineToolbar: true,
+                            tunes: ['alignment']
                         },
                         header: {
                             class: Header,
                             inlineToolbar: true,
-                            config: { placeholder: 'หัวข้อ', levels: [2, 3, 4], defaultLevel: 2 }
+                            config: { placeholder: 'หัวข้อ', levels: [2, 3, 4], defaultLevel: 2 },
+                            tunes: ['alignment']
                         },
                         list: {
                             class: EditorjsList, // Changed from List to EditorjsList
                             inlineToolbar: true,
-                            config: { defaultStyle: 'unordered' }
+                            config: { defaultStyle: 'unordered' },
+                            tunes: ['alignment']
                         },
                         image: {
                             class: ImageTool,
@@ -342,7 +417,39 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 availableRels: ['author', 'noreferrer'],
                                 validate: false,
                             }
-                        }
+                        },
+                        columns: {
+                            class: editorjsColumns,
+                            config: {
+                                tools: {
+                                    header: Header,
+                                    paragraph: {
+                                        class:  EditorJS.Paragraph,
+                                        inlineToolbar: true,
+                                    },
+                                    list: EditorjsList,
+                                    image: ImageTool,
+                                }
+                            }
+                        },
+                        alignment: {
+                            class:AlignmentBlockTune,
+                            config:{
+                                default: "left",
+                                blocks: {
+                                    header: 'center',
+                                    list: 'right'
+                                }
+                            },
+                        },
+                        attaches: {
+                            class: AttachesTool,
+                            config: {
+                                endpoint: 'upload_file.php'
+                            }
+                        },
+                        raw: RawTool,
+                        googleDrive: GoogleDriveEmbed
                     },
                     data: initialData,
                     onReady: () => {

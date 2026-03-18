@@ -98,6 +98,9 @@ if (!empty($news_ids)) {
              </div>
              
              <div class="flex gap-3">
+                 <a href="news_type_manage.php" class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-5 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+                    <i class="fas fa-tags text-blue-500"></i> <span class="font-medium">จัดการประเภทข่าว</span>
+                 </a>
                  <a href="news_add.php" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
                     <i class="fas fa-plus-circle text-lg"></i> <span class="font-medium">เขียนข่าวใหม่</span>
                  </a>
@@ -138,9 +141,11 @@ if (!empty($news_ids)) {
                         <?php endforeach; ?>
                     </select>
                     
-                    <div class="flex gap-2 col-span-2">
-                         <button type="submit" class="flex-1 bg-gray-800 text-white rounded-lg hover:bg-black transition">ค้นหา</button>
-                         <a href="news_manage.php" class="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600">ล้าง</a>
+                    <div class="flex gap-2 lg:col-span-2">
+                         <button type="submit" class="flex-1 bg-gray-800 text-white rounded-lg hover:bg-black transition-colors shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-medium">
+                            <i class="fas fa-search"></i> ค้นหา
+                         </button>
+                         <a href="news_manage.php" class="px-6 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors flex items-center justify-center gap-2 font-medium">ล้าง</a>
                     </div>
                 </div>
              </form>

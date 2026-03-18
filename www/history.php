@@ -1,5 +1,21 @@
 <?php
 $title = "ประวัติวิทยาลัย";
+
+// ==========================================
+// ตั้งค่าภาพประกอบหน้าประวัติวิทยาลัย
+// (เปลี่ยนชื่อไลฟ์อัปเดตไฟล์ภาพที่นี่ เพื่อความสะดวก)
+// ==========================================
+$img_hero           = "http://loeitech.ac.th/uploads/loeitech-environment/history__4_.jpg";             // ภาพหน้าปกหลัก (Hero Image)
+$img_history_old    = "http://loeitech.ac.th/uploads/loeitech-environment/history__8_.jpg";    // ภาพประกอบประวัติ (รูปโรงเรียนช่างไม้)
+$img_gallery_tall   = "http://loeitech.ac.th/uploads/loeitech-environment/history__2_.jpg";    // ภาพแกลลอรี่แนวตั้ง (รูปใหญ่)
+$img_gallery_items  = [                                      // ภาพแกลลอรี่ย่อย 4 ภาพ
+    'http://loeitech.ac.th/uploads/loeitech-environment/history__5_.jpg', 
+    'http://loeitech.ac.th/uploads/loeitech-environment/history__7_.jpg', 
+    'http://loeitech.ac.th/uploads/loeitech-environment/history__3_.jpg', 
+    'http://loeitech.ac.th/uploads/loeitech-environment/Gemini_Generated_Image_48ls6z48ls6z48ls_-_Copy.png'
+];
+// ==========================================
+
 ob_start();
 ?>
 <style>
@@ -39,7 +55,7 @@ ob_start();
 
 <!-- ═══════ HERO ═══════ -->
 <header class="history-hero">
-  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 pb-16 lg:pt-40 lg:pb-20">
     <div class="grid lg:grid-cols-2 gap-12 items-center">
       <!-- Text -->
       <div class="relative z-10 animate-[fade-up_1s_ease-out]">
@@ -79,15 +95,10 @@ ob_start();
         </div>
       </div>
       
-      <!-- Hero Image Placeholder (Premium V1) -->
-      <div class="hero-img-placeholder group relative z-10 w-full">
-         <div class="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition duration-500">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-         </div>
-         <span class="font-bold text-lg text-white">พื้นที่สำหรับรูปภาพพระวิษณุกรรม</span>
-         <span class="text-sm font-light text-emerald-200 mt-1">ขนาดแนะนำ 1200 x 600 px</span>
-         <div class="mt-4 px-3 py-1 rounded border border-white/30 text-xs text-white/50 bg-black/20 font-mono">
-            images/history/hero.jpg
+      <!-- Hero Image -->
+      <div class="relative z-10 w-full animate-[fade-left_1s_ease-out]">
+         <div class="rounded-2xl overflow-hidden shadow-2xl skew-y-1 hover:skew-y-0 transition-transform duration-700">
+             <img src="<?= $img_hero ?>" alt="วิทยาลัยเทคนิคเลย" class="w-full h-auto object-cover transform hover:scale-105 transition duration-700">
          </div>
       </div>
     </div>
@@ -123,25 +134,25 @@ ob_start();
     </div>
     <div class="grid md:grid-cols-3 gap-6">
       <div class="logo-card group">
-         <div class="logo-circle group-hover:border-emerald-400 group-hover:scale-105 transition">
-            <span class="text-xs text-slate-400">Logo</span>
+         <div class="logo-circle group-hover:border-emerald-400 group-hover:scale-105 transition overflow-hidden bg-white cursor-pointer" onclick="openLightbox('images/loeitech%20logo.png')">
+            <img src="images/loeitech%20logo.png" alt="ตราวิทยาลัยเทคนิคเลย" class="w-full h-full object-contain p-2">
          </div>
-         <h4 class="font-bold text-slate-800">ตราวิทยาลัย</h4>
-         <a href="#" class="mt-4 px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition shadow-lg shadow-emerald-200">Download</a>
+         <h4 class="font-bold text-slate-800">ตราวิทยาลัยเทคนิคเลย</h4>
+         <a href="images/loeitech%20logo.png" download class="mt-4 px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition shadow-lg shadow-emerald-200">Download</a>
       </div>
       <div class="logo-card group">
-         <div class="logo-circle group-hover:border-emerald-400 group-hover:scale-105 transition">
-            <span class="text-xs text-slate-400">Loeitech</span>
+         <div class="logo-circle group-hover:border-emerald-400 group-hover:scale-105 transition overflow-hidden bg-white cursor-pointer" onclick="openLightbox('images/loei-vec.png')">
+            <img src="images/loei-vec.png" alt="สำนักงานอาชีวศึกษาจังหวัดเลย" class="w-full h-full object-contain p-2">
          </div>
-         <h4 class="font-bold text-slate-800">โลโก้ Loeitech</h4>
-         <a href="#" class="mt-4 px-4 py-2 border border-emerald-600 text-emerald-600 text-sm rounded-lg hover:bg-emerald-50 transition">Download</a>
+         <h4 class="font-bold text-slate-800">สำนักงานอาชีวศึกษาจังหวัดเลย</h4>
+         <a href="images/loei-vec.png" download class="mt-4 px-4 py-2 border border-emerald-600 text-emerald-600 text-sm rounded-lg hover:bg-emerald-50 transition">Download</a>
       </div>
       <div class="logo-card group">
-         <div class="logo-circle group-hover:border-emerald-400 group-hover:scale-105 transition">
-            <span class="text-xs text-slate-400">VEC</span>
+         <div class="logo-circle group-hover:border-emerald-400 group-hover:scale-105 transition overflow-hidden bg-white cursor-pointer" onclick="openLightbox('images/vec-logo.png')">
+            <img src="images/vec-logo.png" alt="ตราสำนักงานคณะกรรมการการอาชีวศึกษา" class="w-full h-full object-contain p-2">
          </div>
-         <h4 class="font-bold text-slate-800">ตราอาชีวศึกษา</h4>
-         <a href="#" class="mt-4 px-4 py-2 border border-emerald-600 text-emerald-600 text-sm rounded-lg hover:bg-emerald-50 transition">Download</a>
+         <h4 class="font-bold text-slate-800">ตราสำนักงานคณะกรรมการการอาชีวศึกษา</h4>
+         <a href="images/vec-logo.png" download class="mt-4 px-4 py-2 border border-emerald-600 text-emerald-600 text-sm rounded-lg hover:bg-emerald-50 transition">Download</a>
       </div>
     </div>
   </section>
@@ -150,11 +161,10 @@ ob_start();
   <section class="grid lg:grid-cols-12 gap-12 items-start mb-24">
     <!-- Side Image (Sticky) -->
     <div class="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
-       <div class="rounded-2xl overflow-hidden shadow-2xl transform rotate-1 transition hover:rotate-0">
-          <div class="bg-gray-200 h-64 w-full flex flex-col items-center justify-center p-4 text-center border-4 border-white">
-             <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-             <span class="text-gray-500 font-medium">ภาพโรงเรียนช่างไม้เลย (อดีต)</span>
-             <span class="text-xs text-gray-400 mt-1 font-mono">images/history/old_school.jpg</span>
+       <div class="rounded-2xl overflow-hidden shadow-2xl transform rotate-1 transition hover:rotate-0 cursor-pointer" onclick="openLightbox('<?= $img_history_old ?>')">
+          <img src="<?= $img_history_old ?>" alt="ภาพโรงเรียนช่างไม้เลย (อดีต)" class="w-full h-auto object-cover hover:scale-105 transition duration-500">
+          <div class="bg-gray-100 p-2 text-center border-t-4 border-white">
+             <span class="text-gray-500 font-medium text-sm">ภาพโรงเรียนช่างไม้เลย (อดีต)</span>
           </div>
        </div>
        <div class="p-6 bg-emerald-50 rounded-2xl border border-emerald-100">
@@ -296,30 +306,77 @@ ob_start();
 
     <div class="gallery-grid">
       <!-- Tall Image -->
-      <div class="g-tall bg-gray-100 rounded-2xl overflow-hidden relative group">
+      <div class="g-tall bg-gray-100 rounded-2xl overflow-hidden relative group cursor-pointer zoomable-image" onclick="openLightbox('<?= $img_gallery_tall ?>')">
          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition z-10"></div>
          <div class="absolute bottom-4 left-4 text-white z-20 opacity-0 group-hover:opacity-100 transition transform translate-y-4 group-hover:translate-y-0">
-            <span class="font-bold">อาคารเฉลิมพระเกียรติ</span>
+            <span class="font-bold"></span>
          </div>
-         <div class="w-full h-full flex items-center justify-center bg-emerald-50 text-emerald-300">
-            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+         <img src="<?= $img_gallery_tall ?>" alt="" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+         <div class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition backdrop-blur-sm">
+            <span class="material-symbols-outlined text-sm">zoom_in</span>
          </div>
-         <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs text-emerald-400">images/history/building_tall.jpg</span>
       </div>
       
       <!-- Standard Images -->
-      <?php for($i=1; $i<=4; $i++): ?>
-      <div class="bg-gray-100 rounded-2xl overflow-hidden relative group min-h-[200px]">
+      <?php 
+      foreach($img_gallery_items as $img): 
+      ?>
+      <div class="bg-gray-100 rounded-2xl overflow-hidden relative group min-h-[200px] cursor-pointer zoomable-image" onclick="openLightbox('<?= $img ?>')">
           <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition z-10"></div>
-          <div class="w-full h-full flex items-center justify-center bg-slate-50 text-slate-300">
-            <span class="text-xs">images/history/gallery_<?= $i ?>.jpg</span>
+          <img src="<?= $img ?>" alt="History Gallery" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/30 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition backdrop-blur-md transform scale-50 group-hover:scale-100">
+            <span class="material-symbols-outlined">zoom_in</span>
           </div>
       </div>
-      <?php endfor; ?>
+      <?php endforeach; ?>
     </div>
   </section>
 
 </main>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="fixed inset-0 z-[10000] bg-black/95 hidden flex items-center justify-center opacity-0 transition-opacity duration-300" onclick="closeLightbox()">
+    <button class="absolute top-6 right-6 text-white/50 hover:text-white transition transform hover:scale-110" onclick="closeLightbox()">
+        <span class="material-symbols-outlined text-4xl">close</span>
+    </button>
+    <img id="lightbox-img" src="" alt="Fullsize" class="max-h-[90vh] max-w-[90vw] object-contain shadow-2xl rounded-lg transform scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
+    <div class="absolute bottom-6 left-0 right-0 text-center pointer-events-none">
+        <p class="text-white/70 text-sm font-light tracking-widest uppercase">Loei Technical College</p>
+    </div>
+</div>
+
+<script>
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    function openLightbox(src) {
+        lightboxImg.src = src;
+        lightbox.classList.remove('hidden');
+        // Small delay to allow display:block to apply before opacity transition
+        setTimeout(() => {
+            lightbox.classList.remove('opacity-0');
+            lightboxImg.classList.remove('scale-95');
+            lightboxImg.classList.add('scale-100');
+        }, 10);
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        lightbox.classList.add('opacity-0');
+        lightboxImg.classList.remove('scale-100');
+        lightboxImg.classList.add('scale-95');
+        setTimeout(() => {
+            lightbox.classList.add('hidden');
+            lightboxImg.src = '';
+        }, 300);
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
+</script>
 
 <style>
   /* Custom Scrollbar */
