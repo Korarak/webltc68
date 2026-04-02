@@ -245,98 +245,181 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <style>
         .codex-editor { max-width: 800px; margin: 0 auto; }
         .ce-block__content { max-width: 800px; }
-        .ce-toolbar__content { max-width: 800px; }
+        .ce-toolbar__content { max-width: 1000px; }
         .ce-header { font-weight: bold; margin-bottom: 0.5rem; }
         .cdx-list { margin: 0; padding-left: 20px; list-style: disc;} 
+        .preview-active { overflow: hidden; }
+        #previewModal { backdrop-filter: blur(4px); }
+
+        /* Match visual width and alignment of the site */
+        .codex-editor { max-width: 1100px; margin: 0 auto; }
+        .ce-block__content { max-width: 1000px; }
+        .ce-toolbar__content { max-width: 1000px; }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div class="max-w-6xl mx-auto py-8 px-4">
+<body class="bg-gray-50 pb-24">
+    <div class="max-w-[1400px] mx-auto py-8 px-4">
         <!-- Header -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">แก้ไขเว็บเพจ</h1>
-                    <p class="text-xs text-gray-500 mt-1">กำลังแก้ไข: <?= htmlspecialchars($page['title']) ?></p>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <a href="webpages_manage.php" class="flex items-center px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
-                        <i class="fas fa-arrow-left mr-2"></i>
-                        ย้อนกลับ
-                    </a>
-                </div>
-            </div>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+             <div>
+                <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                    <span class="bg-indigo-600 text-white p-2 rounded-lg shadow-md">
+                        <i class="fas fa-edit"></i>
+                    </span>
+                    แก้ไขเว็บเพจ
+                </h1>
+                <p class="text-gray-500 mt-1 ml-12 italic">กำลังจัดการ: <span class="text-indigo-600 font-bold"><?= e($page['title']) ?></span></p>
+             </div>
+             
+             <div class="flex gap-2">
+                 <a href="../app-webpage/page.php?slug=<?= urlencode($page['slug']) ?>" target="_blank" class="px-4 py-2 text-sm bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-600 hover:bg-indigo-100 flex items-center gap-2 shadow-sm transition-all hover:shadow-md font-bold">
+                    <i class="fas fa-external-link-alt"></i> ดูหน้าเว็บจริง
+                 </a>
+                 <a href="webpages_manage.php" class="px-4 py-2 text-sm bg-white border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 flex items-center gap-2 shadow-sm transition-all hover:shadow-md">
+                    <i class="fas fa-arrow-left"></i> ย้อนกลับ
+                 </a>
+             </div>
         </div>
 
         <form method="POST" enctype="multipart/form-data" class="space-y-6" id="pageForm">
-            <!-- Sidebar / Meta -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อเพจ *</label>
-                        <input type="text" name="title" value="<?= htmlspecialchars($page['title']) ?>"
-                               required class="w-full text-xl font-bold px-3 py-2 border-b-2 border-gray-200 focus:border-blue-500 focus:outline-none transition bg-transparent">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Slug (URL) *</label>
-                        <input type="text" name="slug" value="<?= htmlspecialchars($page['slug']) ?>"
-                               required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 focus:bg-white transition">
+            <!-- TOP Properties Section -->
+            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Status & Creation Info -->
+                <div class="space-y-4">
+                    <h3 class="text-[10px] font-black tracking-widest text-indigo-400 uppercase">PUBLISHING</h3>
+                    <label class="flex items-center justify-between p-3 bg-gray-50/50 border border-gray-100 rounded-2xl cursor-pointer hover:bg-indigo-50/30 transition-colors">
+                        <span class="text-xs font-bold text-gray-600">เผยแพร่</span>
+                        <div class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="visible" value="1" <?= $page['visible'] ? 'checked' : '' ?> class="sr-only peer">
+                            <div class="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
+                        </div>
+                    </label>
+                    <div class="px-1 space-y-1">
+                        <p class="text-[10px] text-gray-400">สร้างโดย: <span class="text-gray-600"><?= e($page['created_by']) ?></span></p>
+                        <p class="text-[10px] text-gray-400">ล่าสุด: <span class="text-gray-600"><?= date('d M Y H:i', strtotime($page['updated_at'])) ?></span></p>
                     </div>
                 </div>
-                
-                <div class="mt-6 border-t pt-4">
-                    <details class="group">
-                        <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-gray-600 hover:text-blue-600">
-                            <span> ตั้งค่าเพิ่มเติม/SEO</span>
-                            <span class="transition group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
-                        </summary>
-                        <div class="text-gray-500 mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-lg">
-                            <div>
-                                <label class="block text-xs font-medium mb-1">คำอธิบาย</label>
-                                <textarea name="meta_description" rows="2" class="w-full border rounded text-sm px-2 py-1"><?= htmlspecialchars($page['meta_description']) ?></textarea>
+
+                <!-- Thumbnail -->
+                <div class="md:col-span-1 space-y-4">
+                    <h3 class="text-[10px] font-black tracking-widest text-indigo-400 uppercase">THUMBNAIL</h3>
+                    <div class="relative group aspect-video rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 flex items-center justify-center overflow-hidden hover:border-indigo-300 hover:bg-indigo-50/30 transition-all cursor-pointer" onclick="document.getElementById('thumbnailInput').click()">
+                        <?php if ($page['thumbnail']): ?>
+                            <img id="thumbnailPreview" src="../<?= e($page['thumbnail']) ?>" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <i class="fas fa-camera text-white text-2xl"></i>
                             </div>
-                            <div>
-                                <label class="block text-xs font-medium mb-1">คีย์เวิร์ด</label>
-                                <input type="text" name="meta_keywords" value="<?= htmlspecialchars($page['meta_keywords']) ?>" class="w-full border rounded text-sm px-2 py-1">
+                        <?php else: ?>
+                            <div class="text-center group-hover:scale-110 transition-transform">
+                                <i class="fas fa-image text-2xl text-gray-300 group-hover:text-indigo-400"></i>
+                                <p class="text-[10px] text-gray-400 mt-1 font-bold italic">อัปโหลดรูปปก</p>
                             </div>
-                             <div>
-                                <label class="block text-xs font-medium mb-1">รูปภาพปก</label>
-                                <?php if ($page['thumbnail']): ?>
-                                    <div class="mb-2 relative w-20 h-20 group">
-                                        <img src="../<?= htmlspecialchars($page['thumbnail']) ?>" class="w-full h-full object-cover rounded">
-                                        <button type="button" onclick="document.getElementById('deleteThumbnail').value='1'; this.parentElement.style.display='none'" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">x</button>
-                                    </div>
-                                <?php endif; ?>
-                                <input type="file" name="thumbnail" accept="image/*" class="text-sm">
-                                <input type="hidden" name="delete_thumbnail" id="deleteThumbnail" value="0">
+                            <img id="thumbnailPreview" class="absolute inset-0 w-full h-full object-cover hidden">
+                        <?php endif; ?>
+                        <input type="file" name="thumbnail" id="thumbnailInput" accept="image/*" class="hidden" onchange="previewThumbnail(this)">
+                    </div>
+                    <?php if ($page['thumbnail']): ?>
+                        <button type="button" onclick="deleteExistingThumbnail()" class="w-full py-1 text-[10px] font-bold text-red-400 hover:text-red-500 transition-colors">
+                            <i class="fas fa-trash-alt mr-1"></i> ลบรูปภาพปัจจุบัน
+                        </button>
+                        <input type="hidden" name="delete_thumbnail" id="deleteThumbnail" value="0">
+                    <?php endif; ?>
+                </div>
+
+                <!-- SEO Description -->
+                <div class="md:col-span-2 space-y-4">
+                    <h3 class="text-[10px] font-black tracking-widest text-indigo-400 uppercase">SEARCH OPTIMIZATION (SEO)</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="relative">
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-[10px] font-bold text-gray-500 px-1">DESCRIPTION</label>
+                                <span id="descCount" class="text-[9px] font-mono text-gray-400">0/160</span>
                             </div>
-                            <div>
-                                 <label class="flex items-center space-x-2 mt-4">
-                                    <input type="checkbox" name="visible" value="1" <?= $page['visible'] ? 'checked' : '' ?> class="w-4 h-4 text-blue-500 rounded">
-                                    <span class="text-sm">เผยแพร่ทันที</span>
-                                </label>
-                            </div>
+                            <textarea name="meta_description" id="meta_description" rows="2" placeholder="สรุปเนื้อหาเบื้องต้นให้ Search Engine..."
+                                    class="w-full bg-gray-50/50 border-gray-200 rounded-2xl px-4 py-3 text-xs focus:ring-2 focus:ring-indigo-100 outline-none border transition-all resize-none shadow-inner"
+                                    oninput="document.getElementById('descCount').textContent = this.value.length + '/160'; updateCountColor(this, 'descCount')"><?= e($page['meta_description']) ?></textarea>
                         </div>
-                    </details>
+                        <div class="relative">
+                            <label class="block text-[10px] font-bold text-gray-500 px-1 mb-1">KEYWORDS</label>
+                            <input type="text" name="meta_keywords" value="<?= e($page['meta_keywords']) ?>" placeholder="keyword1, keyword2..." 
+                                    class="w-full bg-gray-50/50 border-gray-200 rounded-2xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-indigo-100 outline-none border transition-all shadow-inner">
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Editor Area -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 min-h-[500px] p-8 cursor-text" onclick="document.getElementById('editorjs').focus()">
-                <div id="editorjs"></div>
+            <!-- Page Title & Editor -->
+            <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 min-h-[800px] overflow-hidden flex flex-col items-center">
+                <!-- Internal Title Section -->
+                <div class="w-full max-w-[1100px] px-10 pt-16 pb-8">
+                    <input type="text" name="title" id="pageTitle" value="<?= e($page['title']) ?>" required placeholder="หัวข้อเพจ..." 
+                            class="w-full text-5xl font-extrabold focus:outline-none placeholder-gray-100 text-gray-900 bg-transparent border-none p-0 mb-6 transition-all tracking-tight leading-tight">
+                    
+                    <div class="flex items-center gap-2 py-2 px-4 bg-gray-50 rounded-2xl border border-gray-100 group w-fit transition-all hover:border-indigo-200">
+                        <i class="fas fa-link text-xs text-gray-300 group-hover:text-indigo-400 transition-colors"></i>
+                        <span class="text-[10px] font-black text-gray-400 tracking-wider">URL:</span>
+                        <input type="text" name="slug" id="pageSlug" value="<?= e($page['slug']) ?>" required placeholder="url-slug" 
+                                class="bg-transparent border-none focus:ring-0 text-xs text-indigo-600 font-bold p-0 min-w-[200px]">
+                        <button type="button" onclick="syncSlug()" class="text-gray-300 hover:text-indigo-500 transition-all p-1" title="อัปเดต Slug จากหัวข้อ">
+                            <i class="fas fa-sync-alt text-xs"></i>
+                        </button>
+                    </div>
+
+                    <hr class="mt-12 border-gray-50">
+                </div>
+
+                <!-- Editor js Area -->
+                <div class="w-full cursor-text pb-20" onclick="document.getElementById('editorjs').focus()">
+                    <div id="editorjs"></div>
+                </div>
             </div>
             
             <input type="hidden" name="editor_json" id="editor_json">
 
-            <!-- Sticky Save -->
-            <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-end shadow-lg z-50">
-                <button type="button" onclick="savePage()" 
-                        class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md transition transform hover:-translate-y-1">
-                    <i class="fas fa-save mr-2"></i> บันทึกการแก้ไข
+            <!-- Sticky Save Bar -->
+            <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-4xl px-4 z-50">
+                <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-[0_10px_40px_-5px_rgba(0,0,0,0.1)] border border-white/50 p-3 flex justify-between items-center gap-4">
+                    <div class="flex items-center gap-4 ml-4">
+                         <div id="saveStatus" class="flex items-center gap-2 text-gray-400 text-xs font-medium">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span> ข้อมูลล่าสุด (Saved)
+                         </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button type="button" onclick="previewPage()" class="px-6 py-2.5 bg-gray-50 text-gray-600 font-bold rounded-xl hover:bg-gray-100 transition flex items-center gap-2">
+                            <i class="fas fa-eye"></i> ดูตัวอย่าง
+                        </button>
+                        <button type="button" onclick="savePage()" class="px-8 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-200 transition transform active:scale-95 flex items-center gap-2">
+                            <i class="fas fa-save"></i> อัปเดตข้อมูล
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Preview Modal (Full Screen) -->
+    <div id="previewModal" class="fixed inset-0 z-[100] bg-black/60 hidden flex items-center justify-center p-4 md:p-10">
+        <div class="bg-white w-full h-full rounded-3xl overflow-hidden flex flex-col shadow-2xl">
+            <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-1 bg-indigo-100 text-indigo-600 rounded text-[10px] font-black tracking-widest">LIVE PREVIEW</span>
+                    <h2 class="font-bold text-gray-800" id="prevTitle">Title Preview</h2>
+                </div>
+                <button onclick="closePreview()" class="w-10 h-10 rounded-full hover:bg-gray-200 transition-colors flex items-center justify-center text-gray-500">
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="h-16"></div>
-        </form>
+            <div class="flex-1 overflow-y-auto bg-white p-8 md:p-16">
+                 <div class="max-w-4xl mx-auto prosenotnotion">
+                    <header class="mb-12">
+                        <img id="prevThumb" class="w-full h-[300px] object-cover rounded-3xl mb-8 hidden">
+                        <h1 id="prevHeader" class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight text-center"></h1>
+                    </header>
+                    <div id="previewContent" class="space-y-4"></div>
+                 </div>
+            </div>
+        </div>
     </div>
 
     <!-- Editor.js & Plugins (Local) -->
@@ -355,8 +438,88 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/raw@latest"></script>
     <script src="../assets/vendor/editorjs/google-drive-embed.js"></script>
 
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+        function previewThumbnail(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('thumbnailPreview');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function updateCountColor(area, spanId) {
+            const count = area.value.length;
+            const span = document.getElementById(spanId);
+            if(count > 160) span.classList.add('text-red-500');
+            else if(count > 120) span.classList.add('text-orange-500');
+            else span.classList.remove('text-red-500', 'text-orange-500');
+        }
+
+        function deleteExistingThumbnail() {
+            Swal.fire({
+                title: 'ยืนยันการลบรูปปก?',
+                text: "รูปภาพจะถูกลบหลังจากที่คุณบันทึกข้อมูล",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'ลบรูปภาพ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteThumbnail').value = '1';
+                    document.getElementById('thumbnailPreview').classList.add('hidden');
+                }
+            });
+        }
+
+        function getSlug(text) {
+             return text.toLowerCase().trim()
+                .replace(/[^\u0E00-\u0E7Fa-zA-Z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+        }
+
+        function syncSlug() {
+            const title = document.getElementById('pageTitle').value;
+            document.getElementById('pageSlug').value = getSlug(title);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            let hasUnsavedChanges = false;
+            const titleInput = document.getElementById('pageTitle');
+            const slugInput = document.getElementById('pageSlug');
+            
+            // Initialization for character counts
+            const descArea = document.getElementById('meta_description');
+            document.getElementById('descCount').textContent = descArea.value.length + '/160';
+            updateCountColor(descArea, 'descCount');
+
+            titleInput.addEventListener('input', () => { hasUnsavedChanges = true; updateSaveStatus(); });
+            slugInput.addEventListener('input', () => { hasUnsavedChanges = true; updateSaveStatus(); });
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                el.addEventListener('change', () => { hasUnsavedChanges = true; updateSaveStatus(); });
+            });
+
+            function updateSaveStatus() {
+                const status = document.getElementById('saveStatus');
+                if(hasUnsavedChanges) {
+                    status.innerHTML = '<span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span> มีการเปลี่ยนแปลงที่ยังไม่ได้บันทึก';
+                    status.classList.replace('text-gray-400', 'text-orange-600');
+                }
+            }
+
+            window.addEventListener('beforeunload', (e) => {
+                if (hasUnsavedChanges) { e.preventDefault(); e.returnValue = ''; }
+            });
+
             try {
                 // Load existing data
                 <?php
@@ -367,117 +530,94 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 ?>
                 const initialData = <?= $safe_json ?>;
 
-                if (typeof EditorJS === 'undefined') {
-                    throw new Error('EditorJS is not loaded');
-                }
+                if (typeof EditorJS === 'undefined') { throw new Error('EditorJS is not loaded'); }
 
-                const editor = new EditorJS({
+                window.editor = new EditorJS({
                     holder: 'editorjs',
                     placeholder: 'เริ่มพิมพ์เนื้อหาที่นี่...',
                     tools: {
-                        paragraph: {
-                            inlineToolbar: true,
-                            tunes: ['alignment']
-                        },
+                        paragraph: { inlineToolbar: true, tunes: ['alignment'] },
                         header: {
-                            class: Header,
-                            inlineToolbar: true,
+                            class: Header, inlineToolbar: true,
                             config: { placeholder: 'หัวข้อ', levels: [2, 3, 4], defaultLevel: 2 },
                             tunes: ['alignment']
                         },
-                        list: {
-                            class: EditorjsList, // Changed from List to EditorjsList
-                            inlineToolbar: true,
-                            config: { defaultStyle: 'unordered' },
-                            tunes: ['alignment']
-                        },
+                        list: { class: EditorjsList, inlineToolbar: true, tunes: ['alignment'] },
                         image: {
                             class: ImageTool,
-                            config: {
-                                endpoints: {
-                                    byFile: 'upload_image.php',
-                                    byUrl: 'upload_image.php?url='
-                                }
-                            }
+                            config: { endpoints: { byFile: 'upload_image.php', byUrl: 'upload_image.php?url=' } }
                         },
                         quote: Quote,
-                        table: Table,
+                        table: { class: Table, inlineToolbar: true },
                         delimiter: Delimiter,
-                        linkTool: {
-                            class: LinkTool,
-                            config: { endpoint: 'fetch_url.php' }
-                        },
+                        linkTool: { class: LinkTool, config: { endpoint: 'fetch_url.php' } },
                         hyperlink: {
                             class: Hyperlink,
-                            config: {
-                                shortcut: 'CMD+K',
-                                target: '_blank',
-                                rel: 'nofollow',
-                                availableTargets: ['_blank', '_self'],
-                                availableRels: ['author', 'noreferrer'],
-                                validate: false,
-                            }
+                            config: { shortcut: 'CMD+K', target: '_blank', rel: 'nofollow' }
                         },
                         columns: {
                             class: editorjsColumns,
                             config: {
                                 tools: {
                                     header: Header,
-                                    paragraph: {
-                                        class:  EditorJS.Paragraph,
-                                        inlineToolbar: true,
-                                    },
+                                    paragraph: { class: EditorJS.Paragraph, inlineToolbar: true },
                                     list: EditorjsList,
                                     image: ImageTool,
                                 }
                             }
                         },
                         alignment: {
-                            class:AlignmentBlockTune,
-                            config:{
-                                default: "left",
-                                blocks: {
-                                    header: 'center',
-                                    list: 'right'
-                                }
-                            },
+                            class: AlignmentBlockTune,
+                            config: { default: "left" },
                         },
-                        attaches: {
-                            class: AttachesTool,
-                            config: {
-                                endpoint: 'upload_file.php'
-                            }
-                        },
+                        attaches: { class: AttachesTool, config: { endpoint: 'upload_file.php' } },
                         raw: RawTool,
                         googleDrive: GoogleDriveEmbed
                     },
                     data: initialData,
-                    onReady: () => {
-                        console.log('Editor.js is ready to work!');
-                        document.getElementById('editorjs').style.minHeight = '300px';
-                    },
-                    onChange: (api, event) => {
-                        console.log('Now I know that Editor\'s content changed!', event);
-                    }
+                    onReady: () => { document.getElementById('editorjs').style.minHeight = '300px'; },
+                    onChange: () => { hasUnsavedChanges = true; updateSaveStatus(); }
                 });
 
-                // Expose save function globally
                 window.savePage = function() {
-                    editor.save().then((outputData) => {
+                    window.editor.save().then((outputData) => {
                         document.getElementById('editor_json').value = JSON.stringify(outputData);
+                        hasUnsavedChanges = false;
                         document.getElementById('pageForm').submit();
                     }).catch((error) => {
-                        console.error('Saving failed: ', error);
-                        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + error.message);
+                        Swal.fire('Error', 'เกิดข้อผิดพลาด: ' + error.message, 'error');
                     });
                 };
+
+                window.previewPage = function() {
+                    window.editor.save().then((data) => {
+                        const modal = document.getElementById('previewModal');
+                        document.getElementById('prevTitle').textContent = document.getElementById('pageTitle').value || 'Untitled';
+                        document.getElementById('prevHeader').textContent = document.getElementById('pageTitle').value || 'Untitled';
+                        
+                        const thumbData = document.getElementById('thumbnailPreview').src;
+                        const prevThumb = document.getElementById('prevThumb');
+                        if(thumbData && !thumbData.includes('hidden')) {
+                            prevThumb.src = thumbData;
+                            prevThumb.classList.remove('hidden');
+                        } else {
+                            prevThumb.classList.add('hidden');
+                        }
+
+                        document.getElementById('previewContent').innerHTML = '<p class="text-center text-gray-400 italic py-10">โหมดดูตัวอย่าง (จำลองรูปแบบเนื้อหา)</p>';
+                        modal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    });
+                };
+                
+                window.closePreview = function() {
+                    document.getElementById('previewModal').classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+
             } catch (e) {
                 console.error("Editor init error:", e);
-                const editorArea = document.getElementById('editorjs');
-                editorArea.innerHTML = `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                    <strong class="font-bold">Error!</strong>
-                    <span class="block sm:inline">Editor.js failed to load. Please check your internet connection or try refreshing. (${e.message})</span>
-                </div>`;
+                document.getElementById('editorjs').innerHTML = '<div class="text-red-500">Editor failed to load: ' + e.message + '</div>';
             }
         });
     </script>

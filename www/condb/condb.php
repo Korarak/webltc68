@@ -38,4 +38,11 @@ if ($mysqli4->connect_error) {
 // ✅ ตั้งค่า charset เป็น utf8mb4
 $mysqli4->set_charset("utf8mb4");
 //echo "Connected successfully to $db4\n";
+
+// Helper function for safe HTML output
+if (!function_exists('e')) {
+    function e($text) {
+        return htmlspecialchars($text ?? '', ENT_QUOTES, 'UTF-8');
+    }
+}
 ?>

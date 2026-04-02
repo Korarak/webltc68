@@ -1,6 +1,7 @@
 <?php
 include 'middleware.php';
 require '../condb/condb.php';
+require_once '../include/SecurityHelper.php';
 $mysqli3->set_charset("utf8mb4");
 
 $message = '';
@@ -29,16 +30,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (!empty($thai_id) && !empty($fullname)) {
                     @$fullname = mb_convert_encoding($fullname, "UTF-8", "auto");
 
-                    $stmt = $mysqli3->prepare("SELECT COUNT(*) FROM personel_data WHERE thai_id = ?");
-                    $stmt->bind_param("s", $thai_id);
+                    $hash_thai_id = SecurityHelper::hashThaiId($thai_id);
+                    $stmt = $mysqli3->prepare("SELECT COUNT(*) FROM personel_data WHERE thai_id_hash = ?");
+                    $stmt->bind_param("s", $hash_thai_id);
                     $stmt->execute();
                     $stmt->bind_result($count);
                     $stmt->fetch();
                     $stmt->close();
 
                     if ($count == 0) {
-                        $stmt = $mysqli3->prepare("INSERT INTO personel_data (thai_id, fullname) VALUES (?, ?)");
-                        $stmt->bind_param("ss", $thai_id, $fullname);
+                        $encrypted_thai_id = SecurityHelper::encrypt($thai_id);
+                        $stmt = $mysqli3->prepare("INSERT INTO personel_data (thai_id, thai_id_hash, fullname) VALUES (?, ?, ?)");
+                        $stmt->bind_param("sss", $encrypted_thai_id, $hash_thai_id, $fullname);
                         if ($stmt->execute()) {
                             $success++;
                         } else {

@@ -34,26 +34,26 @@ if (isset($mysqli4) && $mysqli4 instanceof mysqli) {
   <div class="max-w-full mx-auto px-4 py-2 lg:px-6 flex items-center justify-between">
 
     <!-- Logo Section -->
-    <div class="flex items-center space-x-3 group cursor-pointer relative z-[10001]">
-      <a href="/" class="flex items-center space-x-3 group/logo">
-        <div class="relative p-1.5 bg-gradient-to-br from-white to-emerald-50 rounded-xl shadow-inner border border-white/60 group-hover/logo:scale-105 transition duration-500 overflow-hidden">
+    <div class="flex items-center space-x-3 group cursor-pointer relative z-[10001] shrink-0">
+      <a href="/" class="flex items-center space-x-2 lg:space-x-3 group/logo">
+        <div class="relative p-1 bg-gradient-to-br from-white to-emerald-50 rounded-xl shadow-inner border border-white/60 group-hover/logo:scale-105 transition duration-500 overflow-hidden shrink-0">
              <!-- Glow Effect -->
              <div class="absolute inset-0 bg-emerald-400 opacity-0 group-hover/logo:opacity-20 blur-md transition duration-500"></div>
-             <img src="/svg/loeitech-logo.png" alt="Logo" class="relative z-10 h-8 w-8 lg:h-9 lg:w-9 object-contain drop-shadow-sm" />
+             <img src="/svg/loeitech-logo.png" alt="Logo" class="relative z-10 h-7 w-7 lg:h-9 lg:w-9 object-contain drop-shadow-sm" />
         </div>
-        <div class="leading-tight flex flex-col">
-          <span class="block font-black tracking-wide text-emerald-900 text-sm lg:text-base group-hover/logo:text-emerald-600 transition duration-300" style="text-shadow: 0 1px 2px rgba(255,255,255,0.8);">
+        <div class="leading-tight flex flex-col min-w-0">
+          <span class="block font-black tracking-wide text-emerald-900 text-[12px] lg:text-[clamp(13px,1.1vw,16px)] group-hover/logo:text-emerald-600 transition duration-300 truncate" style="text-shadow: 0 1px 2px rgba(255,255,255,0.8);">
             วิทยาลัยเทคนิคเลย
           </span>
-          <span class="text-[10px] lg:text-[11px] text-slate-500 font-medium tracking-[0.15em] uppercase group-hover/logo:tracking-[0.2em] transition-all duration-500">
+          <span class="text-[9px] lg:text-[clamp(10px,0.8vw,11px)] text-slate-500 font-medium tracking-[0.1em] lg:tracking-[0.15em] uppercase group-hover/logo:tracking-[0.2em] transition-all duration-500 truncate">
             Loei Technical College
           </span>
         </div>
       </a>
     </div>
 
-    <!-- Desktop Menu -->
-    <div class="hidden 2xl:flex justify-center flex-grow space-x-2" id="menu">
+    <!-- Desktop Menu (Lowered breakpoint to XL for better zoom handling) -->
+    <div class="hidden xl:flex justify-center flex-grow mx-2 lg:mx-4 items-center gap-x-0.5 2xl:gap-x-1" id="menu">
       <?php
       if ($mainMenusResult && $mainMenusResult->num_rows > 0) {
         $mainMenusResult->data_seek(0);
@@ -69,12 +69,12 @@ if (isset($mysqli4) && $mysqli4 instanceof mysqli) {
 
           if ($isDropdown && $subMenuResult && $subMenuResult->num_rows > 0) {
             // Dropdown Menu Item
-            echo '<div class="relative group/menu">';
-            echo '<button id="menu-btn-' . $menuId . '" class="flex items-center px-4 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:text-emerald-700 transition duration-300 relative overflow-hidden group-hover/menu:bg-white/50">';
+            echo '<div class="relative group/menu shrink-0">';
+            echo '<button id="menu-btn-' . $menuId . '" class="flex items-center px-2 py-2 2xl:px-4 text-[clamp(12px,0.9vw,14px)] whitespace-nowrap font-bold text-slate-600 rounded-xl hover:text-emerald-700 transition duration-300 relative overflow-hidden group-hover/menu:bg-white/50 shrink-0">';
             echo '<span class="relative z-10">' . htmlspecialchars($menuName) . '</span>';
-            echo '<i class="fas fa-chevron-down text-[10px] ml-1.5 transition-transform duration-300 group-hover/menu:rotate-180 text-slate-400 group-hover/menu:text-emerald-500 relative z-10"></i>';
+            echo '<i class="fas fa-chevron-down text-[9px] ml-1 transition-transform duration-300 group-hover/menu:rotate-180 text-slate-400 group-hover/menu:text-emerald-500 relative z-10"></i>';
             // Hover Underline
-            echo '<span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-400 to-teal-500 transform scale-x-0 group-hover/menu:scale-x-100 transition-transform duration-300 origin-center"></span>';
+            echo '<span class="absolute bottom-1 left-2 right-2 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-500 transform scale-x-0 group-hover/menu:scale-x-100 transition-transform duration-300 origin-center"></span>';
             echo '</button>';
             
             // Dropdown Content
@@ -87,21 +87,21 @@ if (isset($mysqli4) && $mysqli4 instanceof mysqli) {
 
             while ($subMenu = $subMenuResult->fetch_assoc()) {
               $subTarget = ($subMenu['target_blank'] == 1) ? 'target="_blank"' : '';
-              echo '<a href="' . htmlspecialchars(normalize_url_nav($subMenu['submenu_link'])) . '" ' . $subTarget . ' class="group/item flex items-center px-4 py-2.5 text-sm text-slate-600 hover:text-emerald-800 hover:bg-emerald-50/50 rounded-xl transition duration-200">';
+              echo '<a href="' . htmlspecialchars(normalize_url_nav($subMenu['submenu_link'])) . '" ' . $subTarget . ' class="group/item flex items-center px-4 py-2.5 text-sm text-slate-600 hover:text-emerald-800 hover:bg-emerald-50/50 rounded-xl transition duration-200 whitespace-nowrap">';
               // Icon dot
-              echo '<span class="flex items-center justify-center w-6 h-6 rounded-lg bg-emerald-50 text-emerald-400 mr-3 group-hover/item:bg-emerald-100 group-hover/item:text-emerald-600 transition-colors duration-200 shadow-sm">';
+              echo '<span class="flex items-center justify-center w-6 h-6 rounded-lg bg-emerald-50 text-emerald-400 mr-3 shrink-0 group-hover/item:bg-emerald-100 group-hover/item:text-emerald-600 transition-colors duration-200 shadow-sm">';
               echo '<i class="fas fa-arrow-right text-[10px] transform -translate-x-1 opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-300"></i>';
               echo '</span>';
               
-              echo '<span class="font-medium">' . htmlspecialchars($subMenu['submenu_name']) . '</span>';
+              echo '<span class="font-medium whitespace-nowrap">' . htmlspecialchars($subMenu['submenu_name']) . '</span>';
               echo '</a>';
             }
             echo '</div></div>';
           } else {
             // Single Menu Item
-            echo '<a href="' . htmlspecialchars(normalize_url_nav($menuLink)) . '" ' . $target . ' class="relative group/link px-4 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:text-emerald-700 transition duration-300 overflow-hidden hover:bg-white/50">';
+            echo '<a href="' . htmlspecialchars(normalize_url_nav($menuLink)) . '" ' . $target . ' class="relative group/link px-2 py-2 2xl:px-4 text-[clamp(12px,0.9vw,14px)] whitespace-nowrap font-bold text-slate-600 rounded-xl hover:text-emerald-700 transition duration-300 overflow-hidden hover:bg-white/50 shrink-0">';
             echo '<span class="relative z-10">' . htmlspecialchars($menuName) . '</span>';
-            echo '<span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-400 to-teal-500 transform scale-x-0 group-hover/link:scale-x-100 transition-transform duration-300 origin-center"></span>';
+            echo '<span class="absolute bottom-1 left-2 right-2 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-500 transform scale-x-0 group-hover/link:scale-x-100 transition-transform duration-300 origin-center"></span>';
             echo '</a>';
           }
         }
@@ -110,29 +110,29 @@ if (isset($mysqli4) && $mysqli4 instanceof mysqli) {
     </div>
 
     <!-- Social Icons: Floating Pills -->
-    <div class="hidden sm:flex absolute left-1/2 -translate-x-1/2 2xl:static 2xl:translate-x-0 items-center gap-2 bg-white/60 backdrop-blur-md px-1.5 py-1.5 rounded-full border border-white/50 shadow-inner">
-      <a href="https://www.loeitech.ac.th/mikrotik/?lang=en" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-blue-600 shadow-sm hover:scale-110 hover:-translate-y-1 transition duration-300 border border-slate-100 group relative">
+    <div class="hidden lg:flex absolute left-1/2 -translate-x-1/2 xl:static xl:translate-x-0 items-center gap-1 xl:gap-2 bg-white/60 backdrop-blur-md px-1.5 py-1.5 rounded-full border border-white/50 shadow-inner shrink-0">
+      <a href="https://www.loeitech.ac.th/mikrotik/?lang=en" target="_blank" class="w-8 h-8 xl:w-9 xl:h-9 flex items-center justify-center rounded-full bg-white text-blue-600 shadow-sm hover:scale-110 hover:-translate-y-1 transition duration-300 border border-slate-100 group relative">
         <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition duration-300 whitespace-nowrap pointer-events-none">Mikrotik</span>
-        <img src="https://www.loeitech.ac.th/mikrotik/images/logo/Mikrotik--Streamline-Simple-Icons.svg" alt="Mikrotik" class="w-4 h-4 opacity-80 group-hover:opacity-100">
+        <img src="https://www.loeitech.ac.th/mikrotik/images/logo/Mikrotik--Streamline-Simple-Icons.svg" alt="Mikrotik" class="w-3.5 h-3.5 xl:w-4 xl:h-4 opacity-80 group-hover:opacity-100">
       </a>
-      <a href="https://facebook.com/www.loeitech.ac.th" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-blue-600 shadow-sm hover:scale-110 hover:-translate-y-1 transition duration-300 border border-slate-100">
-        <i class="fab fa-facebook-f text-sm"></i>
+      <a href="https://facebook.com/www.loeitech.ac.th" target="_blank" class="w-8 h-8 xl:w-9 xl:h-9 flex items-center justify-center rounded-full bg-white text-blue-600 shadow-sm hover:scale-110 hover:-translate-y-1 transition duration-300 border border-slate-100">
+        <i class="fab fa-facebook-f text-xs xl:text-sm"></i>
       </a>
-      <a href="https://www.youtube.com/@loeitechnicalcollege1556" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-red-600 shadow-sm hover:scale-110 hover:-translate-y-1 transition duration-300 border border-slate-100">
-        <i class="fab fa-youtube text-sm"></i>
+      <a href="https://www.youtube.com/@loeitechnicalcollege1556" target="_blank" class="w-8 h-8 xl:w-9 xl:h-9 flex items-center justify-center rounded-full bg-white text-red-600 shadow-sm hover:scale-110 hover:-translate-y-1 transition duration-300 border border-slate-100">
+        <i class="fab fa-youtube text-xs xl:text-sm"></i>
       </a>
-      <a href="https://www.tiktok.com/@businessloeitech" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black shadow-sm hover:scale-110 hover:-translate-y-1 transition duration-300 border border-slate-100">
-        <i class="fab fa-tiktok text-sm"></i>
+      <a href="https://www.tiktok.com/@businessloeitech" target="_blank" class="w-8 h-8 xl:w-9 xl:h-9 flex items-center justify-center rounded-full bg-white text-black shadow-sm hover:scale-110 hover:-translate-y-1 transition duration-300 border border-slate-100">
+        <i class="fab fa-tiktok text-xs xl:text-sm"></i>
       </a>
-      <div class="w-px h-5 bg-slate-200 mx-1"></div>
-      <a href="https://loeitech.appedr.com/edr/login.do" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-700 shadow-sm hover:bg-emerald-500 hover:text-white hover:scale-110 hover:-translate-y-1 transition duration-300">
-        <img src="/svg/EDR.png" alt="EDR" class="w-5 h-5 object-contain brightness-95 group-hover:brightness-0 invert-0 group-hover:invert transition">
+      <div class="w-px h-4 xl:h-5 bg-slate-200 mx-0.5 xl:mx-1"></div>
+      <a href="https://loeitech.appedr.com/edr/login.do" target="_blank" class="w-8 h-8 xl:w-9 xl:h-9 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-700 shadow-sm hover:bg-emerald-500 hover:text-white hover:scale-110 hover:-translate-y-1 transition duration-300">
+        <img src="/svg/EDR.png" alt="EDR" class="w-4 h-4 xl:w-5 xl:h-5 object-contain">
       </a>
     </div>
 
     <!-- Mobile Toggle -->
     <div class="flex items-center space-x-2">
-      <button id="menu-toggle" class="2xl:hidden p-2 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition duration-300 focus:outline-none active:scale-95">
+      <button id="menu-toggle" class="xl:hidden p-2 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition duration-300 focus:outline-none active:scale-95">
         <div class="w-6 h-5 flex flex-col justify-between relative transform transition-all duration-300">
             <span class="w-full h-0.5 bg-current rounded-full origin-left transition-all duration-300" id="bar1"></span>
             <span class="w-full h-0.5 bg-current rounded-full transition-all duration-300 opacity-100" id="bar2"></span>
@@ -261,7 +261,7 @@ function toggleMobileDropdown(id, button) {
 
 // Window Resize Reset
 window.addEventListener('resize', function() {
-  if (window.innerWidth >= 1536) { 
+  if (window.innerWidth >= 1280) { 
     if (!mobileMenu.classList.contains('hidden')) {
         menuToggle.click(); // Trigger close
     }

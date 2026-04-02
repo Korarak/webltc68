@@ -5,6 +5,7 @@ ini_set('display_errors', 0); */
 
 // ตั้งค่าการเชื่อมต่อฐานข้อมูล
 include '../condb/condb.php';
+require_once '../include/SecurityHelper.php';
 
 // ตรวจสอบการเชื่อมต่อ
 if ($mysqli3->connect_error) {
@@ -38,8 +39,9 @@ if (!preg_match("/^\d{13}$/", $thai_id)) {
 }
 
 // คำสั่ง SQL ตรวจสอบ Thai ID
-$stmt = $mysqli3->prepare("SELECT * FROM personel_data WHERE thai_id = ?");
-$stmt->bind_param("s", $thai_id);
+$hash_thai_id = SecurityHelper::hashThaiId($thai_id);
+$stmt = $mysqli3->prepare("SELECT * FROM personel_data WHERE thai_id_hash = ? AND is_deleted = 0");
+$stmt->bind_param("s", $hash_thai_id);
 $stmt->execute();
 $result = $stmt->get_result();
 

@@ -17,7 +17,7 @@ if ($res_cat = $conn->query("SELECT * FROM categories ORDER BY sort_order ASC"))
 }
 
 // Filter Logic
-$where = [];
+$where = ["is_deleted = 0"];
 $params = [];
 $types = "";
 
@@ -215,6 +215,13 @@ if (!empty($news_ids)) {
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center gap-2 opacity-60 group-hover:opacity-100 transition-all">
+                                    <button class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:text-green-600 hover:bg-green-50 hover:border-green-200 transition-colors bg-white shadow-sm" title="คัดลอกลิงค์"
+                                       @click="copyLink(<?= $row['id'] ?>)">
+                                        <i class="fas fa-share-alt text-xs"></i>
+                                    </button>
+                                    <a href="../app-news/annonce_detail.php?id=<?= $row['id'] ?>" target="_blank" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-200 transition-colors bg-white shadow-sm" title="ดูหน้าเว็บ">
+                                        <i class="fas fa-external-link-alt text-xs"></i>
+                                    </a>
                                     <button class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition-colors bg-white shadow-sm" title="แก้ไข"
                                        onclick="window.location='news_edit.php?id=<?= $row['id'] ?>'">
                                         <i class="fas fa-pen text-xs"></i>
@@ -332,6 +339,21 @@ if (!empty($news_ids)) {
                             }
                         });
                     }
+                });
+            },
+
+            copyLink(id) {
+                const url = `${window.location.origin}/app-news/annonce_detail.php?id=${id}`;
+                navigator.clipboard.writeText(url).then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'คัดลอกลิงค์แล้ว',
+                        text: url,
+                        timer: 2000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
                 });
             }
         }))

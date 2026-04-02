@@ -3,7 +3,7 @@ include 'middleware.php';
 include 'db_news.php'; 
 
 // Fetch Stats from News DB
-$news_count = $conn->query("SELECT count(*) as c FROM news")->fetch_assoc()['c'];
+$news_count = $conn->query("SELECT count(*) as c FROM news WHERE is_deleted = 0")->fetch_assoc()['c'];
 $files_in_db = 0;
 // Check if attachments table exists in this DB (it should)
 $chk_att = $conn->query("SHOW TABLES LIKE 'attachments'");

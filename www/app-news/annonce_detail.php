@@ -17,7 +17,7 @@ if (!isset($mysqli1) || !$mysqli1 instanceof mysqli) {
 }
 
 // ดึงข้อมูลข่าว
-$sql = "SELECT * FROM news WHERE id = ?";
+$sql = "SELECT * FROM news WHERE id = ? AND is_deleted = 0";
 $stmt = $mysqli1->prepare($sql);
 $stmt->bind_param("i", $news_id);
 $stmt->execute();

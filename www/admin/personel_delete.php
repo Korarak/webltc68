@@ -9,29 +9,8 @@ include '../condb/condb.php';
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $personel_id = $_GET['id'];
 
-    // 1. ดึงข้อมูลรูปภาพเก่ามาก่อนลบ (เพื่อลบไฟล์ออกจาก Server)
-    $img_query = "SELECT profile_image FROM personel_data WHERE id = ?";
-    $stmt = $mysqli3->prepare($img_query);
-    $stmt->bind_param("i", $personel_id);
-    $stmt->execute();
-    $stmt->bind_result($profile_image);
-    $stmt->fetch();
-    $stmt->close();
-
-    // ถ้ามีรูปภาพและไฟล์มีอยู่จริง ให้ลบไฟล์
-    if (!empty($profile_image) && file_exists($profile_image)) {
-        unlink($profile_image);
-    }
-
-    // 2. ลบข้อมูลในตาราง work_detail ที่เชื่อมโยงกับบุคลากร
-    $delete_work_detail_query = "DELETE FROM work_detail WHERE personel_id = ?";
-    $stmt = $mysqli3->prepare($delete_work_detail_query);
-    $stmt->bind_param("i", $personel_id);
-    $stmt->execute();
-    $stmt->close();
-
-    // 3. ลบข้อมูลในตาราง personel_data
-    $delete_personel_query = "DELETE FROM personel_data WHERE id = ?";
+    // 3. เปลี่ยนสถานะข้อมูลเป็น Soft Delete แทนการลบแบบ Hard Delete (is_deleted = 1)
+    $delete_personel_query = "UPDATE personel_data SET is_deleted = 1 WHERE id = ?";
     $stmt = $mysqli3->prepare($delete_personel_query);
     $stmt->bind_param("i", $personel_id);
     

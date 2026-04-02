@@ -7,7 +7,7 @@ ob_start();
 $directorQuery = "SELECT p.id, p.fullname, p.Tel, p.E_mail, pos.position_name
                   FROM personel_data p
                   JOIN positions pos ON p.position_id = pos.id
-                  WHERE pos.position_name = 'ผู้อำนวยการ'
+                  WHERE p.is_deleted = 0 AND pos.position_name = 'ผู้อำนวยการ'
                   LIMIT 1";
 $directorResult = $mysqli3->query($directorQuery);
 $director = $directorResult->fetch_assoc();
@@ -17,7 +17,7 @@ $viceQuery = "SELECT p.id as personel_id, p.fullname, p.Tel, p.E_mail, pos.posit
               FROM personel_data p
               JOIN positions pos ON p.position_id = pos.id
               JOIN department d ON p.department_id = d.id
-              WHERE pos.position_name = 'รองผู้อำนวยการ'
+              WHERE p.is_deleted = 0 AND pos.position_name = 'รองผู้อำนวยการ'
               ORDER BY d.id ASC";
 $viceResult = $mysqli3->query($viceQuery);
 $viceDirectors = [];
@@ -45,7 +45,7 @@ while ($b = $branchResult->fetch_assoc()) {
 $headQuery = "SELECT w.workbranch_id, p.id as personel_id, p.fullname 
               FROM work_detail w
               JOIN personel_data p ON w.personel_id = p.id
-              WHERE w.worklevel_id = 1";
+              WHERE p.is_deleted = 0 AND w.worklevel_id = 1";
 $headResult = $mysqli3->query($headQuery);
 $workHeads = [];
 while ($h = $headResult->fetch_assoc()) {

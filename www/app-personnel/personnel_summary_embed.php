@@ -10,7 +10,7 @@ function calculatePercentage($part, $total) {
 }
 
 // สถิติทั้งหมด
-$sql_total = "SELECT COUNT(*) as total FROM personel_data";
+$sql_total = "SELECT COUNT(*) as total FROM personel_data WHERE is_deleted = 0";
 $result_total = $mysqli3->query($sql_total);
 $total_personnel = $result_total->fetch_assoc()['total'];
 
@@ -20,6 +20,7 @@ $sql_gender = "SELECT
     COUNT(p.id) as count
     FROM personel_data p
     LEFT JOIN gender g ON p.gender_id = g.id
+    WHERE p.is_deleted = 0
     GROUP BY p.gender_id, g.gender_name
     ORDER BY count DESC";
 $result_gender = $mysqli3->query($sql_gender);
@@ -34,7 +35,7 @@ $sql_positions = "SELECT
     COUNT(p.id) as count
     FROM personel_data p
     LEFT JOIN positions pos ON p.position_id = pos.id
-    WHERE p.position_id IS NOT NULL
+    WHERE p.is_deleted = 0 AND p.position_id IS NOT NULL
     GROUP BY p.position_id, pos.position_name
     ORDER BY count DESC
     LIMIT 6";
@@ -50,7 +51,7 @@ $sql_admin_dept = "SELECT
     COUNT(p.id) as count
     FROM personel_data p
     LEFT JOIN department d ON p.department_id = d.id
-    WHERE d.department_name LIKE 'ฝ่าย%'
+    WHERE p.is_deleted = 0 AND d.department_name LIKE 'ฝ่าย%'
     GROUP BY p.department_id, d.department_name
     ORDER BY count DESC";
 $result_admin_dept = $mysqli3->query($sql_admin_dept);
@@ -65,7 +66,7 @@ $sql_academic_dept = "SELECT
     COUNT(p.id) as count
     FROM personel_data p
     LEFT JOIN department d ON p.department_id = d.id
-    WHERE d.department_name LIKE 'แผนกวิชา%'
+    WHERE p.is_deleted = 0 AND d.department_name LIKE 'แผนกวิชา%'
     GROUP BY p.department_id, d.department_name
     ORDER BY count DESC
     LIMIT 6";
@@ -83,6 +84,8 @@ $sql_workbranch = "SELECT
     FROM work_detail wd
     JOIN workbranch wb ON wd.workbranch_id = wb.id
     JOIN department d ON wb.department_id = d.id
+    JOIN personel_data p ON wd.personel_id = p.id
+    WHERE p.is_deleted = 0
     GROUP BY wd.workbranch_id, wb.workbranch_name, d.department_name
     ORDER BY count DESC
     LIMIT 10";
@@ -98,6 +101,8 @@ $sql_worklevel = "SELECT
     COUNT(DISTINCT wd.personel_id) as count
     FROM work_detail wd
     JOIN worklevel wl ON wd.worklevel_id = wl.id
+    JOIN personel_data p ON wd.personel_id = p.id
+    WHERE p.is_deleted = 0
     GROUP BY wd.worklevel_id, wl.work_level_name
     ORDER BY count DESC";
 $result_worklevel = $mysqli3->query($sql_worklevel);
@@ -107,21 +112,21 @@ while ($row = $result_worklevel->fetch_assoc()) {
 }
 
 // ข้อมูลที่ยังขาด
-$sql_missing_position = "SELECT COUNT(*) as count FROM personel_data WHERE position_id IS NULL";
+$sql_missing_position = "SELECT COUNT(*) as count FROM personel_data WHERE is_deleted = 0 AND position_id IS NULL";
 $result_missing_position = $mysqli3->query($sql_missing_position);
 $missing_position = $result_missing_position->fetch_assoc()['count'];
 
-$sql_missing_dept = "SELECT COUNT(*) as count FROM personel_data WHERE department_id IS NULL";
+$sql_missing_dept = "SELECT COUNT(*) as count FROM personel_data WHERE is_deleted = 0 AND department_id IS NULL";
 $result_missing_dept = $mysqli3->query($sql_missing_dept);
 $missing_dept = $result_missing_dept->fetch_assoc()['count'];
 
-$sql_missing_contact = "SELECT COUNT(*) as count FROM personel_data WHERE Tel IS NULL OR E_mail IS NULL";
+$sql_missing_contact = "SELECT COUNT(*) as count FROM personel_data WHERE is_deleted = 0 AND (Tel IS NULL OR E_mail IS NULL)";
 $result_missing_contact = $mysqli3->query($sql_missing_contact);
 $missing_contact = $result_missing_contact->fetch_assoc()['count'];
 
 $sql_missing_work = "SELECT COUNT(*) as count FROM personel_data p 
                    LEFT JOIN work_detail wd ON p.id = wd.personel_id 
-                   WHERE wd.id IS NULL";
+                   WHERE wd.id IS NULL AND p.is_deleted = 0";
 $result_missing_work = $mysqli3->query($sql_missing_work);
 $missing_work = $result_missing_work->fetch_assoc()['count'];
 
@@ -129,7 +134,7 @@ $missing_work = $result_missing_work->fetch_assoc()['count'];
 $sql_dept_count = "SELECT COUNT(DISTINCT d.id) as count 
                   FROM department d
                   WHERE EXISTS (
-                      SELECT 1 FROM personel_data p WHERE p.department_id = d.id
+                      SELECT 1 FROM personel_data p WHERE p.department_id = d.id AND p.is_deleted = 0
                   ) OR EXISTS (
                       SELECT 1 FROM workbranch wb 
                       JOIN work_detail wd ON wb.id = wd.workbranch_id 
@@ -151,7 +156,8 @@ $sql_complete = "SELECT COUNT(DISTINCT p.id) as count
                 AND p.department_id IS NOT NULL 
                 AND p.Tel IS NOT NULL 
                 AND p.E_mail IS NOT NULL
-                AND wd.id IS NOT NULL";
+                AND wd.id IS NOT NULL
+                AND p.is_deleted = 0";
 $result_complete = $mysqli3->query($sql_complete);
 $complete_count = $result_complete->fetch_assoc()['count'];
 ?>

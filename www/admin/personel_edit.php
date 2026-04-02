@@ -4,6 +4,7 @@ include 'middleware.php';
 <?php
 ob_start();
 include '../condb/condb.php';
+require_once '../include/SecurityHelper.php';
 
 // ฟังก์ชันอัพโหลด base64 image
 function uploadBase64Image($base64_string, $upload_path, $prefix = "profile_") {
@@ -57,7 +58,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
               LEFT JOIN position_level pl ON p.position_level_id = pl.id
               LEFT JOIN gender g ON p.gender_id = g.id
               LEFT JOIN education_level el ON p.education_level_id = el.id
-              WHERE p.id = ?";
+              WHERE p.id = ? AND p.is_deleted = 0";
     $stmt = $mysqli3->prepare($query);
     $stmt->bind_param("i", $personel_id);
     $stmt->execute();
@@ -66,6 +67,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     // ตรวจสอบว่ามีข้อมูลบุคลากร
     if ($result->num_rows > 0) {
         $personel = $result->fetch_assoc();
+        $personel['thai_id'] = SecurityHelper::decrypt($personel['thai_id']);
         
         // ดึงข้อมูลงานที่รับผิดชอบ
         $work_query = "SELECT wd.workbranch_id, wd.worklevel_id, 

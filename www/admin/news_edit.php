@@ -11,7 +11,7 @@ $news_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if(!$news_id) { header("Location: news_manage.php"); exit; }
 
 // Fetch News
-$stmt = $conn->prepare("SELECT * FROM news WHERE id = ?");
+$stmt = $conn->prepare("SELECT * FROM news WHERE id = ? AND is_deleted = 0");
 $stmt->bind_param("i", $news_id);
 $stmt->execute();
 $news = $stmt->get_result()->fetch_assoc();

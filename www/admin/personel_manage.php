@@ -82,7 +82,7 @@ $current_params = array_merge($_GET, ['page' => $page]);
 $current_query_string = http_build_query($current_params);
 
 // Build SQL WHERE
-$where = "p.fullname LIKE ?";
+$where = "p.is_deleted = 0 AND p.fullname LIKE ?";
 $params = ["s", $search_param];
 
 if ($filters['department_id'] != "0") {

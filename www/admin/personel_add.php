@@ -2,6 +2,7 @@
 include 'middleware.php';
 ob_start();
 include '../condb/condb.php';
+require_once '../include/SecurityHelper.php';
 
 // ฟังก์ชันดึงข้อมูลฝ่ายและแผนกแบบจัดกลุ่ม
 function getDepartmentGroups() {
@@ -81,8 +82,9 @@ function getOptions($table, $id_column, $name_column) {
 // ฟังก์ชันตรวจสอบเลขบัตรประชาชนซ้ำ
 function checkDuplicateThaiID($thai_id) {
     global $mysqli3;
-    $stmt = $mysqli3->prepare("SELECT id, fullname FROM personel_data WHERE thai_id = ?");
-    $stmt->bind_param("s", $thai_id);
+    $hash = SecurityHelper::hashThaiId($thai_id);
+    $stmt = $mysqli3->prepare("SELECT id, fullname FROM personel_data WHERE thai_id_hash = ?");
+    $stmt->bind_param("s", $hash);
     $stmt->execute();
     $result = $stmt->get_result();
     $existing = $result->fetch_assoc();
@@ -186,9 +188,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mysqli3->begin_transaction();
 
             // เพิ่มข้อมูลบุคลากร
-            $stmt = $mysqli3->prepare("INSERT INTO personel_data (thai_id, fullname, Tel, E_mail, gender_id, education_level_id, education_detail, position_id, position_level_id, department_id, profile_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssiissiis", 
-                $form_data['thai_id'], 
+            $encrypted_thai_id = SecurityHelper::encrypt($form_data['thai_id']);
+            $hash_thai_id = SecurityHelper::hashThaiId($form_data['thai_id']);
+            $stmt = $mysqli3->prepare("INSERT INTO personel_data (thai_id, thai_id_hash, fullname, Tel, E_mail, gender_id, education_level_id, education_detail, position_id, position_level_id, department_id, profile_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssiissiis", 
+                $encrypted_thai_id, 
+                $hash_thai_id, 
                 $form_data['fullname'], 
                 $form_data['Tel'], 
                 $form_data['E_mail'], 

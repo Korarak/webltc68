@@ -7,25 +7,8 @@ include('db_news.php');
 function deleteNews($conn, $id) {
     $id = intval($id);
     
-    // 1. Get Attachments to delete files
-    $stmt = $conn->prepare("SELECT file_path FROM attachments WHERE news_id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    while ($row = $result->fetch_assoc()) {
-        if (!empty($row['file_path']) && file_exists($row['file_path'])) {
-            unlink($row['file_path']);
-        }
-    }
-    
-    // 2. Delete Attachments Record (Optional if Cascade is set, but safe to do)
-    $stmt = $conn->prepare("DELETE FROM attachments WHERE news_id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    
-    // 3. Delete News Record
-    $stmt = $conn->prepare("DELETE FROM news WHERE id = ?");
+    // 1. Soft Delete News Record
+    $stmt = $conn->prepare("UPDATE news SET is_deleted = 1 WHERE id = ?");
     $stmt->bind_param("i", $id);
     return $stmt->execute();
 }

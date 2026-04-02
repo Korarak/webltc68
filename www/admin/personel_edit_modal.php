@@ -2,6 +2,7 @@
 // filepath: /home/adm1n_ltc/webltc67/www/admin/personel_edit_modal.php
 include 'middleware.php';
 include '../condb/condb.php';
+require_once '../include/SecurityHelper.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo '<p class="text-center text-red-600 p-4">ข้อผิดพลาด: ไม่พบ ID</p>';
@@ -17,7 +18,7 @@ $return_query = $_GET['return_query'] ?? '';
 $query = "SELECT p.id, p.thai_id, p.fullname, p.Tel, p.E_mail, p.gender_id, p.education_level_id, p.education_detail, 
                  p.department_id, p.position_id, p.position_level_id, p.profile_image
           FROM personel_data p
-          WHERE p.id = ?";
+          WHERE p.id = ? AND p.is_deleted = 0";
 $stmt = $mysqli3->prepare($query);
 $stmt->bind_param("i", $personel_id);
 $stmt->execute();
@@ -29,6 +30,7 @@ if ($result->num_rows === 0) {
 }
 
 $personel = $result->fetch_assoc();
+$personel['thai_id'] = SecurityHelper::decrypt($personel['thai_id']);
 $stmt->close();
 
 // ดึงข้อมูลงาน (Work Details)

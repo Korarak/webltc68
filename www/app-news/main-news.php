@@ -15,7 +15,7 @@ $sql_boss = "SELECT pd.id, pd.fullname, pd.profile_image, p.position_name, d.dep
         FROM personel_data pd
         JOIN positions p ON pd.position_id = p.id
         LEFT JOIN department d ON pd.department_id = d.id
-        WHERE p.position_name IN ('ผู้อำนวยการ', 'รองผู้อำนวยการ')
+        WHERE pd.is_deleted = 0 AND p.position_name IN ('ผู้อำนวยการ', 'รองผู้อำนวยการ')
         ORDER BY FIELD(pd.position_id, 1, 2), pd.fullname";
 
 

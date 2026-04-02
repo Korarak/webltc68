@@ -12,7 +12,7 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 $news_id = (int) $_GET['id'];
 
 // ดึงข่าว
-$stmt = $conn->prepare("SELECT * FROM news WHERE id = ?");
+$stmt = $conn->prepare("SELECT * FROM news WHERE id = ? AND is_deleted = 0");
 $stmt->bind_param("i", $news_id);
 $stmt->execute();
 $result = $stmt->get_result();

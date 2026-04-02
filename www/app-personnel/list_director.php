@@ -12,7 +12,7 @@ $query = "
     FROM personel_data p
     JOIN positions pos ON p.position_id = pos.id
     JOIN department d   ON p.department_id = d.id
-    WHERE pos.position_name IN ('ผู้อำนวยการ', 'รองผู้อำนวยการ')
+    WHERE p.is_deleted = 0 AND pos.position_name IN ('ผู้อำนวยการ', 'รองผู้อำนวยการ')
     ORDER BY FIELD(pos.position_name, 'ผู้อำนวยการ', 'รองผู้อำนวยการ')
 ";
 $result = $mysqli3->query($query);

@@ -64,7 +64,7 @@ $filters = [
     'workbranch_id' => $_GET['workbranch_id'] ?? 0
 ];
 
-$where = "p.fullname LIKE ?";
+$where = "p.is_deleted = 0 AND p.fullname LIKE ?";
 $params = ["s", $search];
 
 if ($filters['division_id'] != "0") {
@@ -100,7 +100,8 @@ $query = "SELECT p.id, p.fullname, p.Tel, p.E_mail, p.department_id, p.position_
             d.department_name as main_department, pos.position_name, pl.level_name, 
             GROUP_CONCAT(DISTINCT wb.workbranch_name ORDER BY wb.workbranch_name SEPARATOR ', ') AS workbranch_names,
             GROUP_CONCAT(DISTINCT wl.work_level_name ORDER BY wl.work_level_name SEPARATOR ', ') AS worklevel_names,
-            GROUP_CONCAT(DISTINCT wbd.department_name ORDER BY wbd.department_name SEPARATOR ', ') AS work_departments
+            GROUP_CONCAT(DISTINCT wbd.department_name ORDER BY wbd.department_name SEPARATOR ', ') AS work_departments,
+            GROUP_CONCAT(DISTINCT CONCAT(wb.workbranch_name, ' (', wl.work_level_name, ')') SEPARATOR '|||') AS exact_work_roles
           FROM personel_data p
           LEFT JOIN department d ON p.department_id = d.id
           LEFT JOIN positions pos ON p.position_id = pos.id
@@ -358,68 +359,186 @@ if ($filters['workbranch_id'] != 0) { /* ...Query Name... */ $wb_stmt = $mysqli3
             </div>
 
             <?php if ($total_records > 0): ?>
-                <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-8">
-                <?php while ($row = $result->fetch_assoc()) { 
+                <?php
+                // Fetch all records for the current page
+                $persons_data = [];
+                while ($row = $result->fetch_assoc()) {
+                    $persons_data[] = $row;
+                }
+                
+                // Determine View Mode
+                $view_mode = $_GET['view'] ?? 'card';
+                $show_toggle = ($filters['department_id'] != 0 || $filters['workbranch_id'] != 0);
+                $is_org_view = ($show_toggle && $view_mode === 'org');
+                ?>
+
+                <?php if ($show_toggle): ?>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 bg-white p-3 rounded-xl shadow-sm border border-green-100">
+                    <h2 class="text-lg font-bold text-green-800 flex items-center gap-2">
+                        <i class="fas fa-sitemap mt-0.5"></i> รูปแบบการแสดงผล
+                    </h2>
+                    <div class="bg-gray-100 rounded-lg p-1 shadow-inner inline-flex">
+                        <a href="?<?= http_build_query(array_merge($_GET, ['view' => 'card'])) ?>" class="px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200 <?= (!$is_org_view) ? 'bg-white text-green-700 shadow-sm' : 'text-gray-500 hover:text-gray-800' ?>">
+                            <i class="fas fa-th-large mr-1"></i> การ์ด
+                        </a>
+                        <a href="?<?= http_build_query(array_merge($_GET, ['view' => 'org'])) ?>" class="px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200 <?= ($is_org_view) ? 'bg-white text-green-700 shadow-sm' : 'text-gray-500 hover:text-gray-800' ?>">
+                            <i class="fas fa-sitemap mr-1"></i> ผังองค์กร
+                        </a>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <?php
+                // Helper function to render a single person card
+                $renderCard = function($row) {
                     $profile = $row['profile_image'] ?? '';
                     $imgSrc = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22%3E%3Crect fill=%22%23d1fae5%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2248%22 fill=%22%23059669%22%3E👤%3C/text%3E%3C/svg%3E';
                     if (!empty($profile)) {
-                    if (preg_match('#^https?://#i', $profile)) {
-                        $imgSrc = $profile;
-                    } else {
-                        // Check relative to root
-                        $candidate = __DIR__ . '/../' . ltrim($profile, '/');
-                        if (file_exists($candidate) && is_file($candidate)) {
-                            $imgSrc = '/' . ltrim($profile, '/');
-                        } 
-                        // Legacy check: maybe in admin?
-                        else {
-                            $candidateAdmin = __DIR__ . '/../admin/' . ltrim($profile, '/');
-                            if (file_exists($candidateAdmin) && is_file($candidateAdmin)) {
-                                $imgSrc = '/admin/' . ltrim($profile, '/');
+                        if (preg_match('#^https?://#i', $profile)) {
+                            $imgSrc = $profile;
+                        } else {
+                            $candidate = __DIR__ . '/../' . ltrim($profile, '/');
+                            if (file_exists($candidate) && is_file($candidate)) {
+                                $imgSrc = '/' . ltrim($profile, '/');
+                            } else {
+                                $candidateAdmin = __DIR__ . '/../admin/' . ltrim($profile, '/');
+                                if (file_exists($candidateAdmin) && is_file($candidateAdmin)) {
+                                    $imgSrc = '/admin/' . ltrim($profile, '/');
+                                }
                             }
                         }
                     }
-                }
+                    ?>
+                    <div class="bg-white shadow-lg rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer person-card group h-full flex flex-col w-full border border-gray-100" data-id="<?= htmlspecialchars($row['id']) ?>">
+                        <div class="aspect-[3/4] bg-gradient-to-br from-green-50 to-green-100 relative overflow-hidden flex-shrink-0">
+                            <img src="<?= htmlspecialchars($imgSrc) ?>" alt="<?= htmlspecialchars($row['fullname']) ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        </div>
+                        <div class="p-3 sm:p-4 flex flex-col flex-1">
+                            <h3 class="text-sm font-bold text-green-800 mb-2 line-clamp-2"><?= htmlspecialchars($row['fullname']) ?></h3>
+                            <div class="space-y-1.5 text-xs text-gray-600 flex-1">
+                                <?php if($row['position_name']): ?>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-briefcase text-green-600 flex-shrink-0 mt-0.5 w-3 text-center"></i>
+                                    <span class="flex-1 line-clamp-1" title="<?= htmlspecialchars($row['position_name']) ?>"><?= htmlspecialchars($row['position_name']) ?></span>
+                                </div>
+                                <?php endif; ?>
+                                <?php if($row['main_department']): ?>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-building text-green-600 flex-shrink-0 mt-0.5 w-3 text-center"></i>
+                                    <span class="flex-1 line-clamp-1" title="<?= htmlspecialchars($row['main_department']) ?>"><?= htmlspecialchars($row['main_department']) ?></span>
+                                </div>
+                                <?php endif; ?>
+                                <?php if($row['position_name'] == 'ข้าราชการครู' && !empty($row['level_name'])): ?>
+                                <div class="flex items-start gap-2 pt-0.5">
+                                    <i class="fas fa-certificate text-orange-500 flex-shrink-0 mt-0.5 w-3 text-center"></i>
+                                    <span class="text-orange-700 font-bold italic">วิทยฐานะ: <?= htmlspecialchars($row['level_name']) ?></span>
+                                </div>
+                                <?php endif; ?>
+                                <?php
+                                $tasks = array_filter([$row['worklevel_names'], $row['workbranch_names']]);
+                                if(!empty($tasks)): 
+                                    $task_str = join(', ', $tasks);
+                                ?>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-tasks text-blue-500 flex-shrink-0 mt-0.5 w-3 text-center"></i>
+                                    <span class="flex-1 line-clamp-2" title="<?= htmlspecialchars($task_str) ?>"><?= htmlspecialchars($task_str) ?></span>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="mt-3 pt-2 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-shrink-0">
+                                <button class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded-lg text-xs font-semibold transition-colors flex justify-center items-center gap-1">
+                                    <i class="fas fa-eye"></i> ดูรายละเอียด
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                };
                 ?>
-                    <div class="bg-white shadow-lg rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 cursor-pointer person-card group" data-id="<?= $row['id'] ?>">
-                    <div class="aspect-[3/4] bg-gradient-to-br from-green-50 to-green-100 relative overflow-hidden">
-                            <img 
-                                src="<?= htmlspecialchars($imgSrc) ?>" 
-                                alt="<?= htmlspecialchars($row['fullname']) ?>" 
-                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                loading="lazy"
-                            >
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+
+                <?php if ($is_org_view): ?>
+                    <!-- Org Chart View -->
+                    <?php
+                    $heads = [];
+                    $members = [];
+                    foreach ($persons_data as $p) {
+                        $is_head = false;
+                        $exact_roles = explode('|||', $p['exact_work_roles'] ?? '');
+                        
+                        // Robust normalization for Thai department names (space vs dash)
+                        $norm_dept = str_replace([' ', '-'], '', $selected_department_name);
+                        $norm_wb = str_replace([' ', '-'], '', $selected_workbranch_name);
+
+                        foreach ($exact_roles as $role) {
+                            $norm_role = str_replace([' ', '-'], '', $role);
+
+                            if ($filters['department_id'] != 0 && !empty($selected_department_name)) {
+                                if (strpos($norm_role, $norm_dept) !== false && (strpos($role, 'หัวหน้างาน') !== false || strpos($role, 'หัวหน้าแผนก') !== false)) {
+                                    $is_head = true; break;
+                                }
+                            }
+                            if ($filters['workbranch_id'] != 0 && !empty($selected_workbranch_name)) {
+                                if (strpos($norm_role, $norm_wb) !== false && strpos($role, 'หัวหน้า') !== false) {
+                                    $is_head = true; break;
+                                }
+                            }
+                        }
+                        
+                        if ($is_head) {
+                            $heads[] = $p;
+                        } else {
+                            $members[] = $p;
+                        }
+                    }
+                    ?>
+                    
+                    <div class="org-chart-container py-10 px-2 sm:px-6 mb-8 bg-gradient-to-b from-green-50 to-white rounded-2xl shadow-sm border border-green-100 w-full">
+                        <div class="flex flex-col items-center w-full">
+                            <!-- Heads Section -->
+                            <div class="flex flex-wrap justify-center gap-6 sm:gap-8 mb-2">
+                                <?php foreach ($heads as $head): ?>
+                                    <div class="w-56 sm:w-64 relative">
+                                        <div class="absolute -top-4 w-full flex justify-center z-10">
+                                            <span class="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-md border border-yellow-500 flex items-center gap-1">
+                                                <i class="fas fa-star text-xs"></i> หัวหน้าแผนก
+                                            </span>
+                                        </div>
+                                        <?php $renderCard($head); ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+
+                            <!-- Connector Indicator -->
+                            <?php if (!empty($members) && !empty($heads)): ?>
+                            <div class="flex flex-col items-center justify-center my-4 text-green-400">
+                                <div class="w-[2px] h-6 sm:h-8 bg-green-400"></div>
+                                <i class="fas fa-chevron-down text-lg"></i>
+                            </div>
+                            <?php endif; ?>
+
+                            <!-- Members Section -->
+                            <?php if (!empty($members)): ?>
+                                <div class="flex flex-wrap justify-center gap-4 sm:gap-6 mt-2 max-w-7xl">
+                                    <?php foreach ($members as $member): ?>
+                                        <div class="w-44 sm:w-56">
+                                            <?php $renderCard($member); ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     
-                    <div class="p-3 sm:p-4">
-                        <h3 class="text-sm font-bold text-green-800 mb-2 line-clamp-2"><?= htmlspecialchars($row['fullname']) ?></h3>
-                        
-                        <div class="space-y-1 text-xs text-gray-600">
-                        <?php if($row['position_name']): ?>
-                        <div class="flex items-start gap-2">
-                            <i class="fas fa-briefcase text-green-600 flex-shrink-0 mt-0.5"></i>
-                            <span class="flex-1 line-clamp-1"><?= htmlspecialchars($row['position_name']) ?></span>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <?php if($row['main_department']): ?>
-                        <div class="flex items-start gap-2">
-                            <i class="fas fa-building text-green-600 flex-shrink-0 mt-0.5"></i>
-                            <span class="flex-1 line-clamp-1"><?= htmlspecialchars($row['main_department']) ?></span>
-                        </div>
-                        <?php endif; ?>
-                        </div>
-                        
-                        <div class="mt-2 pt-2 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded-lg text-xs font-semibold transition-colors">
-                            <i class="fas fa-eye mr-1"></i>ดูรายละเอียด
-                        </button>
-                        </div>
+                <?php else: ?>
+                    <!-- Normal Grid Card View -->
+                    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                        <?php foreach ($persons_data as $row) { 
+                            $renderCard($row);
+                        } ?>
                     </div>
-                    </div>
-                <?php } ?>
-                </div>
+                <?php endif; ?>
+                
             <?php else: ?>
                 <div class="text-center py-12 bg-white rounded-xl shadow border border-gray-200">
                 <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
@@ -606,8 +725,8 @@ if ($filters['workbranch_id'] != 0) { /* ...Query Name... */ $wb_stmt = $mysqli3
     </div>
 </div>
 
-<div id="personModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-start justify-center pt-20 px-4 pb-4" onclick="closePersonModalOutside(event)">
-  <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl mx-4 md:mx-auto p-6 relative max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation();">
+<div id="personModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9999] flex items-start justify-center pt-24 md:pt-28 px-4 pb-24 md:pb-8" onclick="closePersonModalOutside(event)">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl mx-4 md:mx-auto p-6 relative max-h-[calc(100vh-12rem)] md:max-h-[85vh] overflow-y-auto" onclick="event.stopPropagation();">
     <button class="absolute top-3 right-3 text-gray-500 hover:text-red-500 z-10" onclick="closePersonModal()">
       <i class="fas fa-times text-xl"></i>
     </button>

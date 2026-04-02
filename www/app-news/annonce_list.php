@@ -46,7 +46,7 @@ $search_term = $_GET['search'] ?? '';
 $search_param = "%" . $search_term . "%";
 
 // นับจำนวนทั้งหมด (Total Count Query)
-$count_sql = "SELECT COUNT(*) AS total FROM news WHERE category_id = ?";
+$count_sql = "SELECT COUNT(*) AS total FROM news WHERE category_id = ? AND is_deleted = 0";
 $params = "i";
 $total_rows = 0;
 
@@ -70,7 +70,7 @@ $count_stmt->close();
 $total_pages = ceil($total_rows / $records_per_page);
 
 // ดึงข่าวในหมวดหมู่ (News Fetch Query)
-$sql = "SELECT id, title, uploader, upload_datetime FROM news WHERE category_id = ?";
+$sql = "SELECT id, title, uploader, upload_datetime FROM news WHERE category_id = ? AND is_deleted = 0";
 if ($search_term) {
     $sql .= " AND title LIKE ?";
 }

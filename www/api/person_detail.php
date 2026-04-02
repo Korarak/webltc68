@@ -18,7 +18,7 @@ $sql = "SELECT
         LEFT JOIN position_level pl ON p.position_level_id = pl.id
         LEFT JOIN department d ON p.department_id = d.id
         LEFT JOIN education_level el ON p.education_level_id = el.id
-        WHERE p.id = ?";
+        WHERE p.id = ? AND p.is_deleted = 0";
 
 $stmt = $mysqli3->prepare($sql);
 $stmt->bind_param("i", $id);

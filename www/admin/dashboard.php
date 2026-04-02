@@ -5,7 +5,9 @@ include 'middleware.php';
 <html lang="th" x-data="{ sidebarOpen: false }" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>แผงควบคุม</title>
+  <link rel="icon" type="image/png" href="/svg/admin-favicon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 

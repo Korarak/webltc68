@@ -12,7 +12,7 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 $news_id = (int)$_GET['id'];
 
 // Query ข้อมูลข่าว
-$sql = "SELECT * FROM news WHERE id = $news_id";
+$sql = "SELECT * FROM news WHERE id = $news_id AND is_deleted = 0";
 $result = $conn->query($sql);
 
 if ($result->num_rows == 0) {
@@ -24,7 +24,7 @@ $row = $result->fetch_assoc();
 
 // ตรวจสอบการยืนยันการลบข่าว
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_delete'])) {
-    $delete_sql = "DELETE FROM news WHERE id = $news_id";
+    $delete_sql = "UPDATE news SET is_deleted = 1 WHERE id = $news_id";
 
     if ($conn->query($delete_sql) === TRUE) {
         echo "<div class='text-green-600 text-center mt-10'>ลบข่าวเรียบร้อยแล้ว</div>";

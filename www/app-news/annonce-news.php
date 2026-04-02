@@ -91,7 +91,7 @@ $last_sort_order = $max_order_result->fetch_assoc()['max_order'];
             $isActive = ($index === 0);
             
             // ดึงข่าวของแต่ละหมวด
-            $stmt = $mysqli1->prepare("SELECT * FROM news WHERE category_id = ? ORDER BY upload_datetime DESC LIMIT 6");
+            $stmt = $mysqli1->prepare("SELECT * FROM news WHERE category_id = ? AND is_deleted = 0 ORDER BY upload_datetime DESC LIMIT 6");
             $stmt->bind_param("i", $cat_id);
             $stmt->execute();
             $result = $stmt->get_result();
