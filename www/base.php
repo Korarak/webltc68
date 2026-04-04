@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title><?php if (!empty($title) && $title !== 'หน้าแรก'): ?><?= htmlspecialchars($title) ?> | <?php endif; ?>วิทยาลัยเทคนิคเลย</title>
   <meta name="description" content="วิทยาลัยเทคนิคเลย สถาบันการศึกษาอาชีวศึกษาภาคตะวันออกเฉียงเหนือ 1">
   <meta name="author" content="Korarak Promjabok">

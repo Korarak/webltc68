@@ -72,7 +72,8 @@ $filters = [
     'position_level_id' => $_GET['position_level_id'] ?? 0,
     'department_id' => $_GET['department_id'] ?? 0,
     'worklevel_id' => $_GET['worklevel_id'] ?? 0,
-    'workbranch_id' => $_GET['workbranch_id'] ?? 0
+    'workbranch_id' => $_GET['workbranch_id'] ?? 0,
+    'bin' => $_GET['bin'] ?? 0
 ];
 
 // --- [UX Improvement] Build Current State String ---
@@ -82,7 +83,8 @@ $current_params = array_merge($_GET, ['page' => $page]);
 $current_query_string = http_build_query($current_params);
 
 // Build SQL WHERE
-$where = "p.is_deleted = 0 AND p.fullname LIKE ?";
+$is_deleted = $filters['bin'] == 1 ? 1 : 0;
+$where = "p.is_deleted = $is_deleted AND p.fullname LIKE ?";
 $params = ["s", $search_param];
 
 if ($filters['department_id'] != "0") {
@@ -166,7 +168,10 @@ $workbranchGroups = getWorkbranchGroups();
             </h1>
             <p class="text-blue-200 mt-2 text-sm pl-1">จัดการข้อมูลพื้นฐาน ตำแหน่ง และสังกัดงานของบุคลากรทั้งหมด</p>
         </div>
-        <div class="flex gap-3">
+        <div class="flex flex-wrap gap-3">
+            <a href="personel_manage.php?bin=<?= $is_deleted ? '0' : '1' ?>" class="<?= $is_deleted ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-white/10 text-white border-white/20' ?> hover:bg-white/20 px-5 py-2.5 rounded-xl font-semibold shadow-lg transition-all hover:-translate-y-0.5 flex items-center gap-2 border">
+                <i class="fas <?= $is_deleted ? 'fa-users' : 'fa-trash-alt' ?>"></i> <?= $is_deleted ? 'รายการปกติ' : 'ถังขยะ' ?>
+            </a>
             <a href="personel_add.php?<?= $current_query_string ?>" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg transition-all hover:-translate-y-0.5 flex items-center gap-2 border border-emerald-400">
                 <i class="fas fa-plus"></i> เพิ่มใหม่
             </a>
@@ -175,6 +180,18 @@ $workbranchGroups = getWorkbranchGroups();
             </a>
         </div>
     </div>
+
+    <?php if($is_deleted): ?>
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6 rounded-r-xl shadow-sm">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-trash-restore text-amber-600 text-xl"></i>
+            <div>
+                <h4 class="font-bold text-amber-800">โหมดถังขยะ</h4>
+                <p class="text-amber-700 text-sm">กำลังแสดงรายการบุคคลที่ถูกลบ คุณสามารถเลือกคืนค่าข้อมููล หรือลบออกถาวรได้</p>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <div class="sticky top-20 z-30 bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200 p-5 mb-6 transition-all duration-300">
         <form method="GET" id="filterForm" class="space-y-4">
@@ -227,6 +244,8 @@ $workbranchGroups = getWorkbranchGroups();
                     </a>
                 </div>
             </div>
+            
+            <input type="hidden" name="bin" value="<?= $is_deleted ?>">
 
             <div class="pt-4 border-t border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <select name="position_id" class="py-2 px-3 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-blue-500" onchange="this.form.submit()">
@@ -290,12 +309,21 @@ $workbranchGroups = getWorkbranchGroups();
                 </div>
 
                 <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 gap-3">
+                     <?php if(!$is_deleted): ?>
                      <button onclick="event.stopPropagation(); openEditModal(<?= $row['id'] ?>, this)" class="bg-white text-blue-600 p-3 rounded-full shadow-lg hover:bg-blue-50 hover:scale-110 transition transform" title="แก้ไข">
                         <i class="fas fa-edit text-lg"></i>
                      </button>
                      <a href="personel_delete.php?id=<?= $row['id'] ?>&<?= $current_query_string ?>" onclick="event.stopPropagation(); return confirm('ยืนยันการลบ <?= htmlspecialchars($row['fullname']) ?> ?')" class="bg-white text-red-500 p-3 rounded-full shadow-lg hover:bg-red-50 hover:scale-110 transition transform" title="ลบ">
                         <i class="fas fa-trash-alt text-lg"></i>
                      </a>
+                     <?php else: ?>
+                     <a href="personel_restore.php?id=<?= $row['id'] ?>&<?= $current_query_string ?>" onclick="event.stopPropagation(); return confirm('คืนค่าข้อมูล <?= htmlspecialchars($row['fullname']) ?> ?')" class="bg-white text-green-600 p-3 rounded-full shadow-lg hover:bg-green-50 hover:scale-110 transition transform" title="คืนค่า">
+                        <i class="fas fa-undo text-lg"></i>
+                     </a>
+                     <a href="personel_delete.php?id=<?= $row['id'] ?>&permanent=1&<?= $current_query_string ?>" onclick="event.stopPropagation(); return confirm('ยืนยันลบถาวร <?= htmlspecialchars($row['fullname']) ?> ? (ไม่สามารถกู้คืนได้!)')" class="bg-white text-red-800 p-3 rounded-full shadow-lg hover:bg-red-100 hover:scale-110 transition transform" title="ลบถาวร">
+                        <i class="fas fa-radiation text-lg"></i>
+                     </a>
+                     <?php endif; ?>
                 </div>
             </div>
             <div class="p-5">
@@ -388,12 +416,21 @@ $workbranchGroups = getWorkbranchGroups();
                         </td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex justify-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                                <?php if(!$is_deleted): ?>
                                 <button onclick="openEditModal(<?= $row['id'] ?>, this)" class="text-blue-600 hover:bg-blue-100 p-2 rounded-lg transition-colors" title="แก้ไข">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <a href="personel_delete.php?id=<?= $row['id'] ?>&<?= $current_query_string ?>" onclick="return confirm('ยืนยันการลบ?')" class="text-red-500 hover:bg-red-100 p-2 rounded-lg transition-colors" title="ลบ">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
+                                <?php else: ?>
+                                <a href="personel_restore.php?id=<?= $row['id'] ?>&<?= $current_query_string ?>" onclick="return confirm('คืนค่าข้อมูล?')" class="text-green-600 hover:bg-green-100 p-2 rounded-lg transition-colors" title="คืนค่า">
+                                    <i class="fas fa-undo"></i>
+                                </a>
+                                <a href="personel_delete.php?id=<?= $row['id'] ?>&permanent=1&<?= $current_query_string ?>" onclick="return confirm('ยืนยันลบถาวร?')" class="text-red-800 hover:bg-red-100 p-2 rounded-lg transition-colors" title="ลบถาวร">
+                                    <i class="fas fa-radiation"></i>
+                                </a>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>

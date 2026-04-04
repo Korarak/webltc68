@@ -17,7 +17,8 @@ if ($res_cat = $conn->query("SELECT * FROM categories ORDER BY sort_order ASC"))
 }
 
 // Filter Logic
-$where = ["is_deleted = 0"];
+$is_deleted = isset($_GET['bin']) && $_GET['bin'] == 1 ? 1 : 0;
+$where = ["is_deleted = $is_deleted"];
 $params = [];
 $types = "";
 
@@ -98,6 +99,9 @@ if (!empty($news_ids)) {
              </div>
              
              <div class="flex gap-3">
+                 <a href="<?= $is_deleted ? 'news_manage.php?bin=0' : 'news_manage.php?bin=1' ?>" class="<?= $is_deleted ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-gray-50 text-gray-600 border-gray-200' ?> border px-5 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+                    <i class="fas <?= $is_deleted ? 'fa-list-ul' : 'fa-trash-alt' ?>"></i> <span class="font-medium"><?= $is_deleted ? 'กลับไปหน้าหลัก' : 'ถังขยะ' ?></span>
+                 </a>
                  <a href="news_type_manage.php" class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-5 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
                     <i class="fas fa-tags text-blue-500"></i> <span class="font-medium">จัดการประเภทข่าว</span>
                  </a>
@@ -106,6 +110,19 @@ if (!empty($news_ids)) {
                  </a>
              </div>
         </div>
+
+        <!-- Bin Alert -->
+        <?php if($is_deleted): ?>
+        <div class="bg-amber-50 border border-amber-200 text-amber-800 px-6 py-4 rounded-2xl mb-8 flex items-center gap-4 shadow-sm">
+            <div class="bg-amber-100 p-3 rounded-xl text-amber-600">
+                <i class="fas fa-trash-restore text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg">กำลังแสดงรายการในถังขยะ</h4>
+                <p class="text-sm opacity-80">คุณสามารถคืนค่าข่าวสารที่ถูกลบไปแล้ว หรือลบทิ้งอย่างถาวรได้จากหน้านี้</p>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <!-- Dashboard Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -141,6 +158,8 @@ if (!empty($news_ids)) {
                         <?php endforeach; ?>
                     </select>
                     
+                    <input type="hidden" name="bin" value="<?= $is_deleted ?>">
+
                     <div class="flex gap-2 lg:col-span-2">
                          <button type="submit" class="flex-1 bg-gray-800 text-white rounded-lg hover:bg-black transition-colors shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-medium">
                             <i class="fas fa-search"></i> ค้นหา
@@ -157,9 +176,18 @@ if (!empty($news_ids)) {
             <i class="fas fa-check-square text-lg"></i>
             <span class="font-medium">เลือกอยู่ <span x-text="selected.length"></span> รายการ</span>
             <div class="h-6 w-px bg-blue-200 mx-1"></div>
-            <button @click="bulkDelete()" class="text-sm font-semibold hover:text-red-600 flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm hover:shadow-md transition-all text-red-500">
-                <i class="fas fa-trash-alt"></i> ลบที่เลือก
-            </button>
+            <?php if($is_deleted): ?>
+                <button @click="bulkRestore()" class="text-sm font-semibold hover:text-green-600 flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm hover:shadow-md transition-all text-green-500">
+                    <i class="fas fa-undo"></i> คืนค่าที่เลือก
+                </button>
+                <button @click="bulkHardDelete()" class="text-sm font-semibold hover:text-red-700 flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg border border-red-100 shadow-sm hover:shadow-md transition-all text-red-600">
+                    <i class="fas fa-radiation"></i> ลบถาวรที่เลือก
+                </button>
+            <?php else: ?>
+                <button @click="bulkDelete()" class="text-sm font-semibold hover:text-red-600 flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm hover:shadow-md transition-all text-red-500">
+                    <i class="fas fa-trash-alt"></i> ลบที่เลือก
+                </button>
+            <?php endif; ?>
         </div>
 
         <!-- Table -->
@@ -214,7 +242,8 @@ if (!empty($news_ids)) {
                                 <span class="text-xs text-gray-400 block"><?= date('H:i', strtotime($row['upload_datetime'])) ?> น.</span>
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <div class="flex items-center justify-center gap-2 opacity-60 group-hover:opacity-100 transition-all">
+                                <div class="flex items-center justify-center gap-1.5 opacity-60 group-hover:opacity-100 transition-all">
+                                    <?php if(!$is_deleted): ?>
                                     <button class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:text-green-600 hover:bg-green-50 hover:border-green-200 transition-colors bg-white shadow-sm" title="คัดลอกลิงค์"
                                        @click="copyLink(<?= $row['id'] ?>)">
                                         <i class="fas fa-share-alt text-xs"></i>
@@ -230,6 +259,16 @@ if (!empty($news_ids)) {
                                        onclick="deleteNews(<?= $row['id'] ?>)">
                                         <i class="fas fa-trash-alt text-xs"></i>
                                     </button>
+                                    <?php else: ?>
+                                    <button class="px-3 h-8 rounded-lg border border-gray-200 flex items-center justify-center gap-1 text-gray-500 hover:text-green-600 hover:bg-green-50 hover:border-green-200 transition-colors bg-white shadow-sm" title="คืนค่า"
+                                       onclick="restoreNews(<?= $row['id'] ?>)">
+                                        <i class="fas fa-undo text-xs"></i> <span class="text-[10px] font-bold">คืนค่า</span>
+                                    </button>
+                                    <button class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:text-red-800 hover:bg-red-100 hover:border-red-300 transition-colors bg-white shadow-sm" title="ลบถาวร"
+                                       onclick="hardDeleteNews(<?= $row['id'] ?>)">
+                                        <i class="fas fa-radiation text-xs"></i>
+                                    </button>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
@@ -260,31 +299,55 @@ if (!empty($news_ids)) {
 <!-- Helper Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // --- Delete Single ---
-    window.deleteNews = function(id) {
+        });
+    }
+
+    // --- Restore ---
+    window.restoreNews = function(id) {
         Swal.fire({
-            title: 'ยืนยันการลบ?',
-            text: "ข้อมูลและไฟล์แนบจะถูกลบถาวร ไม่สามารถกู้คืนได้",
-            icon: 'warning',
+            title: 'คืนค่าข่าว?',
+            text: "ข่าวนีจะกลับไปแสดงผลตามปกติ",
+            icon: 'info',
             showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            confirmButtonText: 'ลบข้อมูล',
-            cancelButtonText: 'ยกเลิก',
-            reverseButtons: true
+            confirmButtonText: 'ยืนยันการคืนค่า',
+            cancelButtonText: 'ยกเลิก'
         }).then((result) => {
             if (result.isConfirmed) {
                 fetch('news_update.php', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ action: 'delete', id: id })
+                    body: JSON.stringify({ action: 'restore', id: id })
                 })
                 .then(r => r.json())
                 .then(d => {
-                    if(d.success) {
-                        Swal.fire('Deleted!', d.message, 'success').then(() => location.reload());
-                    } else {
-                        Swal.fire('Error!', d.message, 'error');
-                    }
+                    if(d.success) Swal.fire('Success', d.message, 'success').then(() => location.reload());
+                    else Swal.fire('Error', d.message, 'error');
+                });
+            }
+        });
+    }
+
+    // --- Hard Delete ---
+    window.hardDeleteNews = function(id) {
+        Swal.fire({
+            title: 'ยืนยันลบถาวร?',
+            text: "ข้อมูลและไฟล์แนบจะถูกลบจากเซิร์ฟเวอร์ ไม่สามารถกู้คืนได้อีกเลย!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#991b1b',
+            confirmButtonText: 'ลบถาวร',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('news_update.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ action: 'hard_delete', id: id })
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if(d.success) Swal.fire('Deleted!', d.message, 'success').then(() => location.reload());
+                    else Swal.fire('Error', d.message, 'error');
                 });
             }
         });
@@ -324,19 +387,53 @@ if (!empty($news_ids)) {
                     confirmButtonText: 'ยืนยันลบ',
                     cancelButtonText: 'ยกเลิก'
                 }).then((r) => {
+                    }
+                });
+            },
+
+            bulkRestore() {
+                Swal.fire({
+                    title: `คืนค่า ${this.selected.length} รายการ?`,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'ยืนยันคืนค่า',
+                    cancelButtonText: 'ยกเลิก'
+                }).then((r) => {
                     if (r.isConfirmed) {
                         fetch('news_update.php', {
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ action: 'bulk_delete', ids: this.selected })
+                            body: JSON.stringify({ action: 'bulk_restore', ids: this.selected })
                         })
                         .then(res => res.json())
                         .then(d => {
-                            if(d.success) {
-                                Swal.fire('Deleted!', d.message, 'success').then(() => location.reload());
-                            } else {
-                                Swal.fire('Error', d.message, 'error');
-                            }
+                            if(d.success) Swal.fire('Success', d.message, 'success').then(() => location.reload());
+                            else Swal.fire('Error', d.message, 'error');
+                        });
+                    }
+                });
+            },
+
+            bulkHardDelete() {
+                Swal.fire({
+                    title: `ลบถาวร ${this.selected.length} รายการ?`,
+                    text: "ไม่สามารถกู้คืนได้อีก!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#991b1b',
+                    confirmButtonText: 'ยืนยันลบถาวร',
+                    cancelButtonText: 'ยกเลิก'
+                }).then((r) => {
+                    if (r.isConfirmed) {
+                        fetch('news_update.php', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ action: 'bulk_hard_delete', ids: this.selected })
+                        })
+                        .then(res => res.json())
+                        .then(d => {
+                            if(d.success) Swal.fire('Deleted!', d.message, 'success').then(() => location.reload());
+                            else Swal.fire('Error', d.message, 'error');
                         });
                     }
                 });

@@ -3,6 +3,16 @@
    Include จาก base.php เท่านั้น
    =========================================== */
 
+/* --- Navbar Offset (fixed top-4 + ~60px nav height) --- */
+:root {
+  --nav-offset: 96px; /* Increased to 96px to avoid overlap with floating navbar */
+}
+
+/* ทุกหน้าต้องมี padding-top ชดเชย navbar ที่ fixed อยู่ด้านบน */
+main {
+  padding-top: var(--nav-offset);
+}
+
 /* --- Sheen Button Effect --- */
 .btn-sheen {
   position: relative;

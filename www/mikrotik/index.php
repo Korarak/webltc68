@@ -119,7 +119,7 @@ if (file_exists($lang_file)) {
             <span class="text-xs font-medium">TikTok</span>
           </a>
           <a href="https://loeitech.appedr.com/edr/login.do" target="_blank" class="flex items-center space-x-2 p-2 bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition">
-            <img src="/svg/EDR.png" alt="EDR" class="w-3.5 h-3.5">
+            <img src="/svg/EDR.png" alt="EDR" class="w-3 h-3">
             <span class="text-xs font-medium">ระบบ EDR</span>
           </a>
             </div>
@@ -539,7 +539,7 @@ if (file_exists($lang_file)) {
                         </a>
                         <div class="w-px h-5 bg-gray-500 mx-1"></div>
                         <a href="https://loeitech.appedr.com/edr/login.do" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-600 text-white shadow-sm hover:bg-emerald-500 hover:scale-110 hover:shadow-md transition duration-300">
-                            <img src="/svg/EDR.png" alt="EDR" class="w-5 h-5 object-contain">
+                            <img src="/svg/EDR.png" alt="EDR" class="w-4 h-4 object-contain">
                         </a>
                     </div>
                     <div class="mt-8">

@@ -142,7 +142,7 @@ if ($filters['position_id'] != 0) { /* ...Query Name... */ $pos_stmt = $mysqli3-
 if ($filters['workbranch_id'] != 0) { /* ...Query Name... */ $wb_stmt = $mysqli3->prepare("SELECT workbranch_name FROM workbranch WHERE id = ?"); $wb_stmt->bind_param("i", $filters['workbranch_id']); $wb_stmt->execute(); $wb_stmt->bind_result($selected_workbranch_name); $wb_stmt->fetch(); $wb_stmt->close(); }
 ?>
 
-<div class="w-full mt-[72px] p-4">
+<div class="w-full px-4 pb-4 pt-0">
     <div class="grid grid-cols-12 gap-6">
 
         <div class="hidden xl:block xl:col-span-1">
@@ -372,6 +372,32 @@ if ($filters['workbranch_id'] != 0) { /* ...Query Name... */ $wb_stmt = $mysqli3
                 $is_org_view = ($show_toggle && $view_mode === 'org');
                 ?>
 
+                <?php if ($total_pages > 1 || $total_records > 0): ?>
+                <div class="mb-4 flex flex-col sm:flex-row justify-between items-center gap-3 bg-white/60 backdrop-blur-md px-4 py-2 rounded-xl border border-green-100/50 shadow-sm">
+                    <div class="text-[13px] text-slate-600 font-medium">
+                        หน้า <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-md mx-1 font-bold"><?= $page ?></span> จาก <?= $total_pages ?> หน้า
+                    </div>
+                    <?php if ($total_pages > 1): ?>
+                    <div class="flex items-center gap-1.5">
+                        <?php if ($page > 1): ?>
+                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>" class="w-8 h-8 flex items-center justify-center bg-white border border-green-200 text-green-600 rounded-lg hover:bg-green-600 hover:text-white hover:border-green-600 transition-all duration-300 shadow-sm"><i class="fas fa-chevron-left text-xs"></i></a>
+                        <?php endif; ?>
+                        <div class="flex gap-1">
+                            <?php 
+                            $start_p = max(1, $page - 1);
+                            $end_p = min($total_pages, $page + 1);
+                            for ($i = $start_p; $i <= $end_p; $i++): ?>
+                                <a href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>" class="w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all duration-300 <?= $i == $page ? 'bg-green-600 text-white shadow-md shadow-green-200' : 'bg-white border border-green-200 text-green-600 hover:bg-green-50' ?>"><?= $i ?></a>
+                            <?php endfor; ?>
+                        </div>
+                        <?php if ($page < $total_pages): ?>
+                            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>" class="w-8 h-8 flex items-center justify-center bg-white border border-green-200 text-green-600 rounded-lg hover:bg-green-600 hover:text-white hover:border-green-600 transition-all duration-300 shadow-sm"><i class="fas fa-chevron-right text-xs"></i></a>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+
                 <?php if ($show_toggle): ?>
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 bg-white p-3 rounded-xl shadow-sm border border-green-100">
                     <h2 class="text-lg font-bold text-green-800 flex items-center gap-2">
@@ -493,7 +519,7 @@ if ($filters['workbranch_id'] != 0) { /* ...Query Name... */ $wb_stmt = $mysqli3
                     }
                     ?>
                     
-                    <div class="org-chart-container py-10 px-2 sm:px-6 mb-8 bg-gradient-to-b from-green-50 to-white rounded-2xl shadow-sm border border-green-100 w-full">
+                    <div class="org-chart-container pt-0 pb-10 px-2 sm:px-6 mb-8 bg-gradient-to-b from-green-50 to-white rounded-2xl shadow-sm border border-green-100 w-full">
                         <div class="flex flex-col items-center w-full">
                             <!-- Heads Section -->
                             <div class="flex flex-wrap justify-center gap-6 sm:gap-8 mb-2">

@@ -25,7 +25,7 @@ if (isset($mysqli2) && $mysqli2 instanceof mysqli) {
 if (!empty($slides)):
 ?>
 
-<div class="max-w-7xl mx-auto mt-[84px] mb-4 px-4 md:px-8 relative">
+<div class="max-w-7xl mx-auto mt-[96px] mb-4 px-4 md:px-8 relative">
 
   <div id="tailwind-carousel" class="relative overflow-hidden rounded-lg bg-gray-900 shadow-lg">
     <div class="relative w-full bg-gray-900" style="aspect-ratio: auto;">
