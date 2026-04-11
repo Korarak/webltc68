@@ -42,9 +42,9 @@ if ($is_homepage && !empty($letter['carousel_pic'])):
 
 
 
-<div id="myModal" class="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black bg-opacity-60 hidden">
+<div id="myModal" class="fixed inset-0 z-[10000] flex items-start md:items-center justify-center bg-black bg-opacity-60 hidden">
   <div class="bg-white rounded-lg shadow-lg max-w-[80vw] max-h-[90vh] relative p-4 animate-fade-in overflow-auto mx-4 mb-4 mt-[90px] md:m-4">
-    <button id="closeModal" class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-2xl font-bold">&times;</button>
+    <button id="closeModal" class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-2xl font-bold z-10 bg-white/80 w-8 h-8 rounded-full flex items-center justify-center">&times;</button>
     
     <div class="flex justify-center items-center">
       <?php

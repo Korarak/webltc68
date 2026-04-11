@@ -26,95 +26,198 @@ while ($row = $result->fetch_assoc()) {
         : $vice_directors[] = $row;
 }
 ?>
+<style>
+/* Premium Gold/Executive Styles */
+.text-gold-gradient {
+    background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% auto;
+    animation: shine-text 5s linear infinite;
+}
+@keyframes shine-text {
+    to { background-position: 200% center; }
+}
+
+.bg-gold-gradient {
+    background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 50%, #b38728 100%);
+    background-size: 200% auto;
+    animation: gold-flow 5s ease infinite;
+}
+@keyframes gold-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.shine-effect {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 10;
+}
+.shine-effect::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -150%;
+    width: 50%; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg);
+    transition: all 0.7s ease;
+}
+.group:hover .shine-effect::before {
+    left: 200%;
+    transition: all 0.7s ease;
+}
+</style>
+
 <main class="max-w-7xl mx-auto px-4 py-8 mt-[72px]">
 
     <!-- ===== Header ===== -->
-    <header class="text-center mb-12">
-        <h1 class="text-3xl md:text-4xl font-bold text-green-700">
-            ผู้บริหารวิทยาลัยเทคนิคเลย
+    <header class="text-center mb-16 mt-8">
+        <div class="inline-block mb-4">
+            <span class="bg-gold-gradient text-gray-900 px-4 py-1.5 rounded-full text-xs md:text-sm font-bold tracking-widest shadow-lg uppercase">Executive Board</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-4 drop-shadow-sm">
+            คณะผู้บริหาร<br>
+            <span class="text-gold-gradient text-5xl md:text-6xl drop-shadow-md mt-2 inline-block">วิทยาลัยเทคนิคเลย</span>
         </h1>
-        <p class="mt-2 text-gray-600">ทีมผู้นำที่พร้อมขับเคลื่อนสถาบัน</p>
+        <p class="mt-4 text-lg text-gray-500 max-w-2xl mx-auto font-medium">ทีมผู้นำที่พร้อมขับเคลื่อนองค์กรด้วยวิสัยทัศน์ สู่ความเป็นเลิศทางอาชีวศึกษา</p>
     </header>
 
     <!-- ===== ผู้อำนวยการ (Hero Card) ===== -->
     <?php if ($director): ?>
-        <section class="flex justify-center mb-16">
+        <section class="flex justify-center mb-20 relative px-2">
+            <!-- Background Glow -->
+            <div class="absolute inset-0 bg-yellow-400/20 blur-3xl max-w-3xl mx-auto rounded-full h-full -z-10 animate-pulse" style="animation-duration: 4s;"></div>
+
             <article
-                class="group relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-300 hover:shadow-2xl cursor-pointer person-card"
+                class="group relative w-full max-w-4xl overflow-hidden rounded-[2rem] bg-white shadow-2xl transition-all duration-500 hover:shadow-[0_25px_60px_rgba(191,149,63,0.3)] cursor-pointer person-card border border-yellow-200"
                 data-id="<?= $director['id'] ?>"
                 tabindex="0"
                 role="button"
                 aria-label="ดูรายละเอียด <?= htmlspecialchars($director['fullname']) ?>"
             >
-                <div class="aspect-w-3 aspect-h-4 overflow-hidden">
-                    <img
-                        src="../<?= htmlspecialchars($director['profile_image'] ?: 'uploads/default.png') ?>"
-                        alt="<?= htmlspecialchars($director['fullname']) ?>"
-                        class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-105"
-                    >
-                </div>
+                <div class="flex flex-col md:flex-row h-full">
+                    <!-- Image -->
+                    <div class="w-full md:w-2/5 relative overflow-hidden bg-gray-100">
+                        <img
+                            src="../<?= htmlspecialchars($director['profile_image'] ?: 'uploads/default.png') ?>"
+                            alt="<?= htmlspecialchars($director['fullname']) ?>"
+                            class="w-full h-[400px] md:h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/10 to-transparent md:bg-gradient-to-r md:from-transparent md:to-white/90 pointer-events-none"></div>
+                        
+                        <!-- Mobile Badge -->
+                        <div class="absolute bottom-4 left-4 md:hidden">
+                            <span class="bg-gold-gradient text-gray-900 px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">ผู้อำนวยการวิทยาลัย</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="w-full md:w-3/5 p-8 md:p-12 flex flex-col justify-center relative bg-white md:bg-gradient-to-l md:from-white md:to-gray-50/80 backdrop-blur-sm">
+                        <!-- Shine Effect -->
+                        <div class="shine-effect rounded-r-[2rem]"></div>
+                        
+                        <div class="hidden md:inline-block mb-6 self-start">
+                             <div class="flex items-center gap-2 px-5 py-2 rounded-full bg-yellow-50 border border-yellow-200 shadow-sm">
+                                <i class="fas fa-crown text-yellow-500"></i>
+                                <span class="text-sm font-extrabold text-yellow-700 tracking-wider">ผู้อำนวยการวิทยาลัย</span>
+                             </div>
+                        </div>
 
-                <div class="p-6 text-center">
-                    <h2 class="text-2xl font-bold text-gray-900">
-                        <?= htmlspecialchars($director['fullname']) ?>
-                    </h2>
-                    <p class="mt-1 text-lg font-medium text-green-600">
-                        <?= htmlspecialchars($director['position_name']) ?>
-                    </p>
-                    <p class="mt-2 text-sm text-gray-600">
-                        <?= htmlspecialchars($director['department_name']) ?>
-                    </p>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2 group-hover:text-yellow-600 transition-colors duration-300">
+                            <?= htmlspecialchars($director['fullname']) ?>
+                        </h2>
+                        <p class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gold-gradient mb-3 drop-shadow-sm">
+                            <?= htmlspecialchars($director['position_name']) ?>
+                        </p>
+                        <p class="text-gray-500 mb-8 font-semibold">
+                            <?= htmlspecialchars($director['department_name']) ?>
+                        </p>
 
-                    <div class="mt-4 flex justify-center gap-4 text-sm text-gray-500">
-                        <span>📞 <?= htmlspecialchars($director['Tel'] ?: '-') ?></span>
-                        <span>✉️ <?= htmlspecialchars($director['E_mail'] ?: '-') ?></span>
+                        <div class="space-y-4 relative z-20">
+                            <div class="flex items-center gap-4 text-gray-600 p-4 rounded-2xl bg-gray-50 border border-gray-100 group-hover:border-yellow-200 group-hover:bg-yellow-50/50 transition-all duration-300 shadow-sm">
+                                <div class="w-12 h-12 rounded-full bg-gold-gradient flex items-center justify-center text-white shadow-md flex-shrink-0 text-lg">
+                                    <i class="fas fa-phone-alt"></i>
+                                </div>
+                                <span class="font-bold text-gray-700 text-[15px]"><?= htmlspecialchars($director['Tel'] ?: '-') ?></span>
+                            </div>
+                            <div class="flex items-center gap-4 text-gray-600 p-4 rounded-2xl bg-gray-50 border border-gray-100 group-hover:border-yellow-200 group-hover:bg-yellow-50/50 transition-all duration-300 shadow-sm">
+                                <div class="w-12 h-12 rounded-full bg-gold-gradient flex items-center justify-center text-white shadow-md flex-shrink-0 text-lg">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <span class="font-bold text-gray-700 text-[15px] truncate"><?= htmlspecialchars($director['E_mail'] ?: '-') ?></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Hover Action Hint -->
+                        <div class="absolute bottom-6 right-8 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 flex items-center gap-2 text-yellow-600 font-bold text-sm bg-yellow-50 px-4 py-2 rounded-full border border-yellow-100 shadow-sm z-20">
+                            ดูรายละเอียด <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                        </div>
                     </div>
                 </div>
-
-                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
             </article>
         </section>
     <?php endif; ?>
 
     <!-- ===== รองผู้อำนวยการ (Grid) ===== -->
     <?php if (!empty($vice_directors)): ?>
-        <section>
-            <h2 class="text-2xl font-semibold text-center mb-8 text-gray-800">
-                รองผู้อำนวยการ
-            </h2>
+        <section class="relative mb-12">
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <div class="h-px bg-gradient-to-r from-transparent to-yellow-400 w-16 md:w-32"></div>
+                <h2 class="text-3xl md:text-3xl font-extrabold text-gray-800 tracking-wide flex items-center gap-3 text-center drop-shadow-sm">
+                    <i class="fas fa-star text-gold-gradient text-xl md:text-2xl"></i>
+                    รองผู้อำนวยการ
+                    <i class="fas fa-star text-gold-gradient text-xl md:text-2xl"></i>
+                </h2>
+                <div class="h-px bg-gradient-to-l from-transparent to-yellow-400 w-16 md:w-32"></div>
+            </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <?php foreach ($vice_directors as $row): ?>
                     <article
-                        class="group relative overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer person-card"
+                        class="group relative overflow-hidden rounded-2xl bg-gray-900 shadow-xl border border-gray-200/50 transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_20px_40px_rgba(191,149,63,0.25)] hover:border-yellow-400/80 cursor-pointer person-card"
                         data-id="<?= $row['id'] ?>"
                         tabindex="0"
                         role="button"
                         aria-label="ดูรายละเอียด <?= htmlspecialchars($row['fullname']) ?>"
                     >
-                        <div class="aspect-w-1 aspect-h-1 overflow-hidden">
+                        <div class="w-full relative overflow-hidden aspect-[3/4]">
                             <img
                                 src="../<?= htmlspecialchars($row['profile_image'] ?: 'uploads/default.png') ?>"
                                 alt="<?= htmlspecialchars($row['fullname']) ?>"
-                                class="w-full h-110 object-cover transition-transform duration-500 group-hover:scale-110"
+                                class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
                             >
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+                            <div class="shine-effect"></div>
                         </div>
 
-                        <div class="p-4 text-center">
-                            <h3 class="font-semibold text-gray-900 truncate">
-                                <?= htmlspecialchars($row['fullname']) ?>
-                            </h3>
-                            <p class="mt-1 text-sm text-green-600">
-                                <?= htmlspecialchars($row['position_name']) ?>
-                            </p>
-                            <p class="mt-1 text-xs text-gray-500">
-                                <?= htmlspecialchars($row['department_name']) ?>
-                            </p>
+                        <!-- Card Content -->
+                        <div class="absolute bottom-0 w-full p-6 flex flex-col justify-end translate-y-12 group-hover:-translate-y-4 transition-transform duration-500 ease-out z-20">
+                             <div>
+                                <p class="text-gold-gradient text-xs font-bold tracking-widest uppercase mb-1">
+                                    <?= htmlspecialchars($row['position_name']) ?>
+                                </p>
+                                <h3 class="text-xl font-bold text-white drop-shadow-md line-clamp-2 group-hover:text-yellow-300 transition-colors duration-300">
+                                    <?= htmlspecialchars($row['fullname']) ?>
+                                </h3>
+                                <p class="text-gray-300 text-sm mt-1 mb-2 font-medium drop-shadow-sm">
+                                    <?= htmlspecialchars($row['department_name']) ?>
+                                </p>
+                             </div>
 
-                            <div class="mt-3 flex justify-center gap-3 text-xs text-gray-500">
-                                <span><i class="fas fa-phone text-green-600 mt-1 flex-shrink-0"></i> <?= htmlspecialchars($row['Tel'] ?: '-') ?></span>
-                                <span><i class="fas fa-envelope text-green-600 mt-1 flex-shrink-0"></i> <?= htmlspecialchars($row['E_mail'] ?: '-') ?></span>
-                            </div>
+                             <div class="opacity-0 h-0 group-hover:opacity-100 group-hover:h-[80px] overflow-hidden transition-all duration-500 pt-3 border-t border-white/20 mt-2">
+                                <div class="flex items-center gap-3 text-sm text-gray-200 mb-2 mt-1">
+                                    <div class="w-7 h-7 flex items-center justify-center bg-white/20 rounded-full text-yellow-400 backdrop-blur-md"><i class="fas fa-phone-alt text-[10px]"></i></div>
+                                    <span class="font-medium"><?= htmlspecialchars($row['Tel'] ?: '-') ?></span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-200 mt-2">
+                                    <div class="w-7 h-7 flex items-center justify-center bg-white/20 rounded-full text-yellow-400 backdrop-blur-md"><i class="fas fa-envelope text-[10px]"></i></div>
+                                    <span class="truncate font-medium"><?= htmlspecialchars($row['E_mail'] ?: '-') ?></span>
+                                </div>
+                             </div>
                         </div>
                     </article>
                 <?php endforeach; ?>

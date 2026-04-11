@@ -197,6 +197,56 @@ ob_start();
     </div>
   </section>
 
+  <!-- ═══════ CORE VALUES (Philosophy, Vision, Identity, Uniqueness) ═══════ -->
+  <section class="mb-24">
+    <div class="text-center mb-12">
+      <span class="text-emerald-600 font-bold tracking-wider text-sm uppercase">Core Values</span>
+      <h2 class="text-3xl font-extrabold text-slate-900 mt-2">ปรัชญา วิสัยทัศน์ และ เอกลักษณ์</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+       <!-- Card 1: Philosophy -->
+       <div class="bg-white rounded-2xl p-8 border border-emerald-100 shadow-[0_8px_30px_rgba(16,185,129,0.06)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-50/80 rounded-bl-[100px] -z-0 group-hover:scale-110 transition-transform duration-500"></div>
+          <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6 shadow-inner relative z-10 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-300">
+             <i class="fas fa-book-open text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3 relative z-10 group-hover:text-emerald-600 transition-colors">ปรัชญาวิทยาลัย</h3>
+          <p class="text-slate-600 leading-relaxed font-medium relative z-10 group-hover:text-emerald-800 transition-colors">“วิชาดี ฝีมือเยี่ยม เปี่ยมคุณธรรม เป็นผู้นำทางอาชีพ”</p>
+       </div>
+       
+       <!-- Card 2: Vision -->
+       <div class="bg-white rounded-2xl p-8 border border-teal-100 shadow-[0_8px_30px_rgba(20,184,166,0.06)] hover:shadow-[0_8px_30px_rgba(20,184,166,0.15)] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-teal-50/80 rounded-bl-[100px] -z-0 group-hover:scale-110 transition-transform duration-500"></div>
+          <div class="w-14 h-14 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center mb-6 shadow-inner relative z-10 group-hover:bg-teal-500 group-hover:text-white transition-colors duration-300">
+             <i class="fas fa-eye text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3 relative z-10 group-hover:text-teal-600 transition-colors">วิสัยทัศน์</h3>
+          <p class="text-slate-600 leading-relaxed font-medium relative z-10 group-hover:text-teal-800 transition-colors">“พัฒนาผู้เรียนสู่มาตรฐานสากล บนพื้นฐานคุณธรรม ตามหลักปรัชญาเศรษฐกิจพอเพียง”</p>
+       </div>
+
+       <!-- Card 3: Identity -->
+       <div class="bg-white rounded-2xl p-8 border border-blue-100 shadow-[0_8px_30px_rgba(59,130,246,0.06)] hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50/80 rounded-bl-[100px] -z-0 group-hover:scale-110 transition-transform duration-500"></div>
+          <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6 shadow-inner relative z-10 group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300">
+             <i class="fas fa-fingerprint text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3 relative z-10 group-hover:text-blue-600 transition-colors">อัตลักษณ์</h3>
+          <p class="text-slate-600 leading-relaxed font-medium relative z-10 group-hover:text-blue-800 transition-colors">“ทักษะดี มีจิตอาสา”</p>
+       </div>
+
+       <!-- Card 4: Uniqueness -->
+       <div class="bg-white rounded-2xl p-8 border border-indigo-100 shadow-[0_8px_30px_rgba(99,102,241,0.06)] hover:shadow-[0_8px_30px_rgba(99,102,241,0.15)] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50/80 rounded-bl-[100px] -z-0 group-hover:scale-110 transition-transform duration-500"></div>
+          <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-6 shadow-inner relative z-10 group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-300">
+             <i class="fas fa-award text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-3 relative z-10 group-hover:text-indigo-600 transition-colors">เอกลักษณ์</h3>
+          <p class="text-slate-600 leading-relaxed font-medium relative z-10 group-hover:text-indigo-800 transition-colors">“องค์กรแห่งการเรียนรู้ด้านวิชาชีพ”</p>
+       </div>
+    </div>
+  </section>
+
   <!-- ═══════ IDENTITY CARD (V1 Style) ═══════ -->
   <section class="mb-24">
     <div class="text-center mb-12">

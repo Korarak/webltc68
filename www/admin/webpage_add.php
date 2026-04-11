@@ -26,6 +26,26 @@ function editorJsToHtml($data) {
                 $html .= "<p class='mb-4 text-gray-700 leading-relaxed {$alignClass}'>{$block['data']['text']}</p>";
                 break;
             case 'list':
+                if (!function_exists('renderEditorJsListItems')) {
+                    function renderEditorJsListItems($items) {
+                        $out = '';
+                        foreach ($items as $item) {
+                            if (is_array($item)) {
+                                $content = isset($item['content']) ? $item['content'] : '';
+                                $out .= "<li>{$content}";
+                                if (!empty($item['items'])) {
+                                    $out .= "<ul class='list-disc ml-6 mt-2 space-y-2 text-left'>";
+                                    $out .= renderEditorJsListItems($item['items']);
+                                    $out .= "</ul>";
+                                }
+                                $out .= "</li>";
+                            } else {
+                                $out .= "<li>{$item}</li>";
+                            }
+                        }
+                        return $out;
+                    }
+                }
                 $tag = $block['data']['style'] === 'ordered' ? 'ol' : 'ul';
                 $listClass = $tag === 'ol' ? 'list-decimal' : 'list-disc';
                 // Alignment
@@ -35,9 +55,7 @@ function editorJsToHtml($data) {
                 }
 
                 $html .= "<{$tag} class='{$listClass} ml-6 mb-4 space-y-2 {$alignClass}'>";
-                foreach ($block['data']['items'] as $item) {
-                     $html .= "<li>{$item}</li>";
-                }
+                $html .= renderEditorJsListItems($block['data']['items']);
                 $html .= "</{$tag}>";
                 break;
             case 'image':
@@ -80,17 +98,50 @@ function editorJsToHtml($data) {
                 $content = $block['data']['content'];
                 $html .= "<div class='overflow-x-auto my-6'><table class='min-w-full border border-gray-200'>";
                 $isHead = isset($block['data']['withHeadings']) && $block['data']['withHeadings'];
-                
                 foreach ($content as $i => $row) {
                     $html .= "<tr>";
                     foreach ($row as $cell) {
                         $tag = ($isHead && $i === 0) ? 'th' : 'td';
                         $cellClass = ($isHead && $i === 0) ? 'bg-gray-100 font-semibold' : '';
-                        $html .= "<{$tag} class='border p-2 min-w-[100px] {$cellClass}'>{$cell}</{$tag}>";
+                        $cleanCell = str_ireplace(['&lt;br&gt;', '&lt;br/&gt;', '&lt;br /&gt;'], '<br>', (string)$cell);
+                        $html .= "<{$tag} class='border p-2 min-w-[100px] {$cellClass} whitespace-pre-wrap break-words align-top'>{$cleanCell}</{$tag}>";
                     }
                     $html .= "</tr>";
                 }
                 $html .= "</table></div>";
+                break;
+            case 'richTable':
+                $rtRows = $block['data']['rows'] ?? [];
+                $rtHead = $block['data']['withHeadings'] ?? false;
+                $rtColWidths = $block['data']['colWidths'] ?? [];
+                if (!empty($rtRows)) {
+                    // Build colgroup
+                    $numCols = count($rtRows[0]);
+                    $colGroupHtml = '<colgroup>';
+                    for ($ci = 0; $ci < $numCols; $ci++) {
+                        $w = isset($rtColWidths[$ci]) && $rtColWidths[$ci] ? 'style="width:' . (int)$rtColWidths[$ci] . 'px; min-width:' . (int)$rtColWidths[$ci] . 'px; max-width:' . (int)$rtColWidths[$ci] . 'px;"' : '';
+                        $colGroupHtml .= "<col {$w}>";
+                    }
+                    $colGroupHtml .= '</colgroup>';
+
+                    $html .= "<div class='overflow-x-auto my-6'><table class='w-full min-w-max border border-gray-200' style='border-collapse:collapse;table-layout:" . (!empty($rtColWidths) ? 'fixed' : 'auto') . ";'>";
+                    $html .= $colGroupHtml;
+                    foreach ($rtRows as $ri => $row) {
+                        $html .= '<tr>';
+                        foreach ($row as $ci => $cellData) {
+                            $tag = ($rtHead && $ri === 0) ? 'th' : 'td';
+                            $align = $cellData['align'] ?? 'left';
+                            $valign = $cellData['valign'] ?? 'top';
+                            $rawContent = $cellData['content'] ?? '';
+                            // Clean escaped br tags
+                            $rawContent = str_ireplace(['&lt;br&gt;', '&lt;br/&gt;', '&lt;br /&gt;'], '<br>', $rawContent);
+                            $bgStyle = ($rtHead && $ri === 0) ? 'background:#f1f5f9;font-weight:600;' : 'background:#fff;';
+                            $html .= "<{$tag} style='border:1px solid #e2e8f0;padding:8px 10px;text-align:{$align};vertical-align:{$valign};{$bgStyle}overflow-wrap:break-word;line-height:1.6;'>{$rawContent}</{$tag}>";
+                        }
+                        $html .= '</tr>';
+                    }
+                    $html .= '</table></div>';
+                }
                 break;
             case 'delimiter':
                 $html .= "<hr class='my-8 border-t border-gray-200'>";
@@ -143,6 +194,15 @@ function editorJsToHtml($data) {
                 break;
             case 'googleDrive':
                 $html .= "<div class='my-6 w-full rounded-lg overflow-hidden border border-gray-200 shadow-sm'>" . $block['data']['embedCode'] . "</div>";
+                break;
+            case 'anyButton':
+                $link = isset($block['data']['link']) ? htmlspecialchars($block['data']['link'], ENT_QUOTES, 'UTF-8') : '#';
+                $text = isset($block['data']['text']) ? htmlspecialchars($block['data']['text'], ENT_QUOTES, 'UTF-8') : 'Button';
+                $alignClass = 'text-left';
+                if(isset($block['tunes']['alignment']['alignment'])) {
+                     $alignClass = 'text-' . $block['tunes']['alignment']['alignment'];
+                }
+                $html .= "<div class='my-4 {$alignClass}'><a href='{$link}' target='_blank' class='inline-block px-6 py-2.5 bg-indigo-600 text-white font-medium text-sm leading-tight rounded-xl shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out'>{$text}</a></div>";
                 break;
              // Add more types as needed
         }
@@ -325,7 +385,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
 
             <!-- Page Title & Editor -->
-            <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 min-h-[800px] overflow-hidden flex flex-col items-center">
+            <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 min-h-[800px] flex flex-col items-center">
                 <!-- Internal Title Section -->
                 <div class="w-full max-w-[1100px] px-10 pt-16 pb-8 flex flex-col items-center">
                     <input type="text" name="title" id="pageTitle" required placeholder="หัวข้อเพจ..." 
@@ -405,6 +465,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script src="../assets/vendor/editorjs/image.js"></script>
     <script src="../assets/vendor/editorjs/quote.js"></script>
     <script src="../assets/vendor/editorjs/table.js"></script>
+    <script src="../assets/vendor/editorjs/rich-table.js"></script>
     <script src="../assets/vendor/editorjs/delimiter.js"></script>
     <script src="../assets/vendor/editorjs/link.js"></script>
     <script src="../assets/vendor/editorjs/hyperlink.js"></script>
@@ -412,6 +473,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script src="https://cdn.jsdelivr.net/npm/editorjs-text-alignment-blocktune@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/attaches@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/raw@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/editorjs-button@latest"></script>
     <script src="../assets/vendor/editorjs/google-drive-embed.js"></script>
 
     <!-- Alpine.js -->
@@ -521,6 +583,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                              class: Table,
                              inlineToolbar: true,
                         },
+                        richTable: {
+                            class: RichTable,
+                        },
                         delimiter: Delimiter,
                         linkTool: {
                             class: LinkTool,
@@ -537,38 +602,61 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 validate: false,
                             }
                         },
+                        anyButton: {
+                            class: AnyButton,
+                            inlineToolbar: false,
+                            tunes: ['alignment']
+                        },
                         columns: {
                             class: editorjsColumns,
                             config: {
                                 tools: {
-                                    header: Header,
+                                    header: {
+                                        class: Header,
+                                        inlineToolbar: true,
+                                        config: { placeholder: 'หัวข้อ', levels: [2, 3, 4], defaultLevel: 2 },
+                                        tunes: ['alignment']
+                                    },
                                     paragraph: {
                                         class:  EditorJS.Paragraph,
                                         inlineToolbar: true,
+                                        tunes: ['alignment']
                                     },
-                                    list: EditorjsList,
+                                    list: {
+                                        class: EditorjsList,
+                                        inlineToolbar: true,
+                                        tunes: ['alignment']
+                                    },
                                     image: ImageTool,
+                                    anyButton: {
+                                        class: AnyButton,
+                                        inlineToolbar: false,
+                                        tunes: ['alignment']
+                                    },
+                                    delimiter: Delimiter,
+                                    raw: RawTool,
                                 }
                             }
                         },
                         alignment: {
-                            class:AlignmentBlockTune,
-                            config:{
-                                default: "left",
-                                blocks: {
-                                    header: 'center',
-                                    list: 'right'
-                                }
-                            },
+                            class: AlignmentBlockTune,
+                            config: { default: "left" },
                         },
-                        attaches: {
-                            class: AttachesTool,
-                            config: {
-                                endpoint: 'upload_file.php'
-                            }
-                        },
+                        attaches: { class: AttachesTool, config: { endpoint: 'upload_file.php' } },
                         raw: RawTool,
                         googleDrive: GoogleDriveEmbed
+                    },
+                    sanitize: {
+                        table: {
+                            content: {
+                                br: true,
+                                div: true,
+                                b: true,
+                                i: true,
+                                a: true,
+                                span: true,
+                            }
+                        }
                     },
                     data: {},
                     onReady: () => {

@@ -26,6 +26,26 @@ function editorJsToHtml($data) {
                 $html .= "<p class='mb-4 text-gray-700 leading-relaxed {$alignClass}'>{$block['data']['text']}</p>";
                 break;
             case 'list':
+                if (!function_exists('renderEditorJsListItems')) {
+                    function renderEditorJsListItems($items) {
+                        $out = '';
+                        foreach ($items as $item) {
+                            if (is_array($item)) {
+                                $content = isset($item['content']) ? $item['content'] : '';
+                                $out .= "<li>{$content}";
+                                if (!empty($item['items'])) {
+                                    $out .= "<ul class='list-disc ml-6 mt-2 space-y-2 text-left'>";
+                                    $out .= renderEditorJsListItems($item['items']);
+                                    $out .= "</ul>";
+                                }
+                                $out .= "</li>";
+                            } else {
+                                $out .= "<li>{$item}</li>";
+                            }
+                        }
+                        return $out;
+                    }
+                }
                 $tag = $block['data']['style'] === 'ordered' ? 'ol' : 'ul';
                 $listClass = $tag === 'ol' ? 'list-decimal' : 'list-disc';
                 // Alignment
@@ -35,9 +55,7 @@ function editorJsToHtml($data) {
                 }
 
                 $html .= "<{$tag} class='{$listClass} ml-6 mb-4 space-y-2 {$alignClass}'>";
-                foreach ($block['data']['items'] as $item) {
-                     $html .= "<li>{$item}</li>";
-                }
+                $html .= renderEditorJsListItems($block['data']['items']);
                 $html .= "</{$tag}>";
                 break;
             case 'image':
@@ -80,17 +98,47 @@ function editorJsToHtml($data) {
                 $content = $block['data']['content'];
                 $html .= "<div class='overflow-x-auto my-6'><table class='min-w-full border border-gray-200'>";
                 $isHead = isset($block['data']['withHeadings']) && $block['data']['withHeadings'];
-                
                 foreach ($content as $i => $row) {
                     $html .= "<tr>";
                     foreach ($row as $cell) {
                         $tag = ($isHead && $i === 0) ? 'th' : 'td';
                         $cellClass = ($isHead && $i === 0) ? 'bg-gray-100 font-semibold' : '';
-                        $html .= "<{$tag} class='border p-2 min-w-[100px] {$cellClass}'>{$cell}</{$tag}>";
+                        $cleanCell = str_ireplace(['&lt;br&gt;', '&lt;br/&gt;', '&lt;br /&gt;'], '<br>', (string)$cell);
+                        $html .= "<{$tag} class='border p-2 min-w-[100px] {$cellClass} whitespace-pre-wrap break-words align-top'>{$cleanCell}</{$tag}>";
                     }
                     $html .= "</tr>";
                 }
                 $html .= "</table></div>";
+                break;
+            case 'richTable':
+                $rtRows = $block['data']['rows'] ?? [];
+                $rtHead = $block['data']['withHeadings'] ?? false;
+                $rtColWidths = $block['data']['colWidths'] ?? [];
+                if (!empty($rtRows)) {
+                    $numCols = count($rtRows[0]);
+                    $colGroupHtml = '<colgroup>';
+                    for ($ci = 0; $ci < $numCols; $ci++) {
+                        $w = isset($rtColWidths[$ci]) && $rtColWidths[$ci] ? 'style="width:' . (int)$rtColWidths[$ci] . 'px; min-width:' . (int)$rtColWidths[$ci] . 'px; max-width:' . (int)$rtColWidths[$ci] . 'px;"' : '';
+                        $colGroupHtml .= "<col {$w}>";
+                    }
+                    $colGroupHtml .= '</colgroup>';
+                    $html .= "<div class='overflow-x-auto my-6'><table class='w-full min-w-max border border-gray-200' style='border-collapse:collapse;table-layout:" . (!empty($rtColWidths) ? 'fixed' : 'auto') . ";'>";
+                    $html .= $colGroupHtml;
+                    foreach ($rtRows as $ri => $row) {
+                        $html .= '<tr>';
+                        foreach ($row as $ci => $cellData) {
+                            $tag = ($rtHead && $ri === 0) ? 'th' : 'td';
+                            $align = $cellData['align'] ?? 'left';
+                            $valign = $cellData['valign'] ?? 'top';
+                            $rawContent = $cellData['content'] ?? '';
+                            $rawContent = str_ireplace(['&lt;br&gt;', '&lt;br/&gt;', '&lt;br /&gt;'], '<br>', $rawContent);
+                            $bgStyle = ($rtHead && $ri === 0) ? 'background:#f1f5f9;font-weight:600;' : 'background:#fff;';
+                            $html .= "<{$tag} style='border:1px solid #e2e8f0;padding:8px 10px;text-align:{$align};vertical-align:{$valign};{$bgStyle}overflow-wrap:break-word;line-height:1.6;'>{$rawContent}</{$tag}>";
+                        }
+                        $html .= '</tr>';
+                    }
+                    $html .= '</table></div>';
+                }
                 break;
             case 'delimiter':
                 $html .= "<hr class='my-8 border-t border-gray-200'>";
@@ -143,6 +191,15 @@ function editorJsToHtml($data) {
                 break;
             case 'googleDrive':
                 $html .= "<div class='my-6 w-full rounded-lg overflow-hidden border border-gray-200 shadow-sm'>" . $block['data']['embedCode'] . "</div>";
+                break;
+            case 'anyButton':
+                $link = isset($block['data']['link']) ? htmlspecialchars($block['data']['link'], ENT_QUOTES, 'UTF-8') : '#';
+                $text = isset($block['data']['text']) ? htmlspecialchars($block['data']['text'], ENT_QUOTES, 'UTF-8') : 'Button';
+                $alignClass = 'text-left';
+                if(isset($block['tunes']['alignment']['alignment'])) {
+                     $alignClass = 'text-' . $block['tunes']['alignment']['alignment'];
+                }
+                $html .= "<div class='my-4 {$alignClass}'><a href='{$link}' target='_blank' class='inline-block px-6 py-2.5 bg-indigo-600 text-white font-medium text-sm leading-tight rounded-xl shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out'>{$text}</a></div>";
                 break;
         }
     }
@@ -223,13 +280,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $update->bind_param("ssssssissi", $title, $slug, $content, $thumbnail, $meta_description, $meta_keywords, $visible, $updated_by, $editor_json, $id);
     
     if ($update->execute()) {
-        echo "<script>
-            alert('บันทึกการแก้ไขสำเร็จ');
-            window.location.href = 'webpage_edit.php?id=" . $id . "';
-        </script>";
+        echo "<script>sessionStorage.setItem('pendingToast',JSON.stringify({msg:'บันทึกสำเร็จ',type:'success'}));window.location.replace('webpage_edit.php?id=" . $id . "');</script>";
         exit;
     } else {
-        echo "<script>alert('เกิดข้อผิดพลาดในการบันทึก: " . $mysqli4->error . "');</script>";
+        echo "<script>document.addEventListener('DOMContentLoaded',function(){if(typeof showToast==='function')showToast('เกิดข้อผิดพลาด: ".$mysqli4->error."','error');});</script>";
     }
 }
 ?>
@@ -255,9 +309,82 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         .codex-editor { max-width: 1100px; margin: 0 auto; }
         .ce-block__content { max-width: 1000px; }
         .ce-toolbar__content { max-width: 1000px; }
+
+        /* Toast notification */
+        #toast-container {
+            position: fixed; top: 20px; right: 20px;
+            z-index: 99999; display: flex; flex-direction: column; gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 20px; border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            font-size: 14px; font-weight: 600;
+            min-width: 260px; max-width: 380px;
+            pointer-events: all;
+            transform: translateX(120%);
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        .toast.show { transform: translateX(0); opacity: 1; }
+        .toast.hide { transform: translateX(120%); opacity: 0; }
+        .toast-success { background: #fff; border-left: 5px solid #10b981; color: #065f46; }
+        .toast-error   { background: #fff; border-left: 5px solid #ef4444; color: #991b1b; }
+        .toast-icon { font-size: 20px; flex-shrink: 0; }
+        .toast-close { margin-left: auto; cursor: pointer; opacity: 0.5; font-size: 16px; line-height: 1; padding: 2px 6px; border-radius: 6px; transition: opacity 0.15s; }
+        .toast-close:hover { opacity: 1; }
     </style>
 </head>
 <body class="bg-gray-50 pb-24">
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+    <script>
+    function showToast(message, type = 'success', duration = 3500) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        const icon = type === 'success' ? '✅' : '❌';
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <span class="toast-icon">${icon}</span>
+            <span style="flex:1;line-height:1.4;">${message}</span>
+            <span class="toast-close" onclick="dismissToast(this.parentElement)">✕</span>
+        `;
+        container.appendChild(toast);
+        // Animate in
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => toast.classList.add('show'));
+        });
+        // Auto dismiss
+        const timer = setTimeout(() => dismissToast(toast), duration);
+        toast._timer = timer;
+    }
+    function dismissToast(toast) {
+        if (!toast) return;
+        clearTimeout(toast._timer);
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 400);
+    }
+
+    // Show any pending toast from after page reload (e.g. after save)
+    (function() {
+        const pending = sessionStorage.getItem('pendingToast');
+        if (pending) {
+            sessionStorage.removeItem('pendingToast');
+            try {
+                const { msg, type } = JSON.parse(pending);
+                // Wait for DOM to be ready
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => showToast(msg, type));
+                } else {
+                    showToast(msg, type);
+                }
+            } catch(e) {}
+        }
+    })();
+    </script>
+
     <div class="max-w-[1400px] mx-auto py-8 px-4">
         <!-- Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -349,7 +476,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
 
             <!-- Page Title & Editor -->
-            <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 min-h-[800px] overflow-hidden flex flex-col items-center">
+            <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 min-h-[800px] flex flex-col items-center">
                 <!-- Internal Title Section -->
                 <div class="w-full max-w-[1100px] px-10 pt-16 pb-8">
                     <input type="text" name="title" id="pageTitle" value="<?= e($page['title']) ?>" required placeholder="หัวข้อเพจ..." 
@@ -429,6 +556,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script src="../assets/vendor/editorjs/image.js"></script>
     <script src="../assets/vendor/editorjs/quote.js"></script>
     <script src="../assets/vendor/editorjs/table.js"></script>
+    <script src="../assets/vendor/editorjs/rich-table.js"></script>
     <script src="../assets/vendor/editorjs/delimiter.js"></script>
     <script src="../assets/vendor/editorjs/link.js"></script>
     <script src="../assets/vendor/editorjs/hyperlink.js"></script>
@@ -436,6 +564,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script src="https://cdn.jsdelivr.net/npm/editorjs-text-alignment-blocktune@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/attaches@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/raw@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/editorjs-button@latest"></script>
     <script src="../assets/vendor/editorjs/google-drive-embed.js"></script>
 
     <!-- Alpine.js -->
@@ -549,20 +678,48 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         },
                         quote: Quote,
                         table: { class: Table, inlineToolbar: true },
+                        richTable: {
+                            class: RichTable,
+                        },
                         delimiter: Delimiter,
                         linkTool: { class: LinkTool, config: { endpoint: 'fetch_url.php' } },
                         hyperlink: {
                             class: Hyperlink,
                             config: { shortcut: 'CMD+K', target: '_blank', rel: 'nofollow' }
                         },
+                        anyButton: {
+                            class: AnyButton,
+                            inlineToolbar: false,
+                            tunes: ['alignment']
+                        },
                         columns: {
                             class: editorjsColumns,
                             config: {
                                 tools: {
-                                    header: Header,
-                                    paragraph: { class: EditorJS.Paragraph, inlineToolbar: true },
-                                    list: EditorjsList,
+                                    header: {
+                                        class: Header,
+                                        inlineToolbar: true,
+                                        config: { placeholder: 'หัวข้อ', levels: [2, 3, 4], defaultLevel: 2 },
+                                        tunes: ['alignment']
+                                    },
+                                    paragraph: {
+                                        class: EditorJS.Paragraph,
+                                        inlineToolbar: true,
+                                        tunes: ['alignment']
+                                    },
+                                    list: {
+                                        class: EditorjsList,
+                                        inlineToolbar: true,
+                                        tunes: ['alignment']
+                                    },
                                     image: ImageTool,
+                                    anyButton: {
+                                        class: AnyButton,
+                                        inlineToolbar: false,
+                                        tunes: ['alignment']
+                                    },
+                                    delimiter: Delimiter,
+                                    raw: RawTool,
                                 }
                             }
                         },
@@ -574,8 +731,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         raw: RawTool,
                         googleDrive: GoogleDriveEmbed
                     },
+                    sanitize: {
+                        table: {
+                            content: {
+                                br: true,
+                                div: true,
+                                b: true,
+                                i: true,
+                                a: true,
+                                span: true,
+                            }
+                        }
+                    },
                     data: initialData,
-                    onReady: () => { document.getElementById('editorjs').style.minHeight = '300px'; },
+                    onReady: () => {
+                        document.getElementById('editorjs').style.minHeight = '300px';
+                    },
                     onChange: () => { hasUnsavedChanges = true; updateSaveStatus(); }
                 });
 

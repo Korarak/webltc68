@@ -31,7 +31,7 @@ if (isset($mysqli4) && $mysqli4 instanceof mysqli) {
 
 <!-- Navbar Container -->
 <nav class="fixed top-4 left-4 right-4 z-[9999] bg-white/80 backdrop-blur-2xl border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.05)] rounded-2xl transition-all duration-500 sidebar-responsive hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]">
-  <div class="max-w-full mx-auto px-4 py-2 lg:px-4 xl:px-6 flex items-center justify-between flex-nowrap">
+  <div class="max-w-full mx-auto px-2 py-2 lg:px-3 xl:px-4 2xl:px-6 flex items-center justify-between flex-nowrap">
 
     <!-- Logo Section -->
     <div class="flex items-center space-x-3 group cursor-pointer relative z-[10001] shrink-0">
@@ -52,8 +52,8 @@ if (isset($mysqli4) && $mysqli4 instanceof mysqli) {
       </a>
     </div>
 
-    <!-- Desktop Menu (Lowered breakpoint to XL for better zoom handling) -->
-    <div class="hidden xl:flex justify-center flex-grow mx-2 lg:mx-4 items-center gap-x-0.5 2xl:gap-x-1" id="menu">
+    <!-- Desktop Menu (Squeezed to prevent pushing social icons out) -->
+    <div class="hidden xl:flex justify-center flex-grow mx-1 2xl:mx-4 items-center gap-x-0 2xl:gap-x-1" id="menu">
       <?php
       if ($mainMenusResult && $mainMenusResult->num_rows > 0) {
         $mainMenusResult->data_seek(0);
@@ -70,7 +70,7 @@ if (isset($mysqli4) && $mysqli4 instanceof mysqli) {
           if ($isDropdown && $subMenuResult && $subMenuResult->num_rows > 0) {
             // Dropdown Menu Item
             echo '<div class="relative group/menu shrink-0">';
-            echo '<button id="menu-btn-' . $menuId . '" class="flex items-center px-1.5 py-2 2xl:px-4 text-[clamp(11px,0.85vw,14px)] whitespace-nowrap font-bold text-slate-600 rounded-xl hover:text-emerald-700 transition duration-300 relative overflow-hidden group-hover/menu:bg-white/50 shrink-0">';
+            echo '<button id="menu-btn-' . $menuId . '" class="flex items-center px-1 py-2 lg:px-1.5 2xl:px-4 text-[clamp(10px,0.75vw,13px)] whitespace-nowrap font-bold text-slate-600 rounded-xl hover:text-emerald-700 transition duration-300 relative overflow-hidden group-hover/menu:bg-white/50 shrink-0">';
             echo '<span class="relative z-10">' . htmlspecialchars($menuName) . '</span>';
             echo '<i class="fas fa-chevron-down text-[9px] ml-1 transition-transform duration-300 group-hover/menu:rotate-180 text-slate-400 group-hover/menu:text-emerald-500 relative z-10"></i>';
             // Hover Underline
@@ -99,7 +99,7 @@ if (isset($mysqli4) && $mysqli4 instanceof mysqli) {
             echo '</div></div>';
           } else {
             // Single Menu Item
-            echo '<a href="' . htmlspecialchars(normalize_url_nav($menuLink)) . '" ' . $target . ' class="relative group/link px-1.5 py-2 2xl:px-4 text-[clamp(11px,0.85vw,14px)] whitespace-nowrap font-bold text-slate-600 rounded-xl hover:text-emerald-700 transition duration-300 overflow-hidden hover:bg-white/50 shrink-0">';
+            echo '<a href="' . htmlspecialchars(normalize_url_nav($menuLink)) . '" ' . $target . ' class="relative group/link px-1 py-2 lg:px-1.5 2xl:px-4 text-[clamp(10px,0.75vw,13px)] whitespace-nowrap font-bold text-slate-600 rounded-xl hover:text-emerald-700 transition duration-300 overflow-hidden hover:bg-white/50 shrink-0">';
             echo '<span class="relative z-10">' . htmlspecialchars($menuName) . '</span>';
             echo '<span class="absolute bottom-1 left-2 right-2 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-500 transform scale-x-0 group-hover/link:scale-x-100 transition-transform duration-300 origin-center"></span>';
             echo '</a>';
@@ -208,31 +208,40 @@ if (isset($mysqli4) && $mysqli4 instanceof mysqli) {
   </div>
 </nav>
 
-<!-- Mobile Bottom Navigation (Portrait Only) -->
-<div class="mobile-bottom-nav fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-2xl border-t border-white/50 z-[9999] px-6 py-3 flex justify-between items-center shadow-[0_-8px_32px_rgba(0,0,0,0.05)] safe-area-pb">
+<!-- Minimal Mobile Bottom Navigation (Portrait Only) -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-[420px] bg-white/95 backdrop-blur-2xl border border-gray-100 z-[9999] px-2 py-2 shadow-[0_15px_35px_rgba(0,0,0,0.1)] rounded-[32px] flex justify-between items-center md:hidden landscape:hidden safe-area-pb">
   
-  <a href="/" class="flex flex-col items-center gap-1 group w-16">
-    <div class="w-10 h-10 rounded-xl bg-transparent text-slate-400 group-hover:bg-emerald-50/50 group-hover:text-emerald-600 flex items-center justify-center transition-all duration-300">
-      <i class="fas fa-home text-lg"></i>
-    </div>
-    <span class="text-[10px] font-medium text-slate-400 group-hover:text-emerald-600 transition-colors">หน้าแรก</span>
-  </a>
+  <!-- Left Side: Home & Personnel -->
+  <div class="flex items-center justify-evenly flex-1">
+    <a href="/" class="flex flex-col items-center gap-1 p-1 text-gray-400 hover:text-emerald-500 transition-colors active:scale-95 w-14" title="หน้าแรก">
+      <i class="fas fa-home text-[18px]"></i>
+      <span class="text-[9px] font-medium whitespace-nowrap hidden sm:block min-[350px]:block">หน้าแรก</span>
+    </a>
+    <a href="/organization.php" class="flex flex-col items-center gap-1 p-1 text-gray-400 hover:text-emerald-500 transition-colors active:scale-95 w-14" title="บุคลากร">
+      <i class="fas fa-users text-[18px]"></i>
+      <span class="text-[9px] font-medium whitespace-nowrap hidden sm:block min-[350px]:block">บุคลากร</span>
+    </a>
+  </div>
 
-  <button onclick="document.getElementById('menu-toggle').click()" class="flex flex-col items-center gap-1 group -mt-8">
-    <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-400 text-white shadow-lg shadow-emerald-200/50 flex items-center justify-center transform group-active:scale-95 transition-all duration-300 border-4 border-white/80 backdrop-blur-sm relative overflow-hidden">
-      <!-- Glow Effect inside button -->
-      <div class="absolute inset-0 bg-emerald-300 mix-blend-overlay opacity-0 group-hover:opacity-50 blur transition duration-300"></div>
-      <i class="fas fa-bars text-xl relative z-10"></i>
+  <!-- Prominent Center Menu -->
+  <button onclick="event.stopPropagation(); document.getElementById('menu-toggle').click()" class="relative -mt-10 flex flex-col items-center justify-center group outline-none shrink-0 z-10 z-[10000]">
+    <div class="w-[66px] h-[66px] rounded-full bg-emerald-500 text-white shadow-[0_10px_25px_rgba(16,185,129,0.4)] flex items-center justify-center transform group-active:scale-90 transition-all duration-300 border-[6px] border-[#fbfdfc] group-hover:border-white">
+      <i class="fas fa-bars text-2xl group-hover:rotate-180 transition-transform duration-500" style="text-shadow: 0 2px 4px rgba(0,0,0,0.1);"></i>
     </div>
-    <span class="text-[10px] font-bold text-emerald-600 tracking-wide mt-0.5" style="text-shadow: 0 1px 1px rgba(255,255,255,0.8);">เมนูหลัก</span>
+    <span class="text-[9px] font-bold text-emerald-600 tracking-wide mt-1 whitespace-nowrap bg-white/80 px-2.5 py-0.5 rounded-full shadow-sm backdrop-blur-md absolute -bottom-4 hidden min-[350px]:block">เมนูหลัก</span>
   </button>
 
-  <button onclick="toggleSidebar()" class="flex flex-col items-center gap-1 group w-16">
-    <div class="w-10 h-10 rounded-xl bg-transparent text-slate-400 group-hover:bg-emerald-50/50 group-hover:text-emerald-600 flex items-center justify-center transition-all duration-300">
-      <i class="fas fa-th-large text-lg"></i>
-    </div>
-    <span class="text-[10px] font-medium text-slate-400 group-hover:text-emerald-600 transition-colors">เพิ่มเติม</span>
-  </button>
+  <!-- Right Side: Contact & Sidebar -->
+  <div class="flex items-center justify-evenly flex-1">
+    <a href="/contact.php" class="flex flex-col items-center gap-1 p-1 text-gray-400 hover:text-emerald-500 transition-colors active:scale-95 w-14" title="ติดต่อเรา">
+      <i class="fas fa-phone-alt text-[18px]"></i>
+      <span class="text-[9px] font-medium whitespace-nowrap hidden sm:block min-[350px]:block">ติดต่อ</span>
+    </a>
+    <button onclick="toggleSidebar()" class="flex flex-col items-center gap-1 p-1 text-gray-400 hover:text-emerald-500 transition-colors active:scale-95 w-14 outline-none" title="เมนูเพิ่มเติม">
+      <i class="fas fa-th-large text-[18px]"></i>
+      <span class="text-[9px] font-medium whitespace-nowrap hidden sm:block min-[350px]:block">เพิ่มเติม</span>
+    </button>
+  </div>
 
 </div>
 
@@ -244,6 +253,16 @@ const mobileMenu = document.getElementById('mobile-menu');
 const bar1 = document.getElementById('bar1');
 const bar2 = document.getElementById('bar2');
 const bar3 = document.getElementById('bar3');
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', (event) => {
+  if (!mobileMenu.classList.contains('hidden')) {
+    if (!mobileMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+      // Trigger toggle logic to close menu and reset hamburger icon
+      menuToggle.click();
+    }
+  }
+});
 
 menuToggle.addEventListener('click', () => {
   const isClosed = mobileMenu.classList.contains('hidden');
@@ -325,4 +344,4 @@ window.addEventListener('resize', function() {
     display: none !important;
   }
 }
-</style>
+</style>

@@ -12,37 +12,31 @@ if (!function_exists('normalize_url')) {
 }
 ?>
 
-<button id="sidebarToggle" class="hidden 2xl:flex fixed left-4 top-[6.5rem] z-[60] bg-white/80 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 backdrop-blur-2xl border border-white/50 w-10 h-10 items-center justify-center rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)] transition-all duration-500">
-  <i class="fas fa-bars text-sm"></i>
+<!-- Sidebar Toggle Button (Redesigned matching top_nav style) -->
+<button id="sidebarToggle" class="flex fixed left-4 top-[6.5rem] z-[60] group outline-none" onclick="document.getElementById('sidebarHint').classList.add('opacity-0', 'invisible', '-translate-x-4');">
+  <!-- Button Body -->
+  <div class="w-[52px] h-[52px] rounded-full bg-emerald-500 text-white shadow-[0_8px_20px_rgba(16,185,129,0.4)] flex items-center justify-center transform group-active:scale-90 transition-all duration-300 border-[4px] border-white/95 group-hover:border-white">
+    <i class="fas fa-bars text-xl group-hover:rotate-180 transition-transform duration-500" style="text-shadow: 0 2px 4px rgba(0,0,0,0.1);"></i>
+  </div>
+  
+  <!-- Pointer Hint Container -->
+  <div id="sidebarHint" class="absolute left-[110%] top-1/2 -translate-y-1/2 ml-3 flex items-center pointer-events-none transition-all duration-700 ease-in-out z-[50]">
+    <div class="flex items-center animate-point-left">
+      <!-- Arrow pointing Left -->
+      <svg class="w-6 h-6 text-emerald-500 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      <!-- Hint Message -->
+      <span class="ml-1 bg-white border border-emerald-100 text-emerald-600 px-4 py-2.5 rounded-2xl text-[13px] font-extrabold shadow-[0_4px_15px_rgba(0,0,0,0.06)] whitespace-nowrap relative">
+        เมนูอยู่ตรงนี้!
+        <!-- Small triangle for speech bubble effect -->
+        <span class="absolute top-1/2 -left-1.5 -translate-y-1/2 w-3 h-3 bg-white border-l border-b border-emerald-100 rotate-45"></span>
+      </span>
+    </div>
+  </div>
 </button>
 
-<!-- Mobile Bottom Navigation -->
-<div class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-2xl border-t border-white/50 z-[9999] px-6 py-3 flex justify-between items-center 2xl:hidden shadow-[0_-8px_32px_rgba(0,0,0,0.05)] safe-area-pb">
-  
-  <a href="/" class="flex flex-col items-center gap-1 group w-16">
-    <div class="w-10 h-10 rounded-xl bg-transparent text-slate-400 group-hover:bg-emerald-50/50 group-hover:text-emerald-600 flex items-center justify-center transition-all duration-300">
-      <i class="fas fa-home text-lg"></i>
-    </div>
-    <span class="text-[10px] font-medium text-slate-400 group-hover:text-emerald-600 transition-colors">หน้าแรก</span>
-  </a>
 
-  <button onclick="document.getElementById('menu-toggle').click()" class="flex flex-col items-center gap-1 group -mt-8">
-    <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-400 text-white shadow-lg shadow-emerald-200/50 flex items-center justify-center transform group-active:scale-95 transition-all duration-300 border-4 border-white/80 backdrop-blur-sm relative overflow-hidden">
-      <!-- Glow Effect inside button -->
-      <div class="absolute inset-0 bg-emerald-300 mix-blend-overlay opacity-0 group-hover:opacity-50 blur transition duration-300"></div>
-      <i class="fas fa-bars text-xl relative z-10"></i>
-    </div>
-    <span class="text-[10px] font-bold text-emerald-600 tracking-wide mt-0.5" style="text-shadow: 0 1px 1px rgba(255,255,255,0.8);">เมนูหลัก</span>
-  </button>
-
-  <button onclick="toggleSidebar()" class="flex flex-col items-center gap-1 group w-16">
-    <div class="w-10 h-10 rounded-xl bg-transparent text-slate-400 group-hover:bg-emerald-50/50 group-hover:text-emerald-600 flex items-center justify-center transition-all duration-300">
-      <i class="fas fa-th-large text-lg"></i>
-    </div>
-    <span class="text-[10px] font-medium text-slate-400 group-hover:text-emerald-600 transition-colors">เพิ่มเติม</span>
-  </button>
-
-</div>
 
 <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
 
@@ -167,7 +161,7 @@ function openSidebar() {
   body.classList.add('sidebar-open');
   
   // Hide toggle button when sidebar is open
-  sidebarToggle.classList.remove('2xl:flex');
+  sidebarToggle.classList.remove('flex');
   sidebarToggle.classList.add('hidden');
   
   // Show overlay only on smaller screens
@@ -185,7 +179,7 @@ function closeSidebar() {
 
   // Show toggle button when sidebar is closed
   sidebarToggle.classList.remove('hidden');
-  sidebarToggle.classList.add('2xl:flex');
+  sidebarToggle.classList.add('flex');
 }
 
 function toggleSidebar() {
@@ -248,6 +242,15 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <style>
+/* Animation for pointing arrow */
+@keyframes point-left {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-8px); }
+}
+.animate-point-left {
+  animation: point-left 1s ease-in-out infinite;
+}
+
 main {
   margin-left: 0;
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ยินดีต้อนรับนักเรียน นักศึกษาใหม่ - วิทยาลัยเทคนิคเลย</title>
 
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * {
@@ -162,7 +163,7 @@
       border-radius: 20px;
       font-size: 0.875rem;
       font-weight: 600;
-      color: #e0f2fe;
+      color: #d1fae5;
       border: 1px solid rgba(255, 255, 255, 0.2);
       margin-right: 0.5rem;
       margin-top: 0.5rem;
@@ -176,25 +177,28 @@
   </style>
 </head>
 
-<body class="bg-gray-900">
+<body class="bg-slate-50">
 
-  <header class="w-full bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-16 md:py-24">
-    <div class="w-full px-4 sm:px-6 lg:px-8">
+  <header class="w-full bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-900 text-white py-16 md:py-24 relative overflow-hidden">
+    <!-- Overlay Pattern -->
+    <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"1\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+    
+    <div class="w-full px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-8">
         <div class="flex-1 text-center lg:text-center">
           <div class="mb-6">
-            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-tight animate-pulse">
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-tight animate-pulse drop-shadow-lg">
               🎓 ยินดีต้อนรับ
             </h1>
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-200 mt-3">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-emerald-100 mt-3 drop-shadow-md">
               นักเรียน นักศึกษาใหม่
             </h2>
-            <p class="text-2xl sm:text-3xl font-semibold text-cyan-300 mt-4">
+            <p class="text-2xl sm:text-3xl font-semibold text-amber-300 mt-4 drop-shadow">
               เข้าสู่วิทยาลัยเทคนิคเลย
             </p>
           </div>
 
-          <p class="mt-6 text-lg sm:text-xl text-blue-100 max-w-3xl leading-relaxed font-medium mx-auto">
+          <p class="mt-6 text-lg sm:text-xl text-emerald-50 max-w-3xl leading-relaxed font-medium mx-auto bg-black/10 backdrop-blur-sm p-4 rounded-2xl border border-white/10">
             ปีการศึกษา 2569 สถาบันสร้างสมปัญญา เกียรติศักดิ์ ความซื่อสัตย์แห่งตน และวิชาชีพ เชิญชวนน้องๆ
             เข้าเรียนและพัฒนาตนเอง
           </p>
@@ -207,44 +211,44 @@
 
           <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <a href="https://loeitech.ac.th/app-news/annonce_detail.php?id=81"
-              class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-700 font-bold text-lg rounded-xl shadow-2xl hover:shadow-3xl hover:scale-110 transition transform duration-300">
-              <i class="fas fa-graduation-cap text-2xl"></i> สมัครเรียนวันนี้
+              class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-emerald-800 font-extrabold text-lg rounded-full shadow-[0_10px_25px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_35px_rgba(16,185,129,0.3)] hover:scale-105 transition transform duration-300 border-4 border-emerald-100/50">
+              <i class="fas fa-graduation-cap text-2xl text-emerald-600"></i> สมัครเรียนวันนี้
             </a>
           </div>
         </div>
 
         <div class="flex-1 lg:flex-none max-w-sm mx-auto lg:mx-0">
           <div
-            class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/30 shadow-2xl hover:shadow-3xl transition transform hover:scale-105">
+            class="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/40 shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:shadow-[0_20px_40px_rgba(16,185,129,0.3)] transition transform hover:-translate-y-2 duration-500">
             <div class="text-center space-y-6">
-              <div class="text-6xl animate-bounce">
+              <div class="text-6xl animate-bounce filter drop-shadow-lg">
                 👋
               </div>
 
               <div class="space-y-2">
-                <span class="block text-sm text-blue-100 font-semibold uppercase tracking-wider">📚 ปีการศึกษา</span>
+                <span class="block text-sm text-emerald-100 font-bold uppercase tracking-wider">📚 ปีการศึกษา</span>
                 <span
-                  class="block text-6xl font-extrabold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">2569</span>
+                  class="block text-6xl font-extrabold bg-gradient-to-r from-amber-300 to-yellow-100 bg-clip-text text-transparent drop-shadow-md">2569</span>
               </div>
 
-              <div class="h-1 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"></div>
+              <div class="h-1 bg-gradient-to-r from-emerald-400 to-teal-200 rounded-full shadow-inner"></div>
 
-              <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
-                <span class="block text-xs text-blue-200 font-semibold mb-2">🎉 เปิดรับสมัครนักศึกษาใหม่</span>
-                <span class="block text-xl font-bold text-white">รับสมัครตั้งแต่บัดนี้</span>
-                <div class="mt-3 text-sm text-yellow-300 font-semibold">
+              <div class="bg-white/10 rounded-2xl p-4 border border-emerald-200/30 shadow-inner">
+                <span class="block text-xs text-yellow-200 font-bold mb-2 tracking-wide">🎉 เปิดรับสมัครนักศึกษาใหม่</span>
+                <span class="block text-xl font-black text-white drop-shadow-sm">รับสมัครตั้งแต่บัดนี้</span>
+                <div class="mt-3 text-sm text-emerald-100 font-bold bg-black/20 py-1 px-3 rounded-full inline-block">
                   ถึง 8 พฤษภาคม 2569
                 </div>
               </div>
 
               <div class="grid grid-cols-2 gap-3 pt-4 border-t border-white/20">
-                <div class="text-center">
-                  <div class="text-xs text-blue-200 mt-1">หลักสูตร</div>
-                  <div class="text-3xl font-bold text-green-400">ปวช. ปวส.</div>
+                <div class="text-center bg-white/5 rounded-xl p-2 border border-white/10">
+                  <div class="text-[11px] text-emerald-100 font-medium">หลักสูตร</div>
+                  <div class="text-3xl font-black text-emerald-300 drop-shadow-md mt-1">ปวช. <span class="text-base font-normal opacity-80">&</span> ปวส.</div>
                 </div>
-                <div class="text-center">
-                  <div class="text-xs text-blue-200 mt-1">หลักสูตร</div>
-                  <div class="text-3xl font-bold text-cyan-400">เทคโนโลยีบัณฑิต</div>
+                <div class="text-center bg-white/5 rounded-xl p-2 border border-white/10">
+                  <div class="text-[11px] text-emerald-100 font-medium">หลักสูตร</div>
+                  <div class="text-lg leading-[1.2rem] mt-1 font-black text-amber-300 drop-shadow-md">เทคโนโลยี<br>บัณฑิต</div>
                 </div>
               </div>
             </div>
