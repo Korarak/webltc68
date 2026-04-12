@@ -66,7 +66,7 @@ $stmt->close();
 
   <!-- ปุ่มกลับล่าง -->
   <div class="text-center">
-    <a href="letter_showall.php"
+    <a href="letter_list.php"
        class="inline-block bg-red-600 hover:bg-red-700 text-white text-sm px-5 py-2 rounded transition">
       <i class="fas fa-arrow-left mr-1"></i> กลับ
     </a>
